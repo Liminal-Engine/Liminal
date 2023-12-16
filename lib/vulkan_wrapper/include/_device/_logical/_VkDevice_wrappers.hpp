@@ -15,14 +15,12 @@ namespace vulkan_wrapper {
          * @brief Create a Vulkan logical device
          * 
          * @param physical_device (const VkPhysicalDevice &) The physical device
-         * @param surface (const VkSurfaceKHR &) The surface
          * @param families_indices (const std::set<_queues::_QueueFamilyIndex_t> &) A set of the indices of the device families
          * @param device_extensions (const std::vector<const char *> &) Device extensions
          * @return The created VkDevice (VkDevice)
          */
         VkDevice _load(
             const VkPhysicalDevice &physical_device,
-            const VkSurfaceKHR &surface,
             const std::set<_queue::_QueueFamilyIndex_t> &families_indices,
             const std::vector<const char *> &device_extensions
         );

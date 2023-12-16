@@ -25,7 +25,6 @@ namespace vulkan_wrapper {
          * @brief Load a Vulkan swap chain
          * 
          * @param logical_device (const VkDevice &) The related Vulkan logical device
-         * @param window (GLFWwindow *) The related window
          * @param surface (const VkSurfaceKHR &) The related surface
          * @param swap_chain_supports (const _Supports &) The related swap chain supports
          * @param queue_families (const _queue::_QueueFamilies &) The related queue families
@@ -35,7 +34,6 @@ namespace vulkan_wrapper {
          */
         VkSwapchainKHR _load(
             const VkDevice &logical_device,
-            GLFWwindow *window,
             const VkSurfaceKHR &surface,
             const _Supports &swap_chain_supports,
             const _queue::_QueueFamilies &queue_families,

@@ -19,7 +19,6 @@ namespace vulkan_wrapper {
 
         VkSwapchainKHR _load(
             const VkDevice &logical_device,
-            GLFWwindow *window,
             const VkSurfaceKHR &surface,
             const _Supports &swap_chain_supports,
             const _queue::_QueueFamilies &queue_families,

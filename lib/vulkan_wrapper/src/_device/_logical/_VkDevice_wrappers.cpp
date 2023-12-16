@@ -18,8 +18,6 @@ namespace vulkan_wrapper {
         namespace _logical {
 
             static std::vector<VkDeviceQueueCreateInfo> __getQueueCreateInfos(
-                    const VkPhysicalDevice &physicalDevice,
-                    const VkSurfaceKHR &surface,
                     const std::set<_queue::_QueueFamilyIndex_t> &families_indices
                 ) {
                     std::vector<VkDeviceQueueCreateInfo> res;
@@ -39,12 +37,11 @@ namespace vulkan_wrapper {
 
             VkDevice _load(
                 const VkPhysicalDevice &physical_device,
-                const VkSurfaceKHR &surface,
                 const std::set<_queue::_QueueFamilyIndex_t> &families_indices,
                 const std::vector<const char *> &device_extensions
             ) {
                 // 1. Get the createInfo struct for all logical device queue families
-                std::vector<VkDeviceQueueCreateInfo> queueCreateInfos = __getQueueCreateInfos(physical_device, surface, families_indices);
+                std::vector<VkDeviceQueueCreateInfo> queueCreateInfos = __getQueueCreateInfos(families_indices);
                 // 2. Get the features we want to enable for the device
                 VkPhysicalDeviceFeatures deviceFeatures{}; //Leave blank for now as we don't anything special
                 // 3. Create the logical device

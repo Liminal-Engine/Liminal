@@ -82,20 +82,20 @@ namespace vulkan_wrapper {
     }
         
     VulkanHdl::VulkanHdl(void) :
+    _window{TMP_GET_WINDOW("Vulkan App")},
     _TMP{TMP_checkValidationLayerSupport()},
     _appName{"Vulkan Best Tutorial"},
     _engineName{"Liminal Engine"},
-    _window{TMP_GET_WINDOW("Vulkan App")},
     _instance{_instance::_load(this->_appName, this->_engineName)},
     _surface{_surface::_load(this->_instance, this->_window)},
     _physicalDevice{_device::_physical::_pick(this->_instance, this->_surface, std::vector<const char *>())},
     _swapChainSupports{_swap_chain::_getSupports(this->_physicalDevice, this->_surface)},
     _queueFamilies{_queue::_load(this->_physicalDevice, this->_surface)},
-    _logicalDevice{_device::_logical::_load(this->_physicalDevice, this->_surface, this->_queueFamilies._toSet(), DEVICE_EXTENSIONS)},
+    _logicalDevice{_device::_logical::_load(this->_physicalDevice, this->_queueFamilies._toSet(), DEVICE_EXTENSIONS)},
     _queueHandlers{_queue::_load(this->_logicalDevice, this->_queueFamilies)},
     _swapChainImageFormat{_swap_chain::_getBestSurfaceFormat(this->_swapChainSupports._surfaceFormats)},
     _swapChainExtent{_swap_chain::_getBestExtent(this->_window, this->_swapChainSupports._surfaceCapabilities)},
-    _swapChain{_swap_chain::_load(this->_logicalDevice, this->_window, this->_surface, this->_swapChainSupports, this->_queueFamilies, this->_swapChainImageFormat, this->_swapChainExtent)},
+    _swapChain{_swap_chain::_load(this->_logicalDevice, this->_surface, this->_swapChainSupports, this->_queueFamilies, this->_swapChainImageFormat, this->_swapChainExtent)},
     _swapChainImagesHandlers{_swap_chain::_image::_load(this->_logicalDevice, this->_swapChain)},
     _swapChainImagesViewsHandlers{_swap_chain::_image_view::_load(this->_logicalDevice, this->_swapChainImagesHandlers, this->_swapChainImageFormat.format)},
     _renderPass{_render_pass::_load(this->_logicalDevice, this->_swapChainImageFormat.format)},
