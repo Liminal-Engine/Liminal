@@ -31,7 +31,6 @@
 #include "_semaphore/_VkSemaphore_wrappers.hpp"
 #include "_fence/_VkFence_wrappers.hpp"
 
-#include <GLFW/glfw3.h>
 #include <vector>
 #include <string>
 #include <string.h>
@@ -41,19 +40,6 @@ const std::vector<const char*> VALIDATION_LAYERS = {
     "VK_LAYER_KHRONOS_validation"
 };
 
-GLFWwindow *TMP_GET_WINDOW(const std::string &app_name) {
-    glfwInit();
-
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API); // Explicelty tells GFLW to NOT use OpenGL context
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE); //Disable resize because wi will need to handle it later
-
-    return glfwCreateWindow(800, 600, app_name.c_str(), nullptr, nullptr);
-}
-
-void TMP_DESTORY_WINDOW(GLFWwindow *window) {
-    glfwDestroyWindow(window);
-    glfwTerminate();
-}
 const std::vector<const char *> DEVICE_EXTENSIONS = {
     VK_KHR_SWAPCHAIN_EXTENSION_NAME
 };
@@ -82,11 +68,11 @@ namespace vulkan_wrapper {
     }
         
     VulkanHdl::VulkanHdl(void) :
-    _window{TMP_GET_WINDOW("Vulkan App")},
     _TMP{TMP_checkValidationLayerSupport()},
     _appName{"Vulkan Best Tutorial"},
     _engineName{"Liminal Engine"},
-    _instance{_instance::_load(this->_appName, this->_engineName)},
+    _window{window_wrapper::WindowWrapper()},
+    _instance{_instance::_load(this->_appName, this->_engineName, this->_window)},
     _surface{_surface::_load(this->_instance, this->_window)},
     _physicalDevice{_device::_physical::_pick(this->_instance, this->_surface, std::vector<const char *>())},
     _swapChainSupports{_swap_chain::_getSupports(this->_physicalDevice, this->_surface)},
@@ -125,7 +111,6 @@ namespace vulkan_wrapper {
         _device::_logical::_destroy(this->_logicalDevice, nullptr);
         _surface::_destroy(this->_instance, this->_surface, nullptr);
         _instance::_destroy(this->_instance, nullptr);
-        TMP_DESTORY_WINDOW(this->_window);
     }
 
     void VulkanHdl::drawFrame(void) {

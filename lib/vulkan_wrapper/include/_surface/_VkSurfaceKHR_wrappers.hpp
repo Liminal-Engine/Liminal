@@ -12,8 +12,9 @@
 #ifndef LIMINAL_LIB_VULKANWRAPPER__SURFACE__VKSURFACEKHR_WRAPPERS_HPP_
 #define LIMINAL_LIB_VULKANWRAPPER__SURFACE__VKSURFACEKHR_WRAPPERS_HPP_
 
+#include "WindowWrapper.hpp"
+
 #include <vulkan/vulkan.h>
-#include <GLFW/glfw3.h>
 
 namespace vulkan_wrapper {
     namespace _surface {
@@ -22,11 +23,11 @@ namespace vulkan_wrapper {
          * @brief Loads a VkSurfaceKHR
          * 
          * @param instance (const VkInstance &) The related vulkan instance
-         * @param window (GLFWwindow *) The application window
+         * @param window (const window_wrapper::WindowWrapper &) The application window
          * @throw
          * @return The created VkSurfaceKHR
          */
-        VkSurfaceKHR _load(const VkInstance &instance, GLFWwindow *window);
+        VkSurfaceKHR _load(const VkInstance &instance, const window_wrapper::WindowWrapper &window);
 
         /**
          * @brief Destroy a VkSurfaceKHR

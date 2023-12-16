@@ -10,8 +10,10 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Ofast -flto -DNDEBUG -f
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+add_subdirectory(lib/window_wrapper)
 add_subdirectory(lib/vulkan_wrapper)
 
 add_executable(Liminal src/main.cpp)
 target_include_directories(Liminal PUBLIC include)
+target_link_libraries(Liminal PUBLIC window_wrapper)
 target_link_libraries(Liminal PUBLIC vulkan_wrapper)

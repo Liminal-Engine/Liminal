@@ -34,20 +34,13 @@ namespace vulkan_wrapper {
             return supported_formats.at(0);
         }
 
-        VkExtent2D _getBestExtent(GLFWwindow *window, const VkSurfaceCapabilitiesKHR &surface_capabilities) {
+        VkExtent2D _getBestExtent(const window_wrapper::WindowWrapper &window, const VkSurfaceCapabilitiesKHR &surface_capabilities) {
             if (surface_capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max()) {
                 return surface_capabilities.currentExtent;
             }
-            int width = 0;
-            int height = 0;
-            VkExtent2D extent{};
-
             // 1. Get the width and height
-            glfwGetFramebufferSize(window, &width, &height);
-            // 2. Set values to max uint32_t and cast
-            extent.width = static_cast<uint32_t>(width);
-            extent.height = static_cast<uint32_t>(height);
-            // 3. We make sure values are contained in min and max possible values
+            VkExtent2D extent = window.getFrameBufferSize();
+            // 2. We make sure values are contained in min and max possible values
             extent.width = std::clamp(extent.width, surface_capabilities.minImageExtent.width, surface_capabilities.maxImageExtent.width);
             extent.height = std::clamp(extent.height, surface_capabilities.minImageExtent.height, surface_capabilities.maxImageExtent.height);
             return extent;

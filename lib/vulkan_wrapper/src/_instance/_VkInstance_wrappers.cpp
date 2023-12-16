@@ -10,7 +10,6 @@
 */
 
 #include "_instance/_VkInstance_wrappers.hpp"
-#include <GLFW/glfw3.h>
 #include <stdexcept>
 
 
@@ -25,34 +24,19 @@ namespace vulkan_wrapper {
     namespace _instance {
 
         /**
-         * @brief Loads the GLFW required extensions
-         * 
-         * @param n_extensions (uint32_t *) A pointer to a uint32_t set to the number of extensions count
-         * @return The required extensions
-        */
-        static const char **__getGLFWRequiredExtensions(uint32_t *n_extensions) {
-            const char **res = glfwGetRequiredInstanceExtensions(n_extensions);
-
-            if (n_extensions == 0) {
-                throw std::runtime_error("No GLFW extension found");
-            }
-            return res;
-        }
-
-        /**
          * @brief Loadqs a VkInstanceCreateInfo
          * 
          * @param app_info (VkApplicationInfo *) - A pointer to a VkApplicationInfo to
          * integrate in the final VkInstanceCreateInfo
          * @return The created VkInstanceCreateInfo 
         */
-        static VkInstanceCreateInfo __loadCreateInfo(VkApplicationInfo *app_info) {
+        static VkInstanceCreateInfo __loadCreateInfo(VkApplicationInfo *app_info, const window_wrapper::WindowWrapper &window) {
             VkInstanceCreateInfo create_info{};
             create_info.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
             create_info.pApplicationInfo = app_info;
             // 2.1 Get extensions required by GLFW.
             uint32_t n_extensions = 0;
-            const char **glfwExtensions = __getGLFWRequiredExtensions(&n_extensions);
+            const char **glfwExtensions = window.getRequiredExtensions(&n_extensions);
             create_info.enabledExtensionCount = n_extensions;
             create_info.ppEnabledExtensionNames = glfwExtensions;
             /**
@@ -82,7 +66,11 @@ namespace vulkan_wrapper {
             return res;
         }
         
-        VkInstance _load(const std::string &app_name, const std::string &engine_name) {
+        VkInstance _load(
+            const std::string &app_name,
+            const std::string &engine_name,
+            const window_wrapper::WindowWrapper &window
+        ) {
             if (app_name == "" || engine_name == "")
                 throw std::runtime_error("Parameter errors while creating instance");
 
@@ -90,7 +78,7 @@ namespace vulkan_wrapper {
             VkApplicationInfo app_info = __loadAppInfo(app_name, engine_name);
 
             // 2. Optional. Tells Vulan driver which extensions and validation layers we want to use.
-            VkInstanceCreateInfo create_info = __loadCreateInfo(&app_info);
+            VkInstanceCreateInfo create_info = __loadCreateInfo(&app_info, window);
 
             if (enableValidationLayers) {
                 create_info.enabledLayerCount = static_cast<uint32_t>(VALIDATION_LAYERS.size());

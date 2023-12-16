@@ -12,8 +12,9 @@
 #ifndef LIB_VULKAN_WRAPPER__SWAP_CHAIN__OPTIMAL_SETTINGS_HPP_
 #define LIB_VULKAN_WRAPPER__SWAP_CHAIN__OPTIMAL_SETTINGS_HPP_
 
+#include "WindowWrapper.hpp"
+
 #include <vulkan/vulkan.h>
-#include <GLFW/glfw3.h>
 #include <vector>
 
 namespace vulkan_wrapper {
@@ -22,7 +23,7 @@ namespace vulkan_wrapper {
         /**
          * @brief Get the best possible swap chain presentation modes
          * 
-         * @param available_presentation_modes ([)const std::vector<VkPresentModeKHR> &) - The available presentation modes
+         * @param available_presentation_modes (const std::vector<VkPresentModeKHR> &) - The available presentation modes
          * @return VkPresentModeKHR The best presentation mode found
          */
         VkPresentModeKHR _getBestPresentationMode(const std::vector<VkPresentModeKHR> &available_presentation_modes);
@@ -30,7 +31,7 @@ namespace vulkan_wrapper {
         /**
          * @brief Get the best possible swap chain surface format
          * 
-         * @param supported_formats ([)const std::vector<VkSurfaceFormatKHR> &) The supported formats
+         * @param supported_formats (const std::vector<VkSurfaceFormatKHR> &) The supported formats
          * @return VkSurfaceFormatKHR The best surface format
          */
         VkSurfaceFormatKHR _getBestSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &supported_formats);
@@ -38,11 +39,11 @@ namespace vulkan_wrapper {
         /**
          * @brief Get the best possible swap chain image extent
          * 
-         * @param window ([)GLFWwindow *) -  The related window
-         * @param surface_capabilities ([)const VkSurfaceCapabilitiesKHR &) - The supported surface capabilities
+         * @param window (const window_wrapper::WindowWrapper &) -  The related window
+         * @param surface_capabilities (const VkSurfaceCapabilitiesKHR &) - The supported surface capabilities
          * @return VkExtent2D The best extent found
          */
-        VkExtent2D _getBestExtent(GLFWwindow *window, const VkSurfaceCapabilitiesKHR &surface_capabilities);
+        VkExtent2D _getBestExtent(const window_wrapper::WindowWrapper &window, const VkSurfaceCapabilitiesKHR &surface_capabilities);
 
     } // namespace _swap_chain
 } // vulkan_wrapper

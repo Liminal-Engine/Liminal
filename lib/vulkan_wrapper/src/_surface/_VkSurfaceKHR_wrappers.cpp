@@ -16,10 +16,9 @@
 namespace vulkan_wrapper {
     namespace _surface {
         
-        VkSurfaceKHR _load(const VkInstance &instance, GLFWwindow *window) {
+        VkSurfaceKHR _load(const VkInstance &instance, const window_wrapper::WindowWrapper &window) {
             VkSurfaceKHR surface;
-
-            if (glfwCreateWindowSurface(instance, window, nullptr, &surface) != VK_SUCCESS) {
+            if (window.createSurface(instance, &surface, nullptr) != VK_SUCCESS) {
                 std::runtime_error("Error while creating window surface");
             }
             return surface;

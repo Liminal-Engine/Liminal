@@ -16,7 +16,6 @@
 #include "_queue/_QueueFamilies.hpp"
 
 #include <vulkan/vulkan.h>
-#include <GLFW/glfw3.h>
 
 namespace vulkan_wrapper {
     namespace _swap_chain {

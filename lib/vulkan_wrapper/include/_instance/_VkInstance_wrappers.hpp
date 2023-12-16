@@ -12,6 +12,8 @@
 #ifndef LIMINAL_LIB_VULKANWRAPPER__INSTANCE__VKINSTANCE_WRAPPERS_HPP_
 #define LIMINAL_LIB_VULKANWRAPPER__INSTANCE__VKINSTANCE_WRAPPERS_HPP_
 
+#include "WindowWrapper.hpp"
+
 #include <vulkan/vulkan.h>
 #include <string>
 #include <vector>
@@ -32,7 +34,11 @@ namespace vulkan_wrapper {
          * @throw std::runtime_error if any error occurs
          * @return The created VkInstance 
          */
-        VkInstance _load(const std::string &app_name, const std::string &engine_name);
+        VkInstance _load(
+            const std::string &app_name,
+            const std::string &engine_name,
+            const window_wrapper::WindowWrapper &window
+        );
 
         /**
          * @brief Destroy a VkInstance
