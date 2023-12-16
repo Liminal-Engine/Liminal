@@ -20,6 +20,7 @@
 #include <GLFW/glfw3.h>
 
 #include <string>
+#include <stdint.h>
 
 // const std::vector<const char*> VALIDATION_LAYERS = {
 //     "VK_LAYER_KHRONOS_validation"
@@ -48,11 +49,14 @@ namespace vulkan_wrapper {
             VulkanHdl(void);
             ~VulkanHdl();
 
+            GLFWwindow *_window; ///< The GLFW window related to the vulkan instace. This will be taken out later in a separate lib
+
+            void drawFrame(void);
+
         private:
             bool _TMP;
             const std::string _appName; ///< Name of the application
             const std::string _engineName; ///< Name of the engine
-            GLFWwindow *_window; ///< The GLFW window related to the vulkan instace. This will be taken out later in a separate lib
             VkInstance _instance; ///< The Vulkan instance
             VkSurfaceKHR _surface; ///< A surface is an interface between Vulkan and the windowing system
             VkPhysicalDevice _physicalDevice; ///< The choosen physical device
@@ -74,6 +78,8 @@ namespace vulkan_wrapper {
             VkSemaphore _imageAvailableSemaphore; ///< Semaphore is to communicate with the GPU. Uses for GPU synchronization            VkSemaphore _renderFinishedSemaphore;
             VkSemaphore _renderFinishedSemaphore;
             VkFence _inFlightFence; ///< Fence is used for GPU-CPU synchronization.
+
+            void _recordCommandBuffer(const VkCommandBuffer &commandBuffer, const uint32_t &image_index);
     };
 }
 
