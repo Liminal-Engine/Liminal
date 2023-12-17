@@ -5,14 +5,14 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Debug vulkan triangle",
+            "name": "Debug Liminal Engine",
             "type": "cppdbg",
             "request": "launch",
             "args": [],
             "stopAtEntry": false,
             "externalConsole": false,
             "cwd": "${workspaceFolder}",
-            "program": "${workspaceFolder}/vulkanTriangle",
+            "program": "${workspaceFolder}/build/Liminal",
             "MIMode": "gdb",
             "miDebuggerPath": "gdb",
             "setupCommands": [

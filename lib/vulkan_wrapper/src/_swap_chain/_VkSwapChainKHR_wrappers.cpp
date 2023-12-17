@@ -33,31 +33,32 @@ namespace vulkan_wrapper {
             if (swap_chain_supports._surfaceCapabilities.maxImageCount > 0 && nImages > swap_chain_supports._surfaceCapabilities.maxImageCount) {
                 nImages = swap_chain_supports._surfaceCapabilities.maxImageCount;
             }
-            VkSwapchainCreateInfoKHR createInfo{};
-            createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-            createInfo.surface = surface;
-            createInfo.minImageCount = nImages;
-            createInfo.imageFormat = swap_chain_image_format.format;
-            createInfo.imageColorSpace = swap_chain_image_format.colorSpace;
-            createInfo.imageExtent = swap_chain_image_extent;
-            createInfo.imageArrayLayers = 1; // Nb of layer each image consist of
-            createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
-            createInfo.preTransform = swap_chain_supports._surfaceCapabilities.currentTransform;
-            createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
-            createInfo.presentMode = bestPresentationMode;
-            createInfo.clipped = VK_TRUE;
-            createInfo.oldSwapchain = VK_NULL_HANDLE;
+            VkSwapchainCreateInfoKHR create_info{};
+            create_info.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+            create_info.surface = surface;
+            create_info.minImageCount = nImages;
+            create_info.imageFormat = swap_chain_image_format.format;
+            create_info.imageColorSpace = swap_chain_image_format.colorSpace;
+            create_info.imageExtent = swap_chain_image_extent;
+            create_info.imageArrayLayers = 1; // Nb of layer each image consist of
+            create_info.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+            create_info.preTransform = swap_chain_supports._surfaceCapabilities.currentTransform;
+            create_info.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+            create_info.presentMode = bestPresentationMode;
+            create_info.clipped = VK_TRUE;
+            create_info.oldSwapchain = VK_NULL_HANDLE;
 
             if (queue_families._graphicsFamily != queue_families._presentFamily) {
-                createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT; // Image is owned by one queue families at a time
-                createInfo.queueFamilyIndexCount = 2;
+                create_info.imageSharingMode = VK_SHARING_MODE_CONCURRENT; // Image is owned by one queue families at a time
+                create_info.queueFamilyIndexCount = 2;
             } else {
-                createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE; // Image can be owned by queue families
-                createInfo.queueFamilyIndexCount = 0;
+                create_info.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE; // Image can be owned by queue families
+                create_info.queueFamilyIndexCount = 0;
             }
+            create_info.pQueueFamilyIndices = queue_families._toVector().data();
+
             VkSwapchainKHR res{};
-            createInfo.pQueueFamilyIndices = queue_families._toVector().data();
-            if (vkCreateSwapchainKHR(logical_device, &createInfo, nullptr, &res) != VK_SUCCESS) {
+            if (vkCreateSwapchainKHR(logical_device, &create_info, nullptr, &res) != VK_SUCCESS) {
                 throw std::runtime_error("Failed to create swap chain");
             }
             return res;

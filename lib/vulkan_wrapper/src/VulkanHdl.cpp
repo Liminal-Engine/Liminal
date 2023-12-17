@@ -11,6 +11,8 @@
 
 #include "VulkanHdl.hpp"
 
+#include "_layer/_Layer_t.hpp"
+#include "_extension/_Extensions_t.hpp"
 #include "_instance/_VkInstance_wrappers.hpp"
 #include "_surface/_VkSurfaceKHR_wrappers.hpp"
 #include "_device/_physical/_VkPhysicalDevice_wrappers.hpp"
@@ -36,48 +38,20 @@
 #include <string.h>
 #include <stdexcept>
 
-const std::vector<const char*> VALIDATION_LAYERS = {
-    "VK_LAYER_KHRONOS_validation"
-};
-
-const std::vector<const char *> DEVICE_EXTENSIONS = {
-    VK_KHR_SWAPCHAIN_EXTENSION_NAME
-};
-
 namespace vulkan_wrapper {
-
-    bool TMP_checkValidationLayerSupport() {
-        //1. List avialable validation layers
-        uint32_t layerCount = 0;
-        vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
-        std::vector<VkLayerProperties> availableLayers(layerCount);
-        vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
-        for (const char *layerName : VALIDATION_LAYERS) { //2. loop through wanted layers
-            bool found = false;
-            for (const auto &layerProperties : availableLayers) {//3. loop through available layers
-                if (strcmp(layerName, layerProperties.layerName) == 0) {
-                    found = true;
-                    break;
-                }
-            }
-            if (found == false) {
-                return false;
-            }
-        }
-        return true;
-    }
-        
+   
     VulkanHdl::VulkanHdl(void) :
-    window{window_wrapper::WindowWrapper()},
-    _TMP{TMP_checkValidationLayerSupport()},
-    _appName{"Vulkan Best Tutorial"},
+    _appName{"Liminal Engine"},
     _engineName{"Liminal Engine"},
-    _instance{_instance::_load(this->_appName, this->_engineName, this->window)},
+    _layers{_layer::_load()},    
+    window{window_wrapper::WindowWrapper(this->_appName)},
+    _extensions{_extension::_load()},
+    _instance{_instance::_load(this->_appName, this->_engineName, this->_layers, this->_extensions)},
     _surface{_surface::_load(this->_instance, this->window)},
-    _physicalDevice{_device::_physical::_pick(this->_instance, this->_surface, std::vector<const char *>())},
+    _physicalDevice{_device::_physical::_pick(this->_instance, this->_surface, this->_extensions.at("device"))},
     _swapChainSupports{_swap_chain::_getSupports(this->_physicalDevice, this->_surface)},
     _queueFamilies{_queue::_load(this->_physicalDevice, this->_surface)},
-    _logicalDevice{_device::_logical::_load(this->_physicalDevice, this->_queueFamilies._toSet(), DEVICE_EXTENSIONS)},
+    _logicalDevice{_device::_logical::_load(this->_physicalDevice, this->_queueFamilies._toSet(), this->_extensions.at("device"), this->_layers)},
     _queueHandlers{_queue::_load(this->_logicalDevice, this->_queueFamilies)},
     _swapChainImageFormat{_swap_chain::_getBestSurfaceFormat(this->_swapChainSupports._surfaceFormats)},
     _swapChainExtent{_swap_chain::_getBestExtent(this->window, this->_swapChainSupports._surfaceCapabilities)},
@@ -152,9 +126,13 @@ namespace vulkan_wrapper {
         presentInfo.pImageIndices = &imageIndex;//The one we retrieved from the call to "vkAcquireNextImageKHR"
         presentInfo.pResults = nullptr; //Optional : allows you to specify an array of VkResult values to check for every individual swap chain if presentation was successful
         vkQueuePresentKHR(this->_queueHandlers["presentation"], &presentInfo);
-        }
+    }
 
-        void VulkanHdl::_recordCommandBuffer(const VkCommandBuffer &commandBuffer, const uint32_t &image_index) {
+    void VulkanHdl::waitIdle(void) const {
+        vkDeviceWaitIdle(this->_logicalDevice);
+    }
+
+    void VulkanHdl::_recordCommandBuffer(const VkCommandBuffer &commandBuffer, const uint32_t &image_index) {
         VkCommandBufferBeginInfo beginInfo{};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
         beginInfo.flags = 0; //Optional

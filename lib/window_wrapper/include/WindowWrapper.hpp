@@ -3,12 +3,17 @@
 
 #include <vulkan/vulkan.h>
 #include <GLFW/glfw3.h>
+#include <vector>
+#include <string>
 
 namespace window_wrapper {
+
+    std::vector<const char *> getRequiredVulkanExtensions(void);
+
     class WindowWrapper {
 
         public:
-            WindowWrapper(void);
+            WindowWrapper(const std::string &window_name);
             ~WindowWrapper(void);
 
             GLFWwindow *window;
@@ -26,14 +31,6 @@ namespace window_wrapper {
                 VkSurfaceKHR *p_surface, 
                 VkAllocationCallbacks *p_allocator = nullptr
             ) const;
-
-            /**
-             * @brief Get the Required Extensions object
-             * 
-             * @param n_extentsions (uint32_t *)
-             * @return char** 
-             */
-            const char **getRequiredExtensions(uint32_t __restrict__ *n_extensions) const;
 
             /**
              * @brief Get the Frame Buffer Size object

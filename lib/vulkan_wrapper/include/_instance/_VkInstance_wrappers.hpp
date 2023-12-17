@@ -14,6 +14,9 @@
 
 #include "WindowWrapper.hpp"
 
+#include "_layer/_Layer_t.hpp"
+#include "_extension/_Extensions_t.hpp"
+
 #include <vulkan/vulkan.h>
 #include <string>
 #include <vector>
@@ -37,7 +40,8 @@ namespace vulkan_wrapper {
         VkInstance _load(
             const std::string &app_name,
             const std::string &engine_name,
-            const window_wrapper::WindowWrapper &window
+            const _layer::_Layers_t &layers,
+            const _extension::_Extensions_t &extensions
         );
 
         /**

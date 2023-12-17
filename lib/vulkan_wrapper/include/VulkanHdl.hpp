@@ -14,6 +14,8 @@
 
 #include "_queue/_QueueFamilies.hpp"
 #include "_swap_chain/_Supports.hpp"
+#include "_layer/_Layer_t.hpp"
+#include "_extension/_Extensions_t.hpp"
 
 #include "WindowWrapper.hpp"
 
@@ -21,16 +23,7 @@
 
 #include <string>
 #include <stdint.h>
-
-// const std::vector<const char*> VALIDATION_LAYERS = {
-//     "VK_LAYER_KHRONOS_validation"
-// };
-
-// #ifdef NDEBUG    
-//     const bool enableValidationLayers = false;
-// #else
-//     const bool enableValidationLayers = true;
-// #endif
+#include <vector>
 
 namespace vulkan_wrapper {
 
@@ -39,9 +32,13 @@ namespace vulkan_wrapper {
      * 
      */
 
-    bool TMP_checkValidationLayerSupport();
-
     class VulkanHdl {
+
+        private:
+            const std::string _appName; ///< Name of the application
+            const std::string _engineName; ///< Name of the engine
+            _layer::_Layers_t _layers; ///< Vulkan optional additional layers
+
         public:
             /**
              * @brief Default constructor
@@ -49,14 +46,13 @@ namespace vulkan_wrapper {
             VulkanHdl(void);
             ~VulkanHdl();
 
-
             void drawFrame(void);
+            void waitIdle(void) const;
+
             window_wrapper::WindowWrapper window; ///< The window related to the vulkan instace. This will be taken out later in a separate lib
 
         private:
-            bool _TMP;
-            const std::string _appName; ///< Name of the application
-            const std::string _engineName; ///< Name of the engine
+            _extension::_Extensions_t _extensions; ///< Vulkan compatible required extensions for the app to work
             VkInstance _instance; ///< The Vulkan instance
             VkSurfaceKHR _surface; ///< A surface is an interface between Vulkan and the windowing system
             VkPhysicalDevice _physicalDevice; ///< The choosen physical device

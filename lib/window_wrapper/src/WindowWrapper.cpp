@@ -1,6 +1,7 @@
 #include "WindowWrapper.hpp"
 
 #include <stdexcept>
+#include <stdint.h>
 
 static GLFWwindow *_load_window(const std::string &app_name) {
     glfwInit();
@@ -16,8 +17,8 @@ static GLFWwindow *_load_window(const std::string &app_name) {
 }
 
 namespace window_wrapper {
-    WindowWrapper::WindowWrapper(void):
-    window(_load_window("Liminal Engine"))
+    WindowWrapper::WindowWrapper(const std::string &window_name):
+    window(_load_window(window_name))
     {        
 
     }
@@ -33,15 +34,6 @@ namespace window_wrapper {
         VkAllocationCallbacks *p_allocator
     ) const {
         return glfwCreateWindowSurface(instance, this->window, p_allocator, p_surface);
-    }
-
-    const char **WindowWrapper::getRequiredExtensions(uint32_t __restrict__ *n_extensions) const {
-        const char **res = glfwGetRequiredInstanceExtensions(n_extensions);
-
-        if (n_extensions == 0) {
-            throw std::runtime_error("No GLFW extension found"); // Should I really throw here ?
-        }
-        return res;
     }
 
     VkExtent2D WindowWrapper::getFrameBufferSize(void) const {
@@ -61,6 +53,13 @@ namespace window_wrapper {
 
     void WindowWrapper::pollEvents(void) const {
         glfwPollEvents();
+    }
+
+    std::vector<const char *> getRequiredVulkanExtensions(void) {
+        uint32_t len = 0;
+        const char **res_c = glfwGetRequiredInstanceExtensions(&len);
+
+        return std::vector<const char *>(res_c, res_c + len);
     }
 }
 

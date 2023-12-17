@@ -35,11 +35,12 @@ namespace vulkan_wrapper {
                     return res;
                 }
 
-            VkDevice _load(
-                const VkPhysicalDevice &physical_device,
-                const std::set<_queue::_QueueFamilyIndex_t> &families_indices,
-                const std::vector<const char *> &device_extensions
-            ) {
+        VkDevice _load(
+            const VkPhysicalDevice &physical_device,
+            const std::set<_queue::_QueueFamilyIndex_t> &families_indices,
+            const _extension::_Extensions_group_t &device_extensions,
+            const _layer::_Layers_t &layers
+        ) {
                 // 1. Get the createInfo struct for all logical device queue families
                 std::vector<VkDeviceQueueCreateInfo> queueCreateInfos = __getQueueCreateInfos(families_indices);
                 // 2. Get the features we want to enable for the device
@@ -52,6 +53,8 @@ namespace vulkan_wrapper {
                 createInfo.enabledExtensionCount = static_cast<uint32_t>(device_extensions.size());
                 createInfo.ppEnabledExtensionNames = device_extensions.data();
                 createInfo.pEnabledFeatures = &deviceFeatures;
+                createInfo.enabledLayerCount = static_cast<uint32_t>(layers.size());
+                createInfo.ppEnabledLayerNames = layers.data();
                 createInfo.pNext = nullptr;
 
                 VkDevice res{};

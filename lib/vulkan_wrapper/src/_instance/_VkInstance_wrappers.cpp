@@ -10,6 +10,7 @@
 */
 
 #include "_instance/_VkInstance_wrappers.hpp"
+
 #include <stdexcept>
 
 
@@ -22,29 +23,6 @@ const std::vector<const char*> VALIDATION_LAYERS = {
 
 namespace vulkan_wrapper {
     namespace _instance {
-
-        /**
-         * @brief Loadqs a VkInstanceCreateInfo
-         * 
-         * @param app_info (VkApplicationInfo *) - A pointer to a VkApplicationInfo to
-         * integrate in the final VkInstanceCreateInfo
-         * @return The created VkInstanceCreateInfo 
-        */
-        static VkInstanceCreateInfo __loadCreateInfo(VkApplicationInfo *app_info, const window_wrapper::WindowWrapper &window) {
-            VkInstanceCreateInfo create_info{};
-            create_info.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-            create_info.pApplicationInfo = app_info;
-            // 2.1 Get extensions required by GLFW.
-            uint32_t n_extensions = 0;
-            const char **glfwExtensions = window.getRequiredExtensions(&n_extensions);
-            create_info.enabledExtensionCount = n_extensions;
-            create_info.ppEnabledExtensionNames = glfwExtensions;
-            /**
-             * TODO : ENABLE VALIDATION LAYERS IN DEBUG MODE
-            */
-            create_info.enabledLayerCount = 0;
-            return create_info;
-        }
 
         /**
          * @brief Loads a VkApplicationInfo
@@ -65,27 +43,43 @@ namespace vulkan_wrapper {
             res.pNext = nullptr;
             return res;
         }
+
+        /**
+         * @brief Loadqs a VkInstanceCreateInfo
+         * 
+         * @param app_info (VkApplicationInfo *) - A pointer to a VkApplicationInfo to
+         * integrate in the final VkInstanceCreateInfo
+         * @return The created VkInstanceCreateInfo 
+        */
+        static VkInstanceCreateInfo __loadCreateInfo(
+            VkApplicationInfo *app_info,
+            const _layer::_Layers_t &layers,
+            const _extension::_Extensions_t &extensions
+        ) {
+            VkInstanceCreateInfo create_info{};
+            create_info.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+            create_info.pApplicationInfo = app_info;
+            // 2.1 Get extensions required by GLFW.
+            create_info.enabledExtensionCount = static_cast<uint32_t>(extensions.at("window").size()); //TODO : see why only window and try with all extensions
+            create_info.ppEnabledExtensionNames = extensions.at("window").data();
+            create_info.enabledLayerCount = static_cast<uint32_t>(layers.size());
+            create_info.ppEnabledLayerNames = layers.data();
+            return create_info;
+        }
         
         VkInstance _load(
             const std::string &app_name,
             const std::string &engine_name,
-            const window_wrapper::WindowWrapper &window
+            const _layer::_Layers_t &layers,
+            const _extension::_Extensions_t &extensions
         ) {
-            if (app_name == "" || engine_name == "")
+            if (app_name == "" || engine_name == "") {
                 throw std::runtime_error("Parameter errors while creating instance");
-
+            }
             // 1. Create appInfo : Optional but provides useful info to the driver in order to optimize.
             VkApplicationInfo app_info = __loadAppInfo(app_name, engine_name);
-
             // 2. Optional. Tells Vulan driver which extensions and validation layers we want to use.
-            VkInstanceCreateInfo create_info = __loadCreateInfo(&app_info, window);
-
-            if (enableValidationLayers) {
-                create_info.enabledLayerCount = static_cast<uint32_t>(VALIDATION_LAYERS.size());
-                create_info.ppEnabledLayerNames = VALIDATION_LAYERS.data();
-            } else {
-                create_info.enabledLayerCount = 0;
-            }
+            VkInstanceCreateInfo create_info = __loadCreateInfo(&app_info, layers, extensions);
             // 3. TODO : add validation layers in DEBUG mode ONLY
             VkInstance res;
             if (vkCreateInstance(&create_info, nullptr, &res) != VK_SUCCESS) {

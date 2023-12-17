@@ -7,4 +7,5 @@ int main() {
         handler.window.pollEvents();
         handler.drawFrame();
     }
+    handler.waitIdle();
 }
