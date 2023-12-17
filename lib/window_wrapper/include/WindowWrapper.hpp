@@ -43,6 +43,16 @@ namespace window_wrapper {
             */
             VkExtent2D getFrameBufferSize(void) const;
 
+            /**
+             * @brief Tells if the window should close
+             * 
+             * @return true 
+             * @return false 
+             */ 
+            bool shouldClose(void) const;
+
+            void pollEvents(void) const;
+
         // private:
     };
 }

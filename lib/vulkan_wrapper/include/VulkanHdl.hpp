@@ -51,12 +51,12 @@ namespace vulkan_wrapper {
 
 
             void drawFrame(void);
+            window_wrapper::WindowWrapper window; ///< The window related to the vulkan instace. This will be taken out later in a separate lib
 
         private:
             bool _TMP;
             const std::string _appName; ///< Name of the application
             const std::string _engineName; ///< Name of the engine
-            window_wrapper::WindowWrapper _window; ///< The window related to the vulkan instace. This will be taken out later in a separate lib
             VkInstance _instance; ///< The Vulkan instance
             VkSurfaceKHR _surface; ///< A surface is an interface between Vulkan and the windowing system
             VkPhysicalDevice _physicalDevice; ///< The choosen physical device

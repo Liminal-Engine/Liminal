@@ -54,5 +54,13 @@ namespace window_wrapper {
         res.height = static_cast<uint32_t>(height);
         return res;
     }
+
+    bool WindowWrapper::shouldClose(void) const {
+        return glfwWindowShouldClose(this->window);
+    }
+
+    void WindowWrapper::pollEvents(void) const {
+        glfwPollEvents();
+    }
 }
 
