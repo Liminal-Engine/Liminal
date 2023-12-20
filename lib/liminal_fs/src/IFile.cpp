@@ -1,0 +1,8 @@
+#ifndef LIMINAL_LIB_LIMINAL_FS_IFILE_HPP
+#define LIMINAL_LIB_LIMINAL_FS_IFILE_HPP
+
+namespace liminal_fs {
+    
+}
+
+#endif // LIMINAL_LIB_LIMINAL_FS_IFILE_HPP

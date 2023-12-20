@@ -30,7 +30,7 @@ namespace vulkan_wrapper {
     /**
      * @brief Handler for the Vulkan instance of the applcation
      * 
-     */
+    */
 
     class VulkanHdl {
 

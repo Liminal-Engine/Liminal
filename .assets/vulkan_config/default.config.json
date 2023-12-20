@@ -1,0 +1,10 @@
+{
+    "applicationName": "My Vulkan App",
+    "applicationVersion": "1.0.0",
+    "engineName": "Vulkan Engine",
+    "engineVersion": "1.0.0",
+    "validationLayers": [],
+    "requiredExtensions": [],
+    "deviceExtensions": [],
+    "enableValidationLayers": false
+}
