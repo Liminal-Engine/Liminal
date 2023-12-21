@@ -23,9 +23,10 @@ namespace liminal_fs {
         
         /**
          * @brief Base class of all *File classes of liminal fs lib
+         * This class must be defined and declared in a header file since it is a template class
          * 
          */
-        template <typename _StreamType>
+        template <typename _StreamType> //must be a std::stream
         class _File {
             public:
                 Status open(void) {
@@ -57,7 +58,7 @@ namespace liminal_fs {
                 }
 
                 std::string get_extension(void) const {
-                    return this->_extension;
+                    return this->_extension; //TODO : check if has extension first
                 }
 
             protected:
