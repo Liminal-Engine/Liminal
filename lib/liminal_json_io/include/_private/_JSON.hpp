@@ -14,6 +14,8 @@
 
 #include "_lexing/_lexing.hpp"
 
+#include "path/path.hpp"
+
 #include <string>
 
 namespace liminal_json_io {
@@ -23,13 +25,14 @@ namespace liminal_json_io {
             public:
                 _JSON(const std::string &path);
 
-                static void parse(void);
+                void parse(void);
 
-            protected:                
+            protected:
+                liminal_fs::path::path_t _path;
+                
 
             private:
-                std::string __load_json_string(const std::string &path);
-                const _lexing::_tokens_t _tokens;
+                std::string __getFileContent(const std::string &path);
                 
         };
     } // namespace _private

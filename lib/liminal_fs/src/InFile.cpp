@@ -20,7 +20,6 @@ namespace liminal_fs {
                 std::istreambuf_iterator<char>(this->_stream),
                 std::istreambuf_iterator<char>()
             );
-            std::cout << this->_buffer << std::endl;
             this->_stream.seekg(0, std::ios::beg);
             return Status::OK;
         }

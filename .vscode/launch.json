@@ -5,12 +5,13 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Debug Liminal Engine",
-            "type": "cppdbg",
-            "request": "launch",
-            "args": [],
-            "stopAtEntry": false,
-            "externalConsole": false,
+          "name": "Debug Liminal Engine",
+          "type": "cppdbg",
+          "request": "launch",
+          "args": [],
+          "stopAtEntry": false,
+          "internalConsoleOptions": "neverOpen",
+          "externalConsole": false,
             "cwd": "${workspaceFolder}",
             "program": "${workspaceFolder}/build/Liminal",
             "MIMode": "gdb",
@@ -21,7 +22,7 @@
                 "text": "-enable-pretty-printing",
                 "ignoreFailures": true
               }
-            ]
+            ],
           }
     ]
 }

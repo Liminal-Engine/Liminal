@@ -2,27 +2,37 @@
 #include "constants.hpp"
 
 #include "InFile.hpp"
-#include "path/path.hpp"
 
 #include <stdexcept>
+
+#include <iostream>
 
 namespace liminal_json_io {
     namespace _private {
 
         _JSON::_JSON(const std::string &path) :
-        _tokens{_lexing::_process_lexing(this->__load_json_string(path))}
+        _path(path)
         {
 
         }
 
+        void _JSON::parse(void) {
+            const _lexing::_tokens_t tokens = _lexing::_processLexing(this->__getFileContent(this->_path));
+            std::cout << "Tokens = " << std::endl;
+            for (const _lexing::_token_t &token : tokens) {
+                std::cout << token << std::endl;
+            }
+        }
+
         // Private :
-        std::string _JSON::__load_json_string(const std::string &path) {
+        std::string _JSON::__getFileContent(const std::string &path) {
             std::string extension{""};
 
             if (liminal_fs::path::get_file_extension(extension, path) != liminal_fs::Status::OK) {
-                throw std::runtime_error("Failed to laod JSON file");
+                throw std::runtime_error("Failed to load JSON file : " + path);
             }
-            if (extension != constants::JSON_FILE_EXTENSION) {
+            std::cout << extension << std::endl;
+            if (extension != std::string(std::string(".") + std::string(constants::JSON_FILE_EXTENSION))) {
                 throw std::runtime_error("Erorr : file is not a JSON");
             }
             liminal_fs::InFile jsonFile(path);
