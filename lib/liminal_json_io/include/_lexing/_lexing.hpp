@@ -11,14 +11,22 @@
 #ifndef LIMINAL_LIB_LIMINAL_JSON_IO__LEXING__LEXING_HPP_
 #define LIMINAL_LIB_LIMINAL_JSON_IO__LEXING__LEXING_HPP_
 
+#include "_lexing/_Token.hpp"
+
 #include <string>
 #include <vector>
+#include <memory>
 
 namespace liminal_json_io {
     namespace _lexing {
 
-        typedef std::string _token_t;
-        typedef std::vector<_token_t> _tokens_t;
+        typedef std::string untyped_token_t;
+        typedef std::vector<std::unique_ptr<_lexing::_Token>> _tokens_t;
+
+        struct _LexingIndex {
+            std::size_t nChar = 0;
+            std::size_t nLine = 0;
+        };
 
         _tokens_t _processLexing(const std::string &json_as_string);
         

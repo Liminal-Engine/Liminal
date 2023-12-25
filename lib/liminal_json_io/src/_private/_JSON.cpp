@@ -19,8 +19,8 @@ namespace liminal_json_io {
         void _JSON::parse(void) {
             const _lexing::_tokens_t tokens = _lexing::_processLexing(this->__getFileContent(this->_path));
             std::cout << "Tokens = " << std::endl;
-            for (const _lexing::_token_t &token : tokens) {
-                std::cout << token << std::endl;
+            for (const auto &token : tokens) {
+                std::cout << "Token type = " << token->getType() << std::endl;
             }
         }
 

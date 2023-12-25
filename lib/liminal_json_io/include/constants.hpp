@@ -25,7 +25,7 @@ namespace liminal_json_io {
         constexpr char JSON_LEFT_BRACE          =   '{';
         constexpr char JSON_RIGHT_BRACE         =   '}';
         constexpr char JSON_QUOTE               =   '\"'; //TODO : does JSON accecpt also single quotes '\'' ?
-        constexpr char JSON_WHITE_SPACE[]       =   {' ', '\t', '\b', '\n', '\r'};
+        constexpr char JSON_WHITE_SPACES[]      =   {' ', '\t', '\b', '\n', '\r'};
         constexpr char JSON_TOKENS[]            =   {
                                                         JSON_COMMA,
                                                         JSON_COLON,
