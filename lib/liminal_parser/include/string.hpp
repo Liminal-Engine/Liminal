@@ -27,10 +27,13 @@ namespace liminal_parser {
             const bool &throw_error = false
         );
 
+        bool contains(const std::string &str, const char &c);
+        bool contains(const std::string &str, const std::string &subStr);
 
         inline bool isOnlyChar(const std::string &str, const char &c);
         inline bool isNonNegativeInteger(const std::string &str);
         intmax_t toIntMax(const std::string &str, const bool &throw_error = false);
+        long double toLongDouble(const std::string &str, const bool &throwError = false);
         
         std::size_t getOccurences(const std::string &str, const char &c);
         std::size_t getOccurences(const std::string &str, const std::string &occurence);

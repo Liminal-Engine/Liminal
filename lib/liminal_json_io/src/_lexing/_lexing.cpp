@@ -87,14 +87,12 @@ namespace liminal_json_io {
         ) {
             std::size_t addLine{0};
     
-            if (newToken.has_value()) {
-                addLine = liminal_parser::string::getOccurences(newToken.value(), '\n');
-                index.nLine += addLine;
-                if (addLine > 0) {
-                    index.nChar = newToken.value().length() - liminal_parser::string::lastIndexOf(newToken.value(), '\n');
-                } else {
-                    index.nChar += newToken.value().length();
-                }
+            addLine = liminal_parser::string::getOccurences(newToken.value(), '\n');
+            index.nLine += addLine;
+            if (addLine > 0) {
+                index.nChar = newToken.value().length() - liminal_parser::string::lastIndexOf(newToken.value(), '\n');
+            } else {
+                index.nChar += newToken.value().length();
             }
         }
 
@@ -112,7 +110,12 @@ namespace liminal_json_io {
                     _json_content = _json_content.substr(tmp_token.value().length() + 2); // + 2 for both commas
                     continue;
                 } else if ( (tmp_token = __tryLexingNumber(_json_content)).has_value() ) {
-                    res.push_back( _createToken( liminal_parser::string::toIntMax(tmp_token.value()) ) );
+                    res.push_back( 
+                        _createToken(
+                            liminal_parser::string::contains(tmp_token.value(), '.') ?
+                            liminal_parser::string::toLongDouble(tmp_token.value()) :
+                            liminal_parser::string::toIntMax(tmp_token.value())
+                        ));
                     __updateIndex(index, tmp_token);
                     _json_content = _json_content.substr(tmp_token.value().length());
                     continue;

@@ -1,3 +1,14 @@
+/**
+ * @file string.cpp
+ * @author DE VITA Matteo (matteo.devita7@gmail.com)
+ * @brief 
+ * @version 0.1
+ * @date 2023-12-25
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+*/
+
 #include "string.hpp"
 
 #include <stdexcept>
@@ -42,6 +53,14 @@ namespace liminal_parser {
             return false;
         }
 
+        bool contains(const std::string &str, const char &c) {
+            return str.find(c) != std::string::npos;
+        }
+
+        bool contains(const std::string &str, const std::string &subStr) {
+            return str.find(subStr) != std::string::npos;
+        }
+
         inline bool isOnlyChar(const std::string &str, const char &c) {
             return std::all_of(str.begin(), str.end(), [&c](char ch) { return ch == c; });
         }
@@ -67,9 +86,25 @@ namespace liminal_parser {
                             << "; pos: " << pos << '\n';
                     throw std::runtime_error("");
                 }
-            } else {
-                return (intmax_t)std::stol(str);
             }
+            return (intmax_t)std::stol(str);
+        }
+
+        long double toLongDouble(const std::string &str, const bool &throwError) {
+            if (isOnlyChar(str, '0')) return (long double)0;
+
+            if (throwError) {
+                try {
+                    return std::stold(str);
+                } catch (std::invalid_argument const& ex) {
+                    std::cout << "std::invalid_argument::what(): " << ex.what() << '\n';
+                    throw std::runtime_error("");
+                } catch (std::out_of_range const& ex) {
+                    std::cout << "std::out_of_range::what(): " << ex.what() << '\n';
+                    throw std::runtime_error("");
+                }
+            }
+            return std::stold(str);
         }
 
         std::size_t getOccurences(const std::string &str, const char &c) {
