@@ -21,7 +21,7 @@ namespace liminal_json_io {
     namespace _lexing {
 
         typedef std::string untyped_token_t;
-        typedef std::vector<std::unique_ptr<_lexing::_Token>> _tokens_t;
+        typedef std::vector<std::shared_ptr<_lexing::_Token>> _tokens_t;
 
         struct _LexingIndex {
             std::size_t nChar = 0;

@@ -32,6 +32,9 @@ namespace liminal_json_io {
                 
 
             private:
+                _lexing::_tokens_t __processParsing(_lexing::_tokens_t &tokens, const bool &isRoot = false);
+                _lexing::_tokens_t __parseObject(_lexing::_tokens_t &tokens);
+                _lexing::_tokens_t __parseArray(_lexing::_tokens_t &tokens);
                 std::string __getFileContent(const std::string &path);
                 
         };
