@@ -1,6 +1,6 @@
 #include "VulkanHdl.hpp"
 #include "InFile.hpp"
-#include "InJSON.hpp"
+#include "InJson.hpp"
 
 #include <iostream>
 #include <typeinfo>
@@ -14,12 +14,8 @@ int main() {
     file.close();
     std::cout << file.get_content() << std::endl;
     std::cout << "extension  = " << file.get_extension() << " has extension = " << file.has_extension() << std::endl;
-
-    int status;
-    std::cout << "name = " << std::string(abi::__cxa_demangle(typeid(handler).name(), 0, 0, &status)) << std::endl;
-    
-    liminal_json_io::INJSON jsonparser(std::string("./tests/assets/basicNoErrors.json"));
-    jsonparser.parse();
+    liminal_json_io::InJson json;
+    json.parse("./tests/assets/basicNoErrors.json");
 
 
     while (handler.window.shouldClose() == false) {

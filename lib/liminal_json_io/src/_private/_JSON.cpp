@@ -1,72 +1,37 @@
+/**
+ * @file _JSON.cpp
+ * @author DE VITA Matteo (matteo.devita7@gmail.com)
+ * @brief 
+ * @version 0.1
+ * @date 2023-12-26
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+*/
+
 #include "_private/_JSON.hpp"
-#include "constants.hpp"
-#include "types.hpp"
+#include "_private/_syntax.hpp"
+#include "_private/_lexing/_types.hpp"
+#include "_private/_lexing/_lexing.hpp"
 
 #include "InFile.hpp"
-
-#include <stdexcept>
 
 #include <iostream>
 
 namespace liminal_json_io {
     namespace _private {
 
-        _JSON::_JSON(const std::string &path) :
-        _path(path)
-        {
 
-        }
-
-        void _JSON::parse(void) {
-            _lexing::_tokens_t tokens = _lexing::_processLexing(this->__getFileContent(this->_path));
-            // Once we have the list of tokens, the goal of the parsing is to separate each "key"/"value" pairs and wheter they are objects and/or arrays
-            this->__processParsing(tokens, true);
-        }
-
-        // Private :
-        _lexing::_tokens_t _JSON::__processParsing(_lexing::_tokens_t &tokens, const bool &isRoot) {
-            
-            auto currentToken = _lexing::getStringToken(tokens.at(1))->getValue();
-            std::cout << currentToken << std::endl;
-            exit(0);
-            // if (isRoot and currentToken->getType() == types::TOKEN and currentToken->get().getValue())
-
-
-            return _lexing::_tokens_t();
-        }
-
-        _lexing::_tokens_t __parseObject(_lexing::_tokens_t &tokens) {
-            (void)tokens;
-            return _lexing::_tokens_t();
-        }
-
-        _lexing::_tokens_t __parseArray(_lexing::_tokens_t &tokens) {
-            (void)tokens;
-            return _lexing::_tokens_t();
-        }
-
-        std::string _JSON::__getFileContent(const std::string &path) {
-            std::string extension{""};
-
-            if (liminal_fs::path::get_file_extension(extension, path) != liminal_fs::Status::OK) {
-                throw std::runtime_error("Failed to load JSON file : " + path);
+        // Public :
+        Status _JSON::parse(const std::string &path) {
+            _lexing::_types::_Tokens_t tokens = _lexing::_processLexing(path);
+            std::cout << "TOKENS = " << '\n';
+            for (const _lexing::_types::_Token_s &token : tokens) {
+                std::cout << "value = " << token.strValue << " type = " << _lexing::_types::_convertTokenTypeToString(token.type) << '\n';
             }
-            std::cout << extension << std::endl;
-            if (extension != std::string(std::string(".") + std::string(constants::JSON_FILE_EXTENSION))) {
-                throw std::runtime_error("Error : file is not a JSON");
-            }
-            liminal_fs::InFile jsonFile(path);
-            if (jsonFile.open() != liminal_fs::Status::OK) {
-                throw std::runtime_error("Failed to open JSON file : " + path);
-            }
-            if (jsonFile.read() != liminal_fs::Status::OK) {
-                throw std::runtime_error("Failed to read JSON file : " + path);
-            }
-            if (jsonFile.close() != liminal_fs::Status::OK) {
-                throw std::runtime_error("Failed to close JSON file : " + path);
-            }
-            return jsonFile.get_content();
+            std::cout << std::endl;
         }
+
 
     } // namespace _private
-} // liminal_json_io
+} // namespace liminal_json_io
