@@ -5,8 +5,25 @@ namespace liminal_json_io {
         namespace _lexing {
             namespace _types {
 
-                std::string _convertTokenTypeToString(const _TokenTypes_e_c &tokenType) {
-                    switch (tokenType) {
+                bool _Token_s::isEqual(const char &value) const {
+                    return this->strValue == std::string{value};
+                }
+
+                bool _Token_s::isEqual(const char value[]) const {
+                    return this->strValue.compare(value) == 0;
+                }
+
+                bool _Token_s::isEqual(const std::string &value) const {
+                    return this->strValue == value;
+                }
+
+
+                std::string _Token_s::getValueAsStr(void) const {
+                    return this->strValue;
+                }
+
+                std::string _Token_s::getTypeAsStr(void) const {
+                    switch (this->type) {
                         case _TokenTypes_e_c::STRING:
                             return "string";
                         case _TokenTypes_e_c::INT_NUM:
@@ -23,6 +40,7 @@ namespace liminal_json_io {
                             return "UNKNOWN";
                     }
                 }
+
 
                 const std::string _Index::getPosDescription(void) const {
                     return std::to_string(this->line) + ":" + std::to_string(this->lineOffset);

@@ -1,0 +1,44 @@
+{
+    "name": "John Doe",
+    "age": 30,
+    "email": "john.doe@example.com",
+    "address": {
+      "street": "123 Main St",
+      "city": "Anytown",
+      "country": "USA"
+    },
+    "phone": "+1 123-456-7890",
+    "interests": ["reading", "traveling", "coding"],
+    "isStudent": false,
+    "grades": {
+      "math": 85,
+      "english": 92,
+      "history": 78
+    },
+    "nestedData": {
+      "level1": {
+        "level2": {
+          "level3": {
+            "level4": {
+              "level5": {
+                "level6": {
+                  "level7": {
+                    "level8": {
+                      "level9": {
+                        "level10": {
+                          "randomKey1": "Random Value 1",
+                          "randomKey2": 42,
+                          "randomKey3": true
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  

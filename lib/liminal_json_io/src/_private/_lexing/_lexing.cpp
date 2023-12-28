@@ -50,7 +50,6 @@ namespace liminal_json_io {
                         }
                         // Reset tmp optional value
                         tmpValue = std::optional<std::string>{};
-
                         char currentChar = jsonIndices.at(0).value;
                         if (std::find( std::begin(_syntax::_WHITE_SPACES_C_A), std::end(_syntax::_WHITE_SPACES_C_A), currentChar ) != std::end(_syntax::_WHITE_SPACES_C_A)) {
                             jsonIndices.erase(jsonIndices.begin());

@@ -13,6 +13,8 @@
 #include "_private/_syntax.hpp"
 #include "_private/_lexing/_types.hpp"
 #include "_private/_lexing/_lexing.hpp"
+#include "_private/_parsing/_parsing.hpp"
+#include "types.hpp"
 
 #include "InFile.hpp"
 
@@ -21,17 +23,12 @@
 namespace liminal_json_io {
     namespace _private {
 
-
         // Public :
         Status _JSON::parse(const std::string &path) {
             _lexing::_types::_Tokens_t tokens = _lexing::_processLexing(path);
-            std::cout << "TOKENS = " << '\n';
-            for (const _lexing::_types::_Token_s &token : tokens) {
-                std::cout << "value = " << token.strValue << " type = " << _lexing::_types::_convertTokenTypeToString(token.type) << '\n';
-            }
-            std::cout << std::endl;
+            std::size_t index{0};
+            types::JsonValue jsonValue = _parsing::_processParsing(tokens.at(0), tokens, index);
         }
-
 
     } // namespace _private
 } // namespace liminal_json_io

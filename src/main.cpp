@@ -15,8 +15,10 @@ int main() {
     std::cout << file.get_content() << std::endl;
     std::cout << "extension  = " << file.get_extension() << " has extension = " << file.has_extension() << std::endl;
     liminal_json_io::InJson json;
-    json.parse("./tests/assets/basicNoErrors.json");
 
+    std::cout << "before parsing" << std::endl;
+    json.parse("./tests/assets/mediumSized.json");
+    std::cout << "after parsing" << std::endl;
 
     while (handler.window.shouldClose() == false) {
         handler.window.pollEvents();

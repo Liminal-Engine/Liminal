@@ -1,17 +1,14 @@
 {
     "name": "John Doe",
+    "test": {
+        "test1": "test2"
+    },
+    "anotherTest": [
+        "yes",
+        "no",
+        "maybe"
+    ],
     "age": 30,
     "isEmployed": true,
-    "address": {
-        "story": {
-            "left": 15,
-            "right": 678.5
-        },
-        "street": "123 Main St",
-        "city": "Anytown",
-        "state": "Anystate",
-        "postalCode": "12345"
-    },
-    "hobbies": ["reading", "gaming", "hiking"],
     "happy": "yes"
 }

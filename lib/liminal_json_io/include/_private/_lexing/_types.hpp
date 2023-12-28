@@ -30,16 +30,19 @@ namespace liminal_json_io {
                     SYNTAX
                 };
 
-                std::string _convertTokenTypeToString(const _TokenTypes_e_c &tokenType);
-
-                struct _Token_s {
+                struct _Token_s {//TODO: private and public members
                     std::string strValue;
                     _TokenTypes_e_c type;
+                    bool isEqual(const char &value) const;//TODO: rewrite '==' operator instead
+                    bool isEqual(const char value[]) const;
+                    bool isEqual(const std::string &value) const;
+                    std::string getTypeAsStr(void) const;
+                    std::string getValueAsStr(void) const;
                 };
 
                 using _Tokens_t = std::vector<_Token_s>;
 
-                struct _Index {
+                struct _Index {//TODO: private and public members
                     char value = 0;
                     std::size_t line = 1;
                     std::size_t lineOffset = 0;
