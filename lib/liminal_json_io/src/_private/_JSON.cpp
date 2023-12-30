@@ -14,7 +14,7 @@
 #include "_private/_lexing/_types.hpp"
 #include "_private/_lexing/_lexing.hpp"
 #include "_private/_parsing/_parsing.hpp"
-#include "types.hpp"
+#include "types.hpp"//TODO : remove this include ?
 
 #include "InFile.hpp"
 

@@ -13,7 +13,7 @@
 #define LIMINAL_LIB_LIMINAL_JSON_IO__PRIVATE__JSON_HPP_
 
 #include "Status.hpp"
-#include "types.hpp"
+#include "_private/_JsonValue.hpp"
 
 #include "string.hpp"
 
@@ -32,11 +32,8 @@ namespace liminal_json_io {
                 
 
             protected:
-                std::optional<types::JsonValue>  _rootValue;
+                std::optional<_JsonValue>  _rootValue;
 
-            private:
-                types::JsonValue __getObjectValue(const types::JsonValue &objectAsJsonValue, const std::string &key) const;
-                types::JsonValue __getArrayValue(const types::JsonValue &arrayAsJsonValue, const std::string &indexAsString) const;
         };
 
     } // namespace _private
