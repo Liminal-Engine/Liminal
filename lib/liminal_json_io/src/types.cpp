@@ -76,6 +76,14 @@ namespace liminal_json_io {
 
         ValueTypes JsonValue::getType(void) const { return this->_type; }
 
+        JsonValue &JsonValue::operator=(const JsonValue &other) {
+            if (this != &other) {
+                this->_type = other._type;
+                this->_value = other._value;
+            }
+            return *this;
+        }
+
         // Private :
         ValueTypes JsonValue::_tokenTypeToValueType(const _private::_lexing::_types::_TokenTypes_e_c &tokenType) const {
             switch (tokenType) {
@@ -113,6 +121,12 @@ namespace liminal_json_io {
             }
         }
 
+        JsonValue::JsonValue(const types::ValueTypes &type, const types::AnyType_t &value) :
+        _type{type},
+        _value{value}
+        {
+
+        }
 
     } // namespace types
 } // namespace liminal_json_io

@@ -5,6 +5,7 @@
 #include <iostream>
 #include <typeinfo>
 #include <cxxabi.h>
+#include <string>
 
 int main() {
     vulkan_wrapper::VulkanHdl handler;
@@ -16,9 +17,9 @@ int main() {
     std::cout << "extension  = " << file.get_extension() << " has extension = " << file.has_extension() << std::endl;
     liminal_json_io::InJson json;
 
-    std::cout << "before parsing" << std::endl;
-    json.parse("./tests/assets/mediumSized.json");
-    std::cout << "after parsing" << std::endl;
+    json.parse("./tests/assets/bitNestedNoErrors.json");
+
+    std::cout << json.get<liminal_json_io::types::FloatNum_t>("address.story.right").value() << std::endl;
 
     while (handler.window.shouldClose() == false) {
         handler.window.pollEvents();

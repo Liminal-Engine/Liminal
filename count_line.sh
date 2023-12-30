@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Find all .cpp, .hpp, .c, .h files in the current directory and its subdirectories
-files=$(find . -type f \( -name "*.cpp" -o -name "*.hpp" -o -name "*.c" -o -name "*.h" \))
+# Find all .cpp, .hpp, .c, .h files in the current directory and its subdirectories except build directory
+files=$(find . -type d -name "build" -prune -o -type f \( -name "*.cpp" -o -name "*.hpp" -o -name "*.c" -o -name "*.h" \) -print)
 
 total_lines=0
 

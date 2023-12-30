@@ -32,8 +32,8 @@ namespace liminal_json_io {
 
             types::JsonValue _processParsing(_lexing::_types::_Token_s &currentToken, _lexing::_types::_Tokens_t &tokens, std::size_t &index);
             
-            arrayParsingRes_t __parseArray(_lexing::_types::_Tokens_t &tokens);
-            objectParsingRes_t __parseObject(_lexing::_types::_Tokens_t &tokens);
+            types::JsonValue __parseObject(_lexing::_types::_Token_s &currentToken, _lexing::_types::_Tokens_t &tokens, std::size_t &index);
+            types::JsonValue __parseArray(_lexing::_types::_Token_s &currentToken, _lexing::_types::_Tokens_t &tokens, std::size_t &index);
             
         } // namespace _parsing
     } // namespace _private

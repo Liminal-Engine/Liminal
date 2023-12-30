@@ -13,19 +13,30 @@
 #define LIMINAL_LIB_LIMINAL_JSON_IO__PRIVATE__JSON_HPP_
 
 #include "Status.hpp"
-#include "_private/_lexing/_types.hpp"
+#include "types.hpp"
+
+#include "string.hpp"
 
 #include <string>
+#include <optional>
+#include <stdexcept>
 
 namespace liminal_json_io {
     namespace _private {
         
         class _JSON {
             public:
+                // _Json(void) = default;
                 Status parse(const std::string &path);
 
-            private:
                 
+
+            protected:
+                std::optional<types::JsonValue>  _rootValue;
+
+            private:
+                types::JsonValue __getObjectValue(const types::JsonValue &objectAsJsonValue, const std::string &key) const;
+                types::JsonValue __getArrayValue(const types::JsonValue &arrayAsJsonValue, const std::string &indexAsString) const;
         };
 
     } // namespace _private

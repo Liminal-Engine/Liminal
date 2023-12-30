@@ -61,21 +61,16 @@ namespace liminal_json_io {
                 AnyType_t getValue(void) const;
                 ValueTypes getType(void) const;
 
+                JsonValue &operator=(const JsonValue &other);
+
             private:
                 ValueTypes _type;
                 AnyType_t _value;
 
+                JsonValue(const ValueTypes &type, const AnyType_t &value);
                 ValueTypes _tokenTypeToValueType(const _private::_lexing::_types::_TokenTypes_e_c &tokenType) const;
                 AnyType_t _tokenToValue(const _private::_lexing::_types::_Token_s &token) const;
         };
-        // class Value {
-        //     public:
-        //         virtual ~Value() = default;
-                
-        //     private:
-        //         std::string _strValue;
-        //         _private::_lexing::_types::_TokenTypes_e_c _tokenType;
-        // };
 
     } // namespace types
 } // namespace liminal_json_io

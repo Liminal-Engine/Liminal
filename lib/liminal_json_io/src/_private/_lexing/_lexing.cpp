@@ -29,8 +29,9 @@ namespace liminal_json_io {
                     
                     while (jsonIndices.size()) {
                         if ( (tmpValue = __tryLexingString(jsonIndices)).has_value() ) {
-                            res.push_back(_types::_Token_s{.strValue = tmpValue.value(), .type = _types::_TokenTypes_e_c::STRING });
+                            res.push_back(_types::_Token_s{.strValue = liminal_parser::string::trim(tmpValue.value(), '\"'), .type = _types::_TokenTypes_e_c::STRING });
                             jsonIndices = _types::_Indices(jsonIndices.begin() + tmpValue.value().length(), jsonIndices.end());
+
                             continue;
                         } else if ( (tmpValue = __tryLexingNumber(jsonIndices)).has_value() ) {
                             res.push_back(_types::_Token_s{
@@ -55,6 +56,9 @@ namespace liminal_json_io {
                             jsonIndices.erase(jsonIndices.begin());
                         } else if (std::find( std::begin(_syntax::_FORMAT_TOKENS_C_A), std::end(_syntax::_FORMAT_TOKENS_C_A), currentChar ) != std::end(_syntax::_FORMAT_TOKENS_C_A)) {
                             res.push_back(_types::_Token_s{.strValue = std::string{currentChar}, .type = _types::_TokenTypes_e_c::SYNTAX});
+                            if (res.back().isEqual(_syntax::_COLON_C) and res.size() >= 2 and res.at(res.size() - 2).type == _types::_TokenTypes_e_c::STRING) { //If current token is ":" and last token is a string. Last token is transform to a KEY
+                                res.at(res.size() - 2).type = _types::_TokenTypes_e_c::KEY;
+                            }
                             jsonIndices.erase(jsonIndices.begin());
                         } else {
                             throw std::runtime_error("Unexpected character, got : " + std::string{currentChar} + "at position : " + jsonIndices.at(0).getPosDescription());

@@ -22,6 +22,7 @@ namespace liminal_json_io {
             namespace _types {
 
                 enum class _TokenTypes_e_c {
+                    KEY,
                     STRING,
                     INT_NUM,
                     FLOAT_NUM,

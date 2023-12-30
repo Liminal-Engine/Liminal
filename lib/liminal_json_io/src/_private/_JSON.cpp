@@ -19,15 +19,22 @@
 #include "InFile.hpp"
 
 #include <iostream>
+#include <stdexcept>
 
 namespace liminal_json_io {
     namespace _private {
 
         // Public :
         Status _JSON::parse(const std::string &path) {
-            _lexing::_types::_Tokens_t tokens = _lexing::_processLexing(path);
-            std::size_t index{0};
-            types::JsonValue jsonValue = _parsing::_processParsing(tokens.at(0), tokens, index);
+            try {
+                _lexing::_types::_Tokens_t tokens = _lexing::_processLexing(path);
+                std::size_t index{0};
+                this->_rootValue = _parsing::_processParsing(tokens.at(0), tokens, index);
+                return Status::OK;
+            } catch (...) {
+                return Status::PARSING_ERR;
+            }
+
         }
 
     } // namespace _private
