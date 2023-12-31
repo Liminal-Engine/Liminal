@@ -33,6 +33,10 @@ namespace liminal_json_io {
                 _parsing::_types::_AnyType_t getValue(void) const;
                 _JsonValueTypes getType(void) const;
 
+                inline bool hasComplexType(void) const { return this->_type == _JsonValueTypes::_OBJECT or this->_type == _JsonValueTypes::_ARRAY; };
+                inline bool hasSimpleType(void) const { return !this->hasComplexType(); };
+
+
             private:
                 _JsonValueTypes _type;
                 _parsing::_types::_AnyType_t _value;

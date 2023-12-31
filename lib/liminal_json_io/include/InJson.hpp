@@ -16,6 +16,7 @@
 #include "_private/_JsonValueTypes.hpp"
 #include "_private/_parsing/_types.hpp"
 #include "types.hpp"
+#include "_private/_is_in_variant.hpp"
 
 #include "string.hpp"
 
@@ -29,17 +30,8 @@ namespace liminal_json_io {
     class InJson : public _private::_JSON {
 
         public:
-            template <typename T, typename Variant>
-            struct is_in_variant;
-
-            template <typename T, typename... Ts>
-            struct is_in_variant<T, std::variant<Ts...>> : std::bool_constant<(std::is_same_v<T, Ts> || ...)> {};
-
-            template <typename T, typename V>
-            static inline constexpr bool is_in_variant_v = is_in_variant<T, V>::value;
-
             template <typename T>
-            requires is_in_variant_v<T, types::AnyType_t>
+            requires _private::_is_in_variant_v<T, types::AnyType_t>
             std::optional<T> get(const std::string &jsonPath) const {
                 if (this->_rootValue.has_value() == false) {
                     throw std::runtime_error("JSON has not been loaded.");
@@ -64,11 +56,11 @@ namespace liminal_json_io {
                     }
                     return res;
                 }
-                if constexpr (std::is_same_v<T, types::Object_t>) return jsonValueToObject(tmpJsonValue);
+                if constexpr (std::is_same_v<T, types::Object_t>) return types::Object_t(tmpJsonValue);
                 if constexpr (std::is_same_v<T, types::Array_t>) return jsonValueToArray(tmpJsonValue);
             }
 
-            static std::optional<types::Object_t> jsonValueToObject(const _private::_JsonValue &objectAsJsonValue);
+            // static std::optional<types::Object_t> jsonValueToObject(const _private::_JsonValue &objectAsJsonValue);
             static std::optional<types::Array_t> jsonValueToArray(const _private::_JsonValue &arrayAsJsonValue);
 
         private:

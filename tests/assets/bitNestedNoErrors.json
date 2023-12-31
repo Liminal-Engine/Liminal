@@ -10,7 +10,8 @@
         "street": "123 Main St",
         "city": "Anytown",
         "state": "Anystate",
-        "postalCode": "12345"
+        "postalCode": 12345,
+        "anotherData": 42.84
     },
     "hobbies": [
         "reading",

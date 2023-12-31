@@ -19,7 +19,11 @@ int main() {
 
     json.parse("./tests/assets/bitNestedNoErrors.json");
 
-    liminal_json_io::types::Array_t object = json.get<liminal_json_io::types::Array_t>("hobbies[4].secondNestedHobbies").value();
+    liminal_json_io::types::Object_t object = json.get<liminal_json_io::types::Object_t>("address").value();
+    std::cout << json.get<liminal_json_io::types::Object_t>("address").value().get<liminal_json_io::types::FloatNum_t>("anotherData").value() << std::endl;
+    std::cout << json.get<liminal_json_io::types::FloatNum_t>("address.anotherData").value() << std::endl;
+    std::cout << json.get<liminal_json_io::types::IntNum_t>("address.story.left").value() << std::endl;
+    std::cout << json.get<liminal_json_io::types::String_t>("hobbies[4].secondNestedHobbies[1]").value() << std::endl;
 
     while (handler.window.shouldClose() == false) {
         handler.window.pollEvents();

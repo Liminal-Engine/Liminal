@@ -19,23 +19,23 @@ namespace liminal_json_io {
     // Public:
 
     // Static:
-    std::optional<types::Object_t> InJson::jsonValueToObject(const _private::_JsonValue &objectAsJsonValue) {
-        if (objectAsJsonValue.getType() != _private::_JsonValueTypes::_OBJECT) {
-            std::cerr << "Value is requested as object but not mark as object. It may be a user error or a critical parsing error." << std::endl;
-            return std::optional<types::Object_t>{};
-        }
-        types::Object_t object{};
-        _private::_parsing::_types::_AnyType_t tmpAnyValue = objectAsJsonValue.getValue();
-        _private::_parsing::_types::_Object_t *parsingObjectPtr = std::get_if<_private::_parsing::_types::_Object_t>(&tmpAnyValue);
-        if (parsingObjectPtr == nullptr) {
-            std::cerr << "Failed to find an object value. It may be a user error or a critical parsing error.";
-            return std::optional<types::Object_t>{};
-        }
-        for (const auto &[key, value] : (*parsingObjectPtr)) {
-            object.insert({key, _private::_JsonValue(*(value.get()))});
-        }
-        return object;
-    }
+    // std::optional<types::Object_t> InJson::jsonValueToObject(const _private::_JsonValue &objectAsJsonValue) {
+    //     if (objectAsJsonValue.getType() != _private::_JsonValueTypes::_OBJECT) {
+    //         std::cerr << "Value is requested as object but not mark as object. It may be a user error or a critical parsing error." << std::endl;
+    //         return std::optional<types::Object_t>{};
+    //     }
+    //     types::Object_t object{};
+    //     _private::_parsing::_types::_AnyType_t tmpAnyValue = objectAsJsonValue.getValue();
+    //     _private::_parsing::_types::_Object_t *parsingObjectPtr = std::get_if<_private::_parsing::_types::_Object_t>(&tmpAnyValue);
+    //     if (parsingObjectPtr == nullptr) {
+    //         std::cerr << "Failed to find an object value. It may be a user error or a critical parsing error.";
+    //         return std::optional<types::Object_t>{};
+    //     }
+    //     for (const auto &[key, value] : (*parsingObjectPtr)) {
+    //         object.insert({key, _private::_JsonValue(*(value.get()))});
+    //     }
+    //     return object;
+    // }
       
     std::optional<types::Array_t> InJson::jsonValueToArray(const _private::_JsonValue &arrayAsJsonValue) {
         if (arrayAsJsonValue.getType() != _private::_JsonValueTypes::_ARRAY) {
