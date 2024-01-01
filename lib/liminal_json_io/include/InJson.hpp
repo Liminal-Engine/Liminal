@@ -15,7 +15,7 @@
 #include "_private/_JSON.hpp"
 #include "_private/_JsonValueTypes.hpp"
 #include "_private/_parsing/_types.hpp"
-#include "types.hpp"
+#include "types/types.hpp"
 #include "_private/_is_in_variant.hpp"
 
 #include "string.hpp"
@@ -31,7 +31,7 @@ namespace liminal_json_io {
 
         public:
             template <typename T>
-            requires _private::_is_in_variant_v<T, types::AnyType_t>
+            requires _private::_is_in_variant_v<T, types::Any_t>
             std::optional<T> get(const std::string &jsonPath) const {
                 if (this->_rootValue.has_value() == false) {
                     throw std::runtime_error("JSON has not been loaded.");
