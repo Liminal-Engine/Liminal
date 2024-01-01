@@ -30,40 +30,30 @@ namespace liminal_json_io {
     class InJson : public _private::_JSON {
 
         public:
+            
             template <typename T>
             requires _private::_is_in_variant_v<T, types::Any_t>
             std::optional<T> get(const std::string &jsonPath = "") const {
-                if (this->_rootValue.has_value() == false) {
-                    throw std::runtime_error("JSON has not been loaded.");
-                }
-                std::vector<std::string> tokenizedPath = liminal_parser::string::tokenize(jsonPath, std::vector<std::string>{".", "[", "]"});
-                _private::_JsonValue tmpJsonValue{this->_rootValue.value()};
-
-
-                for (const std::string &key : tokenizedPath) {
-                    if (tmpJsonValue.getType() == _private::_JsonValueTypes::_OBJECT) {
-                        tmpJsonValue = _private::_JsonValue{this->__getObjectValue(tmpJsonValue, key)};
-                    } else if (tmpJsonValue.getType() == _private::_JsonValueTypes::_ARRAY) {
-                        tmpJsonValue = _private::_JsonValue{this->__getArrayValue(tmpJsonValue, key)};
-                    }
-                }
+                _private::_JsonValue jsonValue{__getJsonValueFromPath(jsonPath)};
                 if constexpr (!std::is_same_v<T, types::Object_t> && !std::is_same_v<T, types::Array_t>) {
                     std::optional<T> res{};
-                    _private::_parsing::_types::_Any_t resAnyValue = tmpJsonValue.getValue();
+                    _private::_parsing::_types::_Any_t resAnyValue = jsonValue.getValue();
                     T *resPtr = std::get_if<T>(&resAnyValue);
                     if (resPtr != nullptr) {
                         res.emplace(*resPtr);
                     }
                     return res;
                 }
-                if constexpr (std::is_same_v<T, types::Object_t>) return types::Object_t(tmpJsonValue);
-                if constexpr (std::is_same_v<T, types::Array_t>) return types::Array_t(tmpJsonValue);
+                if constexpr (std::is_same_v<T, types::Object_t>) return types::Object_t(jsonValue);
+                if constexpr (std::is_same_v<T, types::Array_t>) return types::Array_t(jsonValue);
             }
 
+            std::string getType(const std::string &jsonPath = "") const;
 
         private:
-            _private::_JsonValue __getObjectValue(const _private::_JsonValue &objectAsJsonValue, const std::string &key) const;
-            _private::_JsonValue __getArrayValue(const _private::_JsonValue &arrayAsJsonValue, const std::string &indexAsString) const;
+            _private::_JsonValue __getJsonValueFromPath(const std::string &jsonPath) const;
+            static _private::_JsonValue __getObjectValue(const _private::_JsonValue &objectAsJsonValue, const std::string &key);
+            static _private::_JsonValue __getArrayValue(const _private::_JsonValue &arrayAsJsonValue, const std::string &indexAsString);
     };
 
 } // namespace liminal_json_io

@@ -55,7 +55,8 @@
         "iomanip": "cpp",
         "sstream": "cpp",
         "variant": "cpp",
-        "any": "cpp"
+        "any": "cpp",
+        "typeindex": "cpp"
     },
     "cmake.configureOnOpen": true,
     "C_Cpp.errorSquiggles": "disabled"
