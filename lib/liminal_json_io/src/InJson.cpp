@@ -20,7 +20,7 @@ namespace liminal_json_io {
 
     // Private :
     _private::_JsonValue InJson::__getObjectValue(const _private::_JsonValue &objectAsJsonValue, const std::string &key) const {
-        _private::_parsing::_types::_AnyType_t tmpAnyValue = objectAsJsonValue.getValue();
+        _private::_parsing::_types::_Any_t tmpAnyValue = objectAsJsonValue.getValue();
         _private::_parsing::_types::_Object_t *tmpObjectPtr = std::get_if<_private::_parsing::_types::_Object_t>(&tmpAnyValue);
 
         if (tmpObjectPtr == nullptr) {
@@ -35,7 +35,7 @@ namespace liminal_json_io {
     }
 
     _private::_JsonValue InJson::__getArrayValue(const _private::_JsonValue &arrayAsJsonValue, const std::string &indexAsString) const {
-        _private::_parsing::_types::_AnyType_t tmpAnyValue = arrayAsJsonValue.getValue();
+        _private::_parsing::_types::_Any_t tmpAnyValue = arrayAsJsonValue.getValue();
         _private::_parsing::_types::_Array_t *tmpArrayPtr = std::get_if<_private::_parsing::_types::_Array_t>(&tmpAnyValue);
 
         if (tmpArrayPtr == nullptr) {

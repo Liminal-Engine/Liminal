@@ -28,7 +28,7 @@ namespace liminal_json_io {
                     throw std::runtime_error("Invalid type requested.");
                 }
                 std::unordered_map<types::Key_t, _private::_JsonValue> object{};
-                _private::_parsing::_types::_AnyType_t tmpAnyValue = complexObjectAsJsonValue.getValue();
+                _private::_parsing::_types::_Any_t tmpAnyValue = complexObjectAsJsonValue.getValue();
                 _private::_parsing::_types::_Object_t *parsingObjectPtr = std::get_if<_private::_parsing::_types::_Object_t>(&tmpAnyValue);
                 if (parsingObjectPtr == nullptr) {
                     throw std::runtime_error("Invalid type requested.");

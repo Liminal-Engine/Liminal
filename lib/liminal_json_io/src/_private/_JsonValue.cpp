@@ -69,7 +69,7 @@ namespace liminal_json_io {
             }
         }
 
-        _parsing::_types::_AnyType_t _JsonValue::getValue(void) const { return this->_value; }
+        _parsing::_types::_Any_t _JsonValue::getValue(void) const { return this->_value; }
 
         _JsonValueTypes _JsonValue::getType(void) const { return this->_type; }
 
@@ -99,7 +99,7 @@ namespace liminal_json_io {
             }
         }
 
-        _parsing::_types::_AnyType_t _JsonValue::__tokenToValue(const _lexing::_types::_Token_s &token) const {
+        _parsing::_types::_Any_t _JsonValue::__tokenToValue(const _lexing::_types::_Token_s &token) const {
             switch (token.type) {
                 case _lexing::_types::_TokenTypes_e_c::STRING:
                     return token.strValue;

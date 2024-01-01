@@ -38,7 +38,7 @@ namespace liminal_json_io {
                                 std::cerr << "Value is marked as a complex type : " << it->second.getTypeAsStr() << std::endl;
                                 return std::optional<T>{};
                             }
-                            _private::_parsing::_types::_AnyType_t tmpAnyValue = it->second.getValue();
+                            _private::_parsing::_types::_Any_t tmpAnyValue = it->second.getValue();
                             T *valuePtr = std::get_if<T>(&tmpAnyValue);
                             if (valuePtr != nullptr) {
                                 res.emplace(*valuePtr);

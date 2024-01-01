@@ -49,7 +49,7 @@ namespace liminal_json_io {
                     throw std::runtime_error("Invalid type requested.");
                 }
                 std::vector<_private::_JsonValue> array{};
-                _private::_parsing::_types::_AnyType_t tmpAnyValue = complexArrayAsJsonValue.getValue();
+                _private::_parsing::_types::_Any_t tmpAnyValue = complexArrayAsJsonValue.getValue();
                 _private::_parsing::_types::_Array_t *parsingArrayPtr = std::get_if<_private::_parsing::_types::_Array_t>(&tmpAnyValue);
                 if (parsingArrayPtr == nullptr) {
                     throw std::runtime_error("Invalid type requested.");

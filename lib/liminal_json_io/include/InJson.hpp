@@ -32,7 +32,7 @@ namespace liminal_json_io {
         public:
             template <typename T>
             requires _private::_is_in_variant_v<T, types::Any_t>
-            std::optional<T> get(const std::string &jsonPath) const {
+            std::optional<T> get(const std::string &jsonPath = "") const {
                 if (this->_rootValue.has_value() == false) {
                     throw std::runtime_error("JSON has not been loaded.");
                 }
@@ -49,7 +49,7 @@ namespace liminal_json_io {
                 }
                 if constexpr (!std::is_same_v<T, types::Object_t> && !std::is_same_v<T, types::Array_t>) {
                     std::optional<T> res{};
-                    _private::_parsing::_types::_AnyType_t resAnyValue = tmpJsonValue.getValue();//TODO : create a tpyes::Simple_types variant and complex types varaint and cast only on simple_types here, not anytypes
+                    _private::_parsing::_types::_Any_t resAnyValue = tmpJsonValue.getValue();
                     T *resPtr = std::get_if<T>(&resAnyValue);
                     if (resPtr != nullptr) {
                         res.emplace(*resPtr);
@@ -57,11 +57,9 @@ namespace liminal_json_io {
                     return res;
                 }
                 if constexpr (std::is_same_v<T, types::Object_t>) return types::Object_t(tmpJsonValue);
-                if constexpr (std::is_same_v<T, types::Array_t>) return jsonValueToArray(tmpJsonValue);
+                if constexpr (std::is_same_v<T, types::Array_t>) return types::Array_t(tmpJsonValue);
             }
 
-            // static std::optional<types::Object_t> jsonValueToObject(const _private::_JsonValue &objectAsJsonValue);
-            static std::optional<types::Array_t> jsonValueToArray(const _private::_JsonValue &arrayAsJsonValue);
 
         private:
             _private::_JsonValue __getObjectValue(const _private::_JsonValue &objectAsJsonValue, const std::string &key) const;

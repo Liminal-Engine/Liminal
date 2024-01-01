@@ -40,7 +40,7 @@ namespace liminal_json_io {
                 using _Array_t      =   std::vector<std::shared_ptr<class _JsonValue>>;
                 using _Object_t     =   std::unordered_map<_Key_t, std::shared_ptr<class _JsonValue>>;
 
-                using _AnyType_t    =   std::variant<
+                using _Any_t    =   std::variant<
                                             _String_t,
                                             _IntNum_t,
                                             _FloatNum_t,

@@ -25,6 +25,7 @@ int main() {
     std::cout << json.get<liminal_json_io::types::FloatNum_t>("address.anotherData").value() << std::endl;
     std::cout << json.get<liminal_json_io::types::IntNum_t>("address.story.left").value() << std::endl;
     std::cout << json.get<liminal_json_io::types::String_t>("hobbies[4].secondNestedHobbies[1]").value() << std::endl;
+    liminal_json_io::types::Object_t mainObject = json.get<liminal_json_io::types::Object_t>().value();
 
     while (handler.window.shouldClose() == false) {
         handler.window.pollEvents();

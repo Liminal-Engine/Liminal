@@ -30,7 +30,7 @@ namespace liminal_json_io {
 
                 // Getters
                 std::string getTypeAsStr(void) const;
-                _parsing::_types::_AnyType_t getValue(void) const;
+                _parsing::_types::_Any_t getValue(void) const;
                 _JsonValueTypes getType(void) const;
 
                 inline bool hasComplexType(void) const { return this->_type == _JsonValueTypes::_OBJECT or this->_type == _JsonValueTypes::_ARRAY; };
@@ -39,10 +39,10 @@ namespace liminal_json_io {
 
             private:
                 _JsonValueTypes _type;
-                _parsing::_types::_AnyType_t _value;
+                _parsing::_types::_Any_t _value;
 
                 _JsonValueTypes __tokenTypeToJsonValueType(const _lexing::_types::_TokenTypes_e_c &tokenType) const;
-                _parsing::_types::_AnyType_t __tokenToValue(const _lexing::_types::_Token_s &token) const;
+                _parsing::_types::_Any_t __tokenToValue(const _lexing::_types::_Token_s &token) const;
         };
         
     } // namespace _private
