@@ -15,7 +15,7 @@
 #include "_private/_JSON.hpp"
 #include "_private/_JsonValueTypes.hpp"
 #include "_private/_parsing/_types.hpp"
-#include "types/types.hpp"
+#include "types.hpp"
 #include "_private/_is_in_variant.hpp"
 
 #include "string.hpp"

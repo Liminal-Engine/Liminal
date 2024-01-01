@@ -1,7 +1,7 @@
 #include "VulkanHdl.hpp"
 #include "InFile.hpp"
 #include "InJson.hpp"
-#include "types/types.hpp"
+#include "types.hpp"
 
 #include <iostream>
 #include <typeinfo>

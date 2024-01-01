@@ -1,5 +1,5 @@
 /**
- * @file ComplexTypes.hpp
+ * @file _ComplexTypes.hpp
  * @author DE VITA Matteo (matteo.devita7@gmail.com)
  * @brief 
  * @version 0.1
@@ -9,8 +9,8 @@
  * 
 */
 
-#ifndef LIMINAL_LIB_LIMINAL_JSON_IO_TYPES_COMPLEX_TYPES_HPP_
-#define LIMINAL_LIB_LIMINAL_JSON_IO_TYPES_COMPLEX_TYPES_HPP_
+#ifndef LIMINAL_LIB_LIMINAL_JSON_IO__PRIVATE__TYPES_COMPLEX_TYPES_HPP_
+#define LIMINAL_LIB_LIMINAL_JSON_IO__PRIVATE__TYPES_COMPLEX_TYPES_HPP_
 
 #include "_private/_complex_value/_Object.hpp"
 #include "_private/_complex_value/_Array.hpp"
@@ -29,4 +29,4 @@ namespace liminal_json_io {
 } // namespace liminal_json_io
 
 
-#endif // LIMINAL_LIB_LIMINAL_JSON_IO_TYPES_COMPLEX_TYPES_HPP_
+#endif // LIMINAL_LIB_LIMINAL_JSON_IO__PRIVATE__TYPES_COMPLEX_TYPES_HPP_

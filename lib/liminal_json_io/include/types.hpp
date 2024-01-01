@@ -12,8 +12,8 @@
 #ifndef LIMINAL_LIB_LIMINAL_JSON_IO_TYPES_HPP_
 #define LIMINAL_LIB_LIMINAL_JSON_IO_TYPES_HPP_
 
-#include "types/SimpleTypes.hpp"
-#include "types/ComplexTypes.hpp"
+#include "_private/_types/_SimpleTypes.hpp"
+#include "_private/_types/_ComplexTypes.hpp"
 
 #include <optional>
 #include <iostream>

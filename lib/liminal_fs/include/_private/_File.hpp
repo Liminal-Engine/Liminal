@@ -70,6 +70,7 @@ namespace liminal_fs {
                 _stream_opened{false}
                 {
                 }
+
                 ~_File() = default;
                 const std::string _name;
                 const std::string _registered_path;

@@ -14,7 +14,7 @@
 
 #include "_private/_complex_value/_IComplexValue.hpp"
 #include "_private/_is_in_variant.hpp"
-#include "types/SimpleTypes.hpp"
+#include "_private/_types/_SimpleTypes.hpp"
 
 #include <optional>
 #include <iostream>

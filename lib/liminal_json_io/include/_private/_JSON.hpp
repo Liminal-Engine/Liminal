@@ -29,8 +29,6 @@ namespace liminal_json_io {
                 // _Json(void) = default;
                 Status parse(const std::string &path);
 
-                
-
             protected:
                 std::optional<_JsonValue>  _rootValue;
 
