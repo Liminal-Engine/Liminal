@@ -7,13 +7,13 @@ fi
 
 if [ "$1" == "Continue" ]; then
     cd $(dirname $0)/build
-    cmake --build .
+    cmake --build . -- -j$(nproc)
 else
     cd $(dirname $0)
     rm -rf build
     mkdir build && cd build
     cmake -DCMAKE_BUILD_TYPE=$1 ..
-    cmake --build .
+    cmake --build . -- -j$(nproc)
 fi
 
 exit 0
