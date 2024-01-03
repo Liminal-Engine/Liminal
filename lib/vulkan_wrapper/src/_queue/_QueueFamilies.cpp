@@ -9,7 +9,7 @@
  * 
 */
 
-#include "_queue/_QueueFamilies.hpp"
+#include "_private/_queue/_QueueFamilies.hpp"
 
 #include <stdexcept>
 

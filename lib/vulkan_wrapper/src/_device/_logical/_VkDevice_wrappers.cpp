@@ -9,7 +9,7 @@
  * 
 */
 
-#include "_device/_logical/_VkDevice_wrappers.hpp"
+#include "_private/_device/_logical/_VkDevice_wrappers.hpp"
 
 #include <stdexcept>
 

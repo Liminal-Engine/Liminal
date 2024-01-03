@@ -1,4 +1,4 @@
-#include "_command/_buffer/_VkCommandBuffer_wrappers.hpp"
+#include "_private/_command/_buffer/_VkCommandBuffer_wrappers.hpp"
 
 #include <stdexcept>
 

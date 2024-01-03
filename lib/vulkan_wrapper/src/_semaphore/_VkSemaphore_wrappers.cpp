@@ -1,4 +1,4 @@
-#include "_semaphore/_VkSemaphore_wrappers.hpp"
+#include "_private/_semaphore/_VkSemaphore_wrappers.hpp"
 
 #include <stdexcept>
 

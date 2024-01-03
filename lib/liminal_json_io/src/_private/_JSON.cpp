@@ -15,7 +15,7 @@
 #include "_private/_lexing/_lexing.hpp"
 #include "_private/_parsing/_parsing.hpp"
 
-#include "InFile.hpp"
+#include "liminal_fs/InFile.hpp"
 
 #include <iostream>
 #include <stdexcept>

@@ -1,4 +1,4 @@
-#include "_fence/_VkFence_wrappers.hpp"
+#include "_private/_fence/_VkFence_wrappers.hpp"
 
 #include <stdexcept>
 

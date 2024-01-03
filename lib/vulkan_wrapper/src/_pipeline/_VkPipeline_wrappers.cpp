@@ -1,6 +1,6 @@
-#include "_pipeline/_VkPipeline_wrappers.hpp"
+#include "_private/_pipeline/_VkPipeline_wrappers.hpp"
 
-#include "_shader/_VkShaderModule_wrappers.hpp"
+#include "_private/_shader/_VkShaderModule_wrappers.hpp"
 
 #include <vector>
 #include <stdexcept>

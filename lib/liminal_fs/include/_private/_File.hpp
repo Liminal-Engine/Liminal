@@ -26,7 +26,7 @@ namespace liminal_fs {
          * This class must be defined and declared in a header file since it is a template class
          * 
          */
-        template <typename _StreamType> //must be a std::stream
+        template <typename _StreamType> //TODO : create a is_a_variant here : must be a std::stream
         class _File {
             public:
                 Status open(void) {

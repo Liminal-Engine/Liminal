@@ -9,7 +9,7 @@
  * 
 */
 
-#include "_instance/_VkInstance_wrappers.hpp"
+#include "_private/_instance/_VkInstance_wrappers.hpp"
 
 #include <stdexcept>
 

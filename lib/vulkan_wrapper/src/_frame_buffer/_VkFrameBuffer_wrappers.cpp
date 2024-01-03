@@ -1,4 +1,4 @@
-#include "_frame_buffer/_VkFrameBuffer_wrappers.hpp"
+#include "_private/_frame_buffer/_VkFrameBuffer_wrappers.hpp"
 
 #include <stdexcept>
 

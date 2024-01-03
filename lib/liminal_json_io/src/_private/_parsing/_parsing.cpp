@@ -13,7 +13,7 @@
 #include "_private/_parsing/_types.hpp"
 #include "_private/_syntax.hpp"
 
-#include "string.hpp"
+#include "liminal_string_extras/string.hpp"
 
 #include <stdexcept>
 #include <iostream>

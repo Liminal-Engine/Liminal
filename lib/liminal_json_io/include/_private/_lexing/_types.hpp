@@ -15,7 +15,6 @@
 #include <string>
 #include <vector>
 
-
 namespace liminal_json_io {
     namespace _private  {
         namespace _lexing {

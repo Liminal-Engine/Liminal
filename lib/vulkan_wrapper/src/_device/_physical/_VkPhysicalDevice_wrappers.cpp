@@ -9,10 +9,10 @@
  * 
 */
 
-#include "_device/_physical/_VkPhysicalDevice_wrappers.hpp"
-#include "_queue/_QueueFamilies.hpp"
-#include "_extension/_Extensions_t.hpp"
-#include "_swap_chain/_Supports.hpp"
+#include "_private/_device/_physical/_VkPhysicalDevice_wrappers.hpp"
+#include "_private/_queue/_QueueFamilies.hpp"
+#include "_private/_extension/_Extensions_t.hpp"
+#include "_private/_swap_chain/_Supports.hpp"
 
 #include <stdexcept>
 #include <iostream>

@@ -1,5 +1,17 @@
+/**
+ * @file path.cpp
+ * @author DE VITA Matteo (matteo.devita7@gmail.com)
+ * @brief 
+ * @version 0.1
+ * @date 2024-01-02
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+*/
+
 #include "path/path.hpp"
 #include "Status.hpp"
+#include "FileType.hpp"
 
 #include <filesystem>
 

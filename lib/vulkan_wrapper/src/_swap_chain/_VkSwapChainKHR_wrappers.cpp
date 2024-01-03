@@ -9,8 +9,8 @@
  * 
 */
 
-#include "_swap_chain/_VkSwapChainKHR_wrappers.hpp"
-#include "_swap_chain/_optimal_settings.hpp"
+#include "_private/_swap_chain/_VkSwapChainKHR_wrappers.hpp"
+#include "_private/_swap_chain/_optimal_settings.hpp"
 
 #include <stdexcept>
 

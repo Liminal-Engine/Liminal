@@ -9,7 +9,7 @@
  * 
 */
 
-#include "_surface/_VkSurfaceKHR_wrappers.hpp"
+#include "_private/_surface/_VkSurfaceKHR_wrappers.hpp"
 
 #include <stdexcept>
 

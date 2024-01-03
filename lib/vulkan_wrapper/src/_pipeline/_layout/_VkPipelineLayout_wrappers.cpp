@@ -1,4 +1,4 @@
-#include "_pipeline/_layout/_VkPipelineLayout_wrappers.hpp"
+#include "_private/_pipeline/_layout/_VkPipelineLayout_wrappers.hpp"
 
 #include <stdexcept>
 

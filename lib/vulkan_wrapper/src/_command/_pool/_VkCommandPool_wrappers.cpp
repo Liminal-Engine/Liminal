@@ -1,4 +1,4 @@
-#include "_command/_pool/_VkCommandPool_wrappers.hpp"
+#include "_private/_command/_pool/_VkCommandPool_wrappers.hpp"
 
 #include <stdexcept>
 

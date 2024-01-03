@@ -32,8 +32,8 @@ namespace liminal_json_io {
                 using _String_t     =   std::string;
                 using _IntNum_t     =   intmax_t;
                 using _FloatNum_t   =   long double;
-                using _Null_t       =   std::nullptr_t;
                 using _Bool_t       =   bool;
+                using _Null_t       =   std::nullptr_t;
 
                 using _Key_t        =   _String_t;
                 

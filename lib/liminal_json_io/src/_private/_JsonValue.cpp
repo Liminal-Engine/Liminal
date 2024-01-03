@@ -11,7 +11,7 @@
 
 #include "_private/_JsonValue.hpp"
 
-#include "string.hpp"
+#include "liminal_string_extras/string.hpp"
 
 namespace liminal_json_io {
     namespace _private {

@@ -9,7 +9,7 @@
  * 
 */
 
-#include "_swap_chain/_Supports.hpp"
+#include "_private/_swap_chain/_Supports.hpp"
 
 #include <stdexcept>
 

@@ -1,6 +1,6 @@
-#include "_extension/_Extensions_t.hpp"
+#include "_private/_extension/_Extensions_t.hpp"
 
-#include "WindowWrapper.hpp"
+#include "liminal_windowing/WindowWrapper.hpp"
 
 #include <stdint.h>
 #include <string.h>

@@ -15,7 +15,7 @@
 #include "Status.hpp"
 #include "_private/_JsonValue.hpp"
 
-#include "string.hpp"
+#include "liminal_string_extras/string.hpp"
 
 #include <string>
 #include <optional>

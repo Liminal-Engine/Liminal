@@ -12,8 +12,11 @@
 #include "_private/_lexing/_lexing.hpp"
 #include "_private/_syntax.hpp"
 
-#include "InFile.hpp"
-#include "string.hpp"
+#include "liminal_fs/path/path.hpp"
+#include "liminal_fs/InFile.hpp"
+#include "liminal_fs/Status.hpp"
+
+#include "liminal_string_extras/string.hpp"
 
 #include <iostream>
 #include <algorithm>

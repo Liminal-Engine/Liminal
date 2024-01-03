@@ -8,30 +8,30 @@
  * @copyright Copyright (c) 2023
  * 
 */
+#include "_private/_swap_chain/_Supports.hpp"
+
+#include "_private/_layer/_Layer_t.hpp"
+#include "_private/_extension/_Extensions_t.hpp"
+#include "_private/_instance/_VkInstance_wrappers.hpp"
+#include "_private/_surface/_VkSurfaceKHR_wrappers.hpp"
+#include "_private/_device/_physical/_VkPhysicalDevice_wrappers.hpp"
+#include "_private/_queue/_QueueFamilies.hpp"
+#include "_private/_device/_logical/_VkDevice_wrappers.hpp"
+#include "_private/_swap_chain/_optimal_settings.hpp"
+#include "_private/_swap_chain/_Supports.hpp"
+#include "_private/_swap_chain/_VkSwapChainKHR_wrappers.hpp"
+#include "_private/_swap_chain/_image/_VkImage_wrappers.hpp"
+#include "_private/_swap_chain/_image_view/_VkImageView_wrappers.hpp"
+#include "_private/_render_pass/_VKRenderPass_wrappers.hpp"
+#include "_private/_pipeline/_layout/_VkPipelineLayout_wrappers.hpp"
+#include "_private/_pipeline/_VkPipeline_wrappers.hpp"
+#include "_private/_frame_buffer/_VkFrameBuffer_wrappers.hpp"
+#include "_private/_command/_pool/_VkCommandPool_wrappers.hpp"
+#include "_private/_command/_buffer/_VkCommandBuffer_wrappers.hpp"
+#include "_private/_semaphore/_VkSemaphore_wrappers.hpp"
+#include "_private/_fence/_VkFence_wrappers.hpp"
 
 #include "VulkanHdl.hpp"
-
-#include "_layer/_Layer_t.hpp"
-#include "_extension/_Extensions_t.hpp"
-#include "_instance/_VkInstance_wrappers.hpp"
-#include "_surface/_VkSurfaceKHR_wrappers.hpp"
-#include "_device/_physical/_VkPhysicalDevice_wrappers.hpp"
-#include "_swap_chain/_Supports.hpp"
-#include "_queue/_QueueFamilies.hpp"
-#include "_device/_logical/_VkDevice_wrappers.hpp"
-#include "_swap_chain/_optimal_settings.hpp"
-#include "_swap_chain/_Supports.hpp"
-#include "_swap_chain/_VkSwapChainKHR_wrappers.hpp"
-#include "_swap_chain/_image/_VkImage_wrappers.hpp"
-#include "_swap_chain/_image_view/_VkImageView_wrappers.hpp"
-#include "_render_pass/_VKRenderPass_wrappers.hpp"
-#include "_pipeline/_layout/_VkPipelineLayout_wrappers.hpp"
-#include "_pipeline/_VkPipeline_wrappers.hpp"
-#include "_frame_buffer/_VkFrameBuffer_wrappers.hpp"
-#include "_command/_pool/_VkCommandPool_wrappers.hpp"
-#include "_command/_buffer/_VkCommandBuffer_wrappers.hpp"
-#include "_semaphore/_VkSemaphore_wrappers.hpp"
-#include "_fence/_VkFence_wrappers.hpp"
 
 #include <vector>
 #include <string>
@@ -49,20 +49,20 @@ namespace vulkan_wrapper {
     _instance{_instance::_load(this->_appName, this->_engineName, this->_layers, this->_extensions)},
     _surface{_surface::_load(this->_instance, this->window)},
     _physicalDevice{_device::_physical::_pick(this->_instance, this->_surface, this->_extensions.at("device"))},
-    _swapChainSupports{_swap_chain::_getSupports(this->_physicalDevice, this->_surface)},
-    _queueFamilies{_queue::_load(this->_physicalDevice, this->_surface)},
-    _logicalDevice{_device::_logical::_load(this->_physicalDevice, this->_queueFamilies._toSet(), this->_extensions.at("device"), this->_layers)},
-    _queueHandlers{_queue::_load(this->_logicalDevice, this->_queueFamilies)},
-    _swapChainImageFormat{_swap_chain::_getBestSurfaceFormat(this->_swapChainSupports._surfaceFormats)},
-    _swapChainExtent{_swap_chain::_getBestExtent(this->window, this->_swapChainSupports._surfaceCapabilities)},
-    _swapChain{_swap_chain::_load(this->_logicalDevice, this->_surface, this->_swapChainSupports, this->_queueFamilies, this->_swapChainImageFormat, this->_swapChainExtent)},
+    _swapChainSupports{ std::make_unique<_swap_chain::_Supports>(_swap_chain::_getSupports(this->_physicalDevice, this->_surface)) },
+    _queueFamilies{ std::make_unique<_queue::_QueueFamilies>(_queue::_load(this->_physicalDevice, this->_surface) ) },
+    _logicalDevice{_device::_logical::_load(this->_physicalDevice, this->_queueFamilies.get()->_toSet(), this->_extensions.at("device"), this->_layers)},
+    _queueHandlers{_queue::_load(this->_logicalDevice, *this->_queueFamilies.get())},
+    _swapChainImageFormat{_swap_chain::_getBestSurfaceFormat(this->_swapChainSupports.get()->_surfaceFormats)},
+    _swapChainExtent{_swap_chain::_getBestExtent(this->window, this->_swapChainSupports.get()->_surfaceCapabilities)},
+    _swapChain{_swap_chain::_load(this->_logicalDevice, this->_surface, *this->_swapChainSupports.get(), *this->_queueFamilies.get(), this->_swapChainImageFormat, this->_swapChainExtent)},
     _swapChainImagesHandlers{_swap_chain::_image::_load(this->_logicalDevice, this->_swapChain)},
     _swapChainImagesViewsHandlers{_swap_chain::_image_view::_load(this->_logicalDevice, this->_swapChainImagesHandlers, this->_swapChainImageFormat.format)},
     _renderPass{_render_pass::_load(this->_logicalDevice, this->_swapChainImageFormat.format)},
     _pipelineLayout{_pipeline::_layout::_load(this->_logicalDevice)},
     _graphicsPipeline{_pipeline::_load(this->_logicalDevice, this->_swapChainExtent, this->_pipelineLayout, this->_renderPass)},
     _frameBuffers{_frame_buffer::_load(this->_logicalDevice, this->_swapChainImagesViewsHandlers, this->_swapChainExtent, this->_renderPass)},
-    _commandPool{_command::_pool::_load(this->_logicalDevice, this->_queueFamilies)},
+    _commandPool{_command::_pool::_load(this->_logicalDevice, *this->_queueFamilies.get())},
     _commandBuffer{_command::_buffer::_load(this->_logicalDevice, this->_commandPool)},
     _imageAvailableSemaphore{_semaphore::_load(this->_logicalDevice)},
     _renderFinishedSemaphore{_semaphore::_load(this->_logicalDevice)},

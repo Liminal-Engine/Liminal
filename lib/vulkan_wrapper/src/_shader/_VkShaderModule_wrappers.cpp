@@ -9,7 +9,7 @@
  * 
 */
 
-#include "_shader/_VkShaderModule_wrappers.hpp"
+#include "_private/_shader/_VkShaderModule_wrappers.hpp"
 
 #include <vector>
 #include <fstream>

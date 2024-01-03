@@ -1,4 +1,4 @@
-#include "_swap_chain/_image_view/_VkImageView_wrappers.hpp"
+#include "_private/_swap_chain/_image_view/_VkImageView_wrappers.hpp"
 
 #include <stdexcept>
 
