@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ -z "$1" ] || { [ "$1" != "Debug" ] && [ "$1" != "Release" ] && [ "$1" != "Continue"]; }; then
+if [ -z "$1" ] || { [ "$1" != "Debug" ] && [ "$1" != "Release" ] && [ "$1" != "Continue" ]; }; then
     echo "Usage: $0 <Release|Debug|Continue>"
     exit 1
 fi

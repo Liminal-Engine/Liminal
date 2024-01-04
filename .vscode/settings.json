@@ -56,7 +56,17 @@
         "sstream": "cpp",
         "variant": "cpp",
         "any": "cpp",
-        "typeindex": "cpp"
+        "typeindex": "cpp",
+        "condition_variable": "cpp",
+        "cstring": "cpp",
+        "forward_list": "cpp",
+        "list": "cpp",
+        "map": "cpp",
+        "unordered_set": "cpp",
+        "mutex": "cpp",
+        "semaphore": "cpp",
+        "stop_token": "cpp",
+        "thread": "cpp"
     },
     "cmake.configureOnOpen": true,
     "C_Cpp.errorSquiggles": "disabled"

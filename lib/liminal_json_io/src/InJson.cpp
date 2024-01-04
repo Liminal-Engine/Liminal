@@ -32,8 +32,27 @@ namespace liminal_json_io
 
             }
 
-            std::string getType(const std::string &jsonPath) const {
-               return this->__getJsonValueFromPath(jsonPath).getTypeAsStr();
+            types::ValueTypes getType(const std::string &jsonPath) const {
+                const _private::_JsonValueTypes jsonValueType = this->__getJsonValueFromPath(jsonPath).getType();
+                
+                switch (jsonValueType) {
+                    case _private::_JsonValueTypes::_STRING :
+                        return types::ValueTypes::STRING;
+                    case _private::_JsonValueTypes::_INT:
+                        return types::ValueTypes::INT_NUM;
+                    case _private::_JsonValueTypes::_FLOAT:
+                        return types::ValueTypes::FLOAT_NUM;
+                    case _private::_JsonValueTypes::_BOOL:
+                        return types::ValueTypes::BOOL;
+                    case _private::_JsonValueTypes::_JSON_NULL:
+                        return types::ValueTypes::NULL_VALUE;
+                    case _private::_JsonValueTypes::_OBJECT:
+                        return types::ValueTypes::OBJECT;
+                    case _private::_JsonValueTypes::_ARRAY:
+                        return types::ValueTypes::ARRAY;
+                    default:
+                        return types::ValueTypes::UNKNOWN;
+                    }                
             }
 
             template <typename T>
@@ -140,7 +159,7 @@ namespace liminal_json_io
 
         #undef instantiate_template_function
 
-    std::string InJson::getType(const std::string &jsonPath) const {
+    types::ValueTypes InJson::getType(const std::string &jsonPath) const {
         return _inJsonImpl->getType(jsonPath);
     }
 

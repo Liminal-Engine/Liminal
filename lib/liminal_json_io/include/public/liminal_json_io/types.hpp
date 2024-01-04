@@ -121,6 +121,17 @@ namespace liminal_json_io {
                                     Object_t
                                 >;
 
+        enum class ValueTypes {
+            STRING,
+            INT_NUM,
+            FLOAT_NUM,
+            BOOL,
+            NULL_VALUE,
+            ARRAY,
+            OBJECT,
+            UNKNOWN
+        };
+
     } // namespace types
 } // namespace liminal_json_io
 

@@ -55,11 +55,11 @@ int main() {
     std::cout << json.get<liminal_json_io::types::String_t>("hobbies[4].secondNestedHobbies[1]").value() << std::endl;
     liminal_json_io::types::Object_t mainObject = json.get<liminal_json_io::types::Object_t>().value();
 
-    std::cout << json.getType() << std::endl;
-    std::cout << json.getType("address") << std::endl;
-    std::cout << json.getType("address.anotherData") << std::endl;
-    std::cout << json.getType("address.story.left") << std::endl;
-    std::cout << json.getType("hobbies[4].secondNestedHobbies[1]") << std::endl;
+    // std::cout << json.getType() << std::endl;
+    // std::cout << json.getType("address") << std::endl;
+    // std::cout << json.getType("address.anotherData") << std::endl;
+    // std::cout << json.getType("address.story.left") << std::endl;
+    // std::cout << json.getType("hobbies[4].secondNestedHobbies[1]") << std::endl;
     
     while (handler.window.shouldClose() == false) {
         handler.window.pollEvents();

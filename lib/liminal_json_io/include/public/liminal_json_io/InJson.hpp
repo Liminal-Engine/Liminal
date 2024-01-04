@@ -41,7 +41,7 @@ namespace liminal_json_io {
             Status parse(const std::string &path);
 
             // Own methods declaration :
-            std::string getType(const std::string &jsonPath = "") const;
+            types::ValueTypes getType(const std::string &jsonPath = "") const;
 
             template <typename T>
             requires is_in_variant_v<T, types::Any_t>

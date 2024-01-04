@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.14)
 
 file(READ VERSION PROJECT_VERSION)
 
@@ -24,3 +24,7 @@ foreach(FULL_DIR ${FULL_LIB_DIRS})
     target_include_directories(Liminal PUBLIC lib/${DIR}/include/public)
     target_link_libraries(Liminal PUBLIC ${DIR})
 endforeach()
+
+# build tests
+add_subdirectory(tests)
+enable_testing()
