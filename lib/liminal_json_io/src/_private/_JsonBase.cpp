@@ -1,5 +1,5 @@
 /**
- * @file _JSON.cpp
+ * @file _JsonBase.cpp
  * @author DE VITA Matteo (matteo.devita7@gmail.com)
  * @brief 
  * @version 0.1
@@ -9,7 +9,7 @@
  * 
 */
 
-#include "_private/_JSON.hpp"
+#include "_private/_JsonBase.hpp"
 #include "_private/_syntax.hpp"
 #include "_private/_lexing/_types.hpp"
 #include "_private/_lexing/_lexing.hpp"
@@ -24,7 +24,7 @@ namespace liminal_json_io {
     namespace _private {
 
         // Public :
-        Status _JSON::parse(const std::string &path) {
+        Status _JsonBase::parse(const std::string &path) {
             try {
                 _lexing::_types::_Tokens_t tokens = _lexing::_processLexing(path);
                 std::size_t index{0};

@@ -37,7 +37,7 @@ namespace liminal_json_io {
             InJson(void);
             ~InJson();
 
-            // Re declaration of _JSON methods :
+            // Re declaration of _JsonBase methods :
             Status parse(const std::string &path);
 
             // Own methods declaration :

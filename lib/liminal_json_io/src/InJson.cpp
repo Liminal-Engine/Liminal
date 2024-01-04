@@ -15,19 +15,19 @@
 
 #include "_private/_JsonValue.hpp"
 #include "_private/_parsing/_types.hpp"
-#include "_private/_JSON.hpp"
+#include "_private/_JsonBase.hpp"
 
 #include <iostream>
 
 namespace liminal_json_io
 {
 
-    class InJson::_InJsonImpl : public _private::_JSON
+    class InJson::_InJsonImpl : public _private::_JsonBase
     {
 
         public:
             _InJsonImpl(void) :
-            _private::_JSON{}
+            _private::_JsonBase{}
             {
 
             }
@@ -116,7 +116,7 @@ namespace liminal_json_io
 
     InJson::~InJson() = default;
 
-    // Re declaration of _JSON methods :
+    // Re declaration of _JsonBase methods :
     Status InJson::parse(const std::string &path) { return this->_inJsonImpl->parse(path); }
 
     // Own methods 

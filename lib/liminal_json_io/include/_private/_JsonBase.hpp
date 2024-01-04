@@ -1,5 +1,5 @@
 /**
- * @file _JSON.hpp
+ * @file _JsonBase.hpp
  * @author DE VITA Matteo (matteo.devita7@gmail.com)
  * @brief 
  * @version 0.1
@@ -9,8 +9,8 @@
  * 
 */
 
-#ifndef LIMINAL_LIB_LIMINAL_JSON_IO__PRIVATE__JSON_HPP_
-#define LIMINAL_LIB_LIMINAL_JSON_IO__PRIVATE__JSON_HPP_
+#ifndef LIMINAL_LIB_LIMINAL_JSON_IO__PRIVATE__JSONBASE_
+#define LIMINAL_LIB_LIMINAL_JSON_IO__PRIVATE__JSONBASE_
 
 #include "Status.hpp"
 #include "_private/_JsonValue.hpp"
@@ -24,7 +24,7 @@
 namespace liminal_json_io {
     namespace _private {
         
-        class _JSON {
+        class _JsonBase {
             public:
                 // _Json(void) = default;
                 Status parse(const std::string &path);
@@ -39,4 +39,4 @@ namespace liminal_json_io {
 
 
 
-#endif // LIMINAL_LIB_LIMINAL_JSON_IO__PRIVATE__JSON_HPP_
+#endif // LIMINAL_LIB_LIMINAL_JSON_IO__PRIVATE__JSONBASE_
