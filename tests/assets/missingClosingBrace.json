@@ -1,0 +1,15 @@
+{
+    "person": {
+        "name": "John",
+        "age": 30,
+        "isStudent": false,
+        "subjects": [
+            "Math",
+            "English",
+            "Science"
+        ],
+        "address": {
+            "street": "123 Main St",
+            "city": "Anytown",
+            "country": "USA"
+        }

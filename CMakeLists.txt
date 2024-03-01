@@ -25,6 +25,6 @@ foreach(FULL_DIR ${FULL_LIB_DIRS})
     target_link_libraries(Liminal PUBLIC ${DIR})
 endforeach()
 
-# build tests
-add_subdirectory(tests)
 enable_testing()
+add_subdirectory(tests)
+# add_test(Liminal_tests, ${CMAKE_CURRENT_SOURCE_DIR}/build/tests/LiminalUnitTests)

@@ -14,7 +14,7 @@
 
 namespace constants {
 
-    constexpr const char*   TMP_FILE_DEFAULT_PATH       =   "./testTmp/";
+    constexpr const char*   TMP_FILE_DEFAULT_DIR       =   "./testTmp/";
     constexpr long double   EXPECT_NEAR_ABSOLUTE_ERROR  =   0.000'000'1;
 
 } // namespace constants

@@ -26,7 +26,11 @@ target_link_libraries(${PROJECT_NAME} PRIVATE GTest::gtest_main GTest::gmock_mai
 include(GoogleTest)
 
 # 3. Discover tests to make them runnable by cmake system
+# gtest_discover_tests(${PROJECT_NAME} DISCOVERY_MODE POST_BUILD)
 gtest_discover_tests(${PROJECT_NAME})
+# gtest_add_tests(TARGET ${PROJECT_NAME})
+# add_test(Liminal_tests, ${CMAKE_CURRENT_SOURCE_DIR}/build/tests/LiminalUnitTests)
+# add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src/liminal_json_io)
 
 # 4. Add project include dirs and libs
 file(GLOB FULL_LIB_DIRS LIST_DIRECTORIES true "../lib/*")
@@ -46,4 +50,4 @@ foreach(FULL_DIR ${FULL_LIB_DIRS})
   
   target_link_libraries(${PROJECT_NAME} PRIVATE ${DIR})
 endforeach()
-enable_testing()
+# enable_testing()
