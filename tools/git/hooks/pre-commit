@@ -1,0 +1,48 @@
+#!/bin/bash
+
+# Read the current version from the VERSION file
+version=$(cat VERSION)
+IFS='.' read -ra parts <<< "$version"
+
+echo "Current version: $version" > /dev/tty
+echo "Enter the version part to increment (major, minor, patch, none):" > /dev/tty
+read part < /dev/tty
+
+# Increment the appropriate part of the version number or do nothing
+case $part in
+    "major")
+        parts[0]=$((parts[0] + 1))
+        parts[1]=0
+        parts[2]=0
+        ;;
+    "minor")
+        parts[1]=$((parts[1] + 1))
+        parts[2]=0
+        ;;
+    "patch")
+        parts[2]=$((parts[2] + 1))
+        ;;
+    "none")
+        echo "No version change." > /dev/tty
+        exit 0
+        ;;
+    *)
+        echo "Invalid part: $part" > /dev/tty
+        exit 1
+esac
+
+new_version="${parts[0]}.${parts[1]}.${parts[2]}"
+
+# Ask for confirmation
+echo "New version will be: $new_version. Do you want to proceed? (y/n)" > /dev/tty
+read confirm < /dev/tty
+if [[ $confirm != "y" ]]; then
+    echo "Aborting commit due to user cancellation." > /dev/tty
+    exit 1
+fi
+
+# Write the new version back to the VERSION file
+echo "$new_version" > VERSION
+
+# Stage the VERSION file for commit
+git add VERSION
