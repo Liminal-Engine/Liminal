@@ -239,7 +239,9 @@ namespace liminal_parser {
         std::string trimBegin(const std::string &input, const std::vector<char> &charsToTrim) {
             if (input.empty())
                 return input;
-            std::size_t firstValidPos = input.find_first_not_of(charsToTrim.data(), 0);
+            std::size_t firstValidPos = input.find_first_not_of(
+                std::string{charsToTrim.begin(), charsToTrim.end()}.c_str()
+            );
             if (firstValidPos == std::string::npos)
                 return "";
             return input.substr(firstValidPos);
@@ -260,7 +262,10 @@ namespace liminal_parser {
         std::string trimEnd(const std::string &input, const std::vector<char> &charsToTrim) {
             if (input.empty())
                 return input;
-            std::size_t lastValidPos = input.find_last_not_of(charsToTrim.data(), input.size());
+            std::size_t lastValidPos = input.find_last_not_of(
+                std::string{charsToTrim.begin(), charsToTrim.end()}.c_str(),
+                input.size()
+            );
             if (lastValidPos == std::string::npos)
                 return "";
             return input.substr(0, lastValidPos + 1);

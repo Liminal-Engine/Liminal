@@ -40,7 +40,7 @@ namespace liminal_fs {
             std::string _buffer;
     };
 
-    //In File class definition stars here :
+    //In File class definition starts here :
     InFile::InFile(const path::path_t &path) :
     _pImpl(std::make_unique<_InFileImpl>(path))
     {

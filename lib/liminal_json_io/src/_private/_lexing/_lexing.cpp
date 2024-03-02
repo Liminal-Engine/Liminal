@@ -60,6 +60,9 @@ namespace liminal_json_io {
                         } else if (std::find( std::begin(_syntax::_FORMAT_TOKENS_C_A), std::end(_syntax::_FORMAT_TOKENS_C_A), currentChar ) != std::end(_syntax::_FORMAT_TOKENS_C_A)) {
                             res.push_back(_types::_Token_s{.strValue = std::string{currentChar}, .type = _types::_TokenTypes_e_c::SYNTAX});
                             if (res.back().isEqual(_syntax::_COLON_C) and res.size() >= 2 and res.at(res.size() - 2).type == _types::_TokenTypes_e_c::STRING) { //If current token is ":" and last token is a string. Last token is transform to a KEY
+                                if (res.at(res.size() - 3).strValue != "{" && res.at(res.size() - 3).strValue != ",") {
+                                    throw std::runtime_error("Error : missing comma approximately at " + jsonIndices.at(0).getPosDescription()); // if token before the supposed key is not ",", it means that a "," is missing so throw error    
+                                }
                                 res.at(res.size() - 2).type = _types::_TokenTypes_e_c::KEY;
                             }
                             jsonIndices.erase(jsonIndices.begin());

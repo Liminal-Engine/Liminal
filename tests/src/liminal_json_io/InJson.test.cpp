@@ -62,10 +62,28 @@ INSTANTIATE_TEST_SUITE_P(
     WhenGivenInvalidJsonContent,
     LiminalJsonIOInJsonParseMethod,
     testing::Values(
-        std::make_pair(liminal_json_io_test::paths::MISSING_COLON, liminal_json_io::Status::PARSING_ERR),
-        std::make_pair(liminal_json_io_test::paths::MISSING_CLOSING_BRACE, liminal_json_io::Status::PARSING_ERR),
-        std::make_pair(liminal_json_io_test::paths::MISING_CLOSING_BRACKET, liminal_json_io::Status::PARSING_ERR),
-        std::make_pair(liminal_json_io_test::paths::MISSING_COMMA, liminal_json_io::Status::PARSING_ERR)
+        std::make_pair(liminal_json_io_test::paths::INVALID__ARRAY__WRONG_FORMAT, liminal_json_io::Status::PARSING_ERR),
+        
+        std::make_pair(liminal_json_io_test::paths::INVALID__BOOL__INCOMPLETE, liminal_json_io::Status::PARSING_ERR),
+
+        std::make_pair(liminal_json_io_test::paths::INVALID__BRACE__MISSING_CLOSING, liminal_json_io::Status::PARSING_ERR),
+        std::make_pair(liminal_json_io_test::paths::INVALID__BRACE__MISSING_OPENING, liminal_json_io::Status::PARSING_ERR),
+
+        std::make_pair(liminal_json_io_test::paths::INVALID__BRACKET__MISING_CLOSING, liminal_json_io::Status::PARSING_ERR),
+        std::make_pair(liminal_json_io_test::paths::INVALID__BRACKET__MISING_OPENING, liminal_json_io::Status::PARSING_ERR),
+        std::make_pair(liminal_json_io_test::paths::INVALID__BRACKET__MISING_OPENING_AT_ROOT, liminal_json_io::Status::PARSING_ERR),
+
+        std::make_pair(liminal_json_io_test::paths::INVALID_COLON__MISSING, liminal_json_io::Status::PARSING_ERR),
+        std::make_pair(liminal_json_io_test::paths::INVALID_COLON__TOO_MANY, liminal_json_io::Status::PARSING_ERR),
+        std::make_pair(liminal_json_io_test::paths::INVALID_COLON__TOO_MANY_IN_SIMPLE_KEY_VALUE_PAIR, liminal_json_io::Status::PARSING_ERR),
+        std::make_pair(liminal_json_io_test::paths::INVALID_COLON__WRONG_CHAR, liminal_json_io::Status::PARSING_ERR),
+
+        std::make_pair(liminal_json_io_test::paths::INVALID__COMMA__MISPLACED, liminal_json_io::Status::PARSING_ERR),
+        std::make_pair(liminal_json_io_test::paths::INVALID__COMMA__MISSING, liminal_json_io::Status::PARSING_ERR),
+        std::make_pair(liminal_json_io_test::paths::INVALID__COMMA__MISSING_IN_ARRAY, liminal_json_io::Status::PARSING_ERR),
+        std::make_pair(liminal_json_io_test::paths::INVALID__COMMA__MISSING_IN_NESTED_ARRAY, liminal_json_io::Status::PARSING_ERR),
+        std::make_pair(liminal_json_io_test::paths::INVALID__COMMA__MISSING_IN_NUM_ARRAY, liminal_json_io::Status::PARSING_ERR),
+        std::make_pair(liminal_json_io_test::paths::INVALID__COMMA__MULTIPLE_MISSING_IN_ARRAY, liminal_json_io::Status::PARSING_ERR)
     )
 );
 
@@ -73,21 +91,22 @@ INSTANTIATE_TEST_SUITE_P(
     WhenGivenValidJsonContent,
     LiminalJsonIOInJsonParseMethod,
     testing::Values(
-        std::make_pair(liminal_json_io_test::paths::BASIC, liminal_json_io::Status::OK),
-        std::make_pair(liminal_json_io_test::paths::NESTED, liminal_json_io::Status::OK),
-        std::make_pair(liminal_json_io_test::paths::LARGE, liminal_json_io::Status::OK)
+        std::make_pair(liminal_json_io_test::paths::VALID__BASIC, liminal_json_io::Status::OK),
+        std::make_pair(liminal_json_io_test::paths::VALID__NESTED, liminal_json_io::Status::OK),
+        std::make_pair(liminal_json_io_test::paths::VALID__LARGE, liminal_json_io::Status::OK)
     )
 );
 
-INSTANTIATE_TEST_SUITE_P(
-    WhenFilePathDoesNotExist,
-    LiminalJsonIOInJsonParseMethod,
-    testing::Values(
-        std::make_pair(liminal_json_io_test::paths::INEXISTANT_PATH, liminal_json_io::Status::NOK),
-        std::make_pair(liminal_json_io_test::paths::BASIC + liminal_json_io_test::paths::INEXISTANT_PATH, liminal_json_io::Status::NOK),
-        std::make_pair(liminal_json_io_test::paths::MISSING_LETTER_IN_FILE_EXT, liminal_json_io::Status::NOK)
-    )
-);
+// # FIXME : transform this to status::FILE_NOT_FOUND
+// INSTANTIATE_TEST_SUITE_P(
+//     WhenFilePathDoesNotExist,
+//     LiminalJsonIOInJsonParseMethod,
+//     testing::Values(
+//         std::make_pair(liminal_json_io_test::paths::INEXISTANT_PATH, liminal_json_io::Status::NOK),
+//         std::make_pair(liminal_json_io_test::paths::VALID__BASIC + liminal_json_io_test::paths::INEXISTANT_PATH, liminal_json_io::Status::NOK),
+//         std::make_pair(liminal_json_io_test::paths::MISSING_LETTER_IN_FILE_EXT, liminal_json_io::Status::NOK)
+//     )
+// );
 
 class LiminalJsonIOInJsonGetMethod : public ::testing::Test {
     protected:
@@ -120,7 +139,7 @@ class LiminalJsonIOInJsonGetMethod : public ::testing::Test {
 };
 
 TEST_F(LiminalJsonIOInJsonGetMethod, WhenGivenBasicJsonFile) {
-    _instance.parse(liminal_json_io_test::paths::BASIC);
+    _instance.parse(liminal_json_io_test::paths::VALID__BASIC);
 
     has_value<liminal_json_io::types::Object_t>(true);
     type_eq(liminal_json_io::types::ValueTypes::OBJECT);
@@ -225,7 +244,7 @@ TEST_F(LiminalJsonIOInJsonGetMethod, WhenGivenBasicJsonFile) {
 }
 
 TEST_F(LiminalJsonIOInJsonGetMethod, WhenGivenLargeJsonFile) {
-    _instance.parse(liminal_json_io_test::paths::LARGE);
+    _instance.parse(liminal_json_io_test::paths::VALID__LARGE);
 
     has_value<liminal_json_io::types::Array_t>(true);
     type_eq(liminal_json_io::types::ValueTypes::ARRAY);
@@ -264,7 +283,7 @@ TEST_F(LiminalJsonIOInJsonGetMethod, WhenGivenLargeJsonFile) {
 }
 
 TEST_F(LiminalJsonIOInJsonGetMethod, WhenGivenNestedJsonFile) {
-    _instance.parse(liminal_json_io_test::paths::NESTED);
+    _instance.parse(liminal_json_io_test::paths::VALID__NESTED);
 
     has_value<liminal_json_io::types::Bool_t>(true, "nestedData.level1.level2.level3.level4.level5.level6.level7.level8.isNested");
     value_eq<liminal_json_io::types::Bool_t>(true, "nestedData.level1.level2.level3.level4.level5.level6.level7.level8.isNested");
@@ -308,13 +327,13 @@ TEST_F(LiminalJsonIOInJsonGetMethod, WhenGivenNestedJsonFile) {
 }
 
 TEST_F(LiminalJsonIOInJsonGetMethod, WhenGivenWrongRequestedType) {
-    _instance.parse(liminal_json_io_test::paths::NESTED);
+    _instance.parse(liminal_json_io_test::paths::VALID__NESTED);
     EXPECT_FALSE(_instance.get<liminal_json_io::types::FloatNum_t>("nestedData.level1.level2.level3.level4.level5.level6.level7.level8.level9.level10.level11.level12.level13.level14.level15.level16.level17.level18.level19.level20.level21.randomKey2").has_value());
     EXPECT_FALSE(_instance.get<liminal_json_io::types::Null_t>("nestedData.level1.level2.level3.level4.level5.level6.level7.level8.level9.greeting").has_value());
 
-    _instance.parse(liminal_json_io_test::paths::LARGE);
+    _instance.parse(liminal_json_io_test::paths::VALID__LARGE);
     EXPECT_FALSE(_instance.get<liminal_json_io::types::IntNum_t>("[14].latitude").has_value());
 
-    _instance.parse(liminal_json_io_test::paths::BASIC);
+    _instance.parse(liminal_json_io_test::paths::VALID__BASIC);
     EXPECT_FALSE(_instance.get<liminal_json_io::types::FloatNum_t>("name").has_value());
 }

@@ -1,0 +1,15 @@
+{
+    "hobbies": [
+        "reading",
+        "gaming"
+        "hiking",
+        {
+            "nestedHobby": "no"
+        },
+        {
+            "secondNestedHobbies": ["un", "dos", 3, null],
+            "nothingImportantHere": null
+        }
+    ],
+    "happy": "yes"
+}
