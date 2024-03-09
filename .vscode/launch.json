@@ -24,25 +24,33 @@
               }
             ],
         },
-        {
-          "name": "Debug Tests",
-          "type": "cppdbg",
-          "request": "launch",
-          "args": [],
-          "stopAtEntry": false,
-          "internalConsoleOptions": "neverOpen",
-          "externalConsole": false,
-            "cwd": "${workspaceFolder}/build/tests",
-            "program": "${workspaceFolder}/build/tests/LiminalUnitTests",
-            "MIMode": "gdb",
-            "miDebuggerPath": "gdb",
-            "setupCommands": [
-              {
-                "description": "Enable pretty-printing for gdb",
-                "text": "-enable-pretty-printing",
-                "ignoreFailures": true
-              }
-            ],
+      {
+        "name": "Debug Tests throught ctest command",
+        "type": "cppdbg",
+        "request": "launch",
+        "args": [
+          "-R",
+          "WhenGivenPathOfObjectNotContainingComplexValues/LiminalJsonIoObjectHasComplexValueMethod.ReturnGivenBool",
+          "--output-on-failure"
+        ],
+        "stopAtEntry": false,
+        "internalConsoleOptions": "neverOpen",
+        "externalConsole": false,
+        "cwd": "${workspaceFolder}/build/tests",
+        "program": "/usr/bin/ctest",
+        "MIMode": "gdb",
+        "miDebuggerPath": "gdb",
+        "setupCommands": [
+          {
+            "description": "Enable pretty-printing for gdb",
+            "text": "-enable-pretty-printing",
+            "ignoreFailures": true
+          },
+          {
+            "text": "set follow-fork-mode child",
+            "ignoreFailures": true
           }
+        ]
+      }
     ]
 }
