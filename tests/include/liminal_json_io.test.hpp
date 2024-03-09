@@ -19,6 +19,7 @@ namespace liminal_json_io_test {
     namespace paths {
 
         const std::string VALID__BASIC = "./assets/json/valid/basic.json";
+        const std::string VALID__EDGE_CASES = "./assets/json/valid/edgeCases.json";
         const std::string VALID__NESTED  = "./assets/json/valid/nested.json";
         const std::string VALID__LARGE = "./assets/json/valid/large.json";
 

@@ -75,16 +75,18 @@ namespace liminal_json_io {
 
                 std::optional<std::string> __tryLexingString(_types::_Indices jsonIndices) {
                     std::optional<std::string> res{};
+                    bool escaped = false;
                     
                     if (jsonIndices.at(0).value == _syntax::_QUOTE_C) {
                         __updateOptionalString(res, jsonIndices.at(0).value); //if start with a quote, it's a string                    
                         jsonIndices.erase(jsonIndices.begin());
                         for (const _types::_Index &index : jsonIndices) {
-                            if (index.value == _syntax::_QUOTE_C) {
-                                __updateOptionalString(res,index.value); //if start with a quote, it's a string                    
+                            if (escaped == false && index.value == _syntax::_QUOTE_C) { // if end of string, but quote is not escaped
+                                __updateOptionalString(res,index.value);
                                 break;
-                            } // if end of string
+                            } 
                             __updateOptionalString(res, index.value);
+                            escaped = index.value == '\\';
                         }
                     }
                     return res;

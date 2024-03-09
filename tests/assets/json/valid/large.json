@@ -435,7 +435,11 @@
         "friends": [
             {
                 "id": 0,
-                "name": "Gomez Rowe"
+                "name": "Gomez Rowe",
+                "specialFriend": {
+                    "firstsName": "John",
+                    "secondName": "Doe"
+                }
             },
             {
                 "id": 1,

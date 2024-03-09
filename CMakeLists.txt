@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.14)
 file(READ VERSION PROJECT_VERSION)
 
 project(Liminal VERSION ${PROJECT_VERSION})
-
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -g -g3 -Wall -Wextra -Wpedantic")
 
 # Get the number of cores
