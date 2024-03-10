@@ -35,7 +35,7 @@ namespace liminal_json_io {
                 _types::_Object_t object{};
 
                 currentToken = tokens.at(++index);
-                if (currentToken.type != _lexing::_types::_TokenTypes_e_c::KEY) {
+                if (currentToken.type != _lexing::_types::_TokenTypes_e_c::KEY && currentToken.strValue != std::string{_syntax::_RIGHT_BRACE_C} ) {
                     throw std::runtime_error("Key was expected. Got " + currentToken.getTypeAsStr() + "value = " + currentToken.strValue);
                 }
                 while (currentToken.isEqual(_syntax::_RIGHT_BRACE_C) == false) {

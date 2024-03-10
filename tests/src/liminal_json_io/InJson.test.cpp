@@ -85,7 +85,10 @@ INSTANTIATE_TEST_SUITE_P(
         std::make_pair(liminal_json_io_test::paths::INVALID__COMMA__MISSING_IN_ARRAY, liminal_json_io::Status::PARSING_ERR),
         std::make_pair(liminal_json_io_test::paths::INVALID__COMMA__MISSING_IN_NESTED_ARRAY, liminal_json_io::Status::PARSING_ERR),
         std::make_pair(liminal_json_io_test::paths::INVALID__COMMA__MISSING_IN_NUM_ARRAY, liminal_json_io::Status::PARSING_ERR),
-        std::make_pair(liminal_json_io_test::paths::INVALID__COMMA__MULTIPLE_MISSING_IN_ARRAY, liminal_json_io::Status::PARSING_ERR)
+        std::make_pair(liminal_json_io_test::paths::INVALID__COMMA__MULTIPLE_MISSING_IN_ARRAY, liminal_json_io::Status::PARSING_ERR),
+
+        // TODO : remove this
+        std::make_pair(liminal_json_io_test::paths::INVALID__DOT__KEY_CONTAINING_DOT, liminal_json_io::Status::PARSING_ERR)
     )
 );
 
@@ -94,6 +97,7 @@ INSTANTIATE_TEST_SUITE_P(
     LiminalJsonIOInJsonParseMethod,
     testing::Values(
         std::make_pair(liminal_json_io_test::paths::VALID__BASIC, liminal_json_io::Status::OK),
+        std::make_pair(liminal_json_io_test::paths::VALID__EDGE_CASES, liminal_json_io::Status::OK),
         std::make_pair(liminal_json_io_test::paths::VALID__NESTED, liminal_json_io::Status::OK),
         std::make_pair(liminal_json_io_test::paths::VALID__LARGE, liminal_json_io::Status::OK)
     )
@@ -243,6 +247,25 @@ TEST_F(LiminalJsonIOInJsonGetMethod, WhenGivenBasicJsonFile) {
     has_value<liminal_json_io::types::String_t>(true, "happy");
     value_eq<liminal_json_io::types::String_t>("yes", "happy");
     type_eq(liminal_json_io::types::ValueTypes::STRING, "happy");
+}
+
+TEST_F(LiminalJsonIOInJsonGetMethod, WhenGivenEdgeCasesJsonFile) {
+    _instance.parse(liminal_json_io_test::paths::VALID__EDGE_CASES);
+
+    has_value<liminal_json_io::types::Object_t>(true);
+    type_eq(liminal_json_io::types::ValueTypes::OBJECT);
+
+    //TODO : test a liminal_string interpret escaped chars func
+    has_value<liminal_json_io::types::String_t>(true, "isThisAnObjec\\tt?::\\n:::,  ");
+    value_eq<liminal_json_io::types::String_t>("{\\\"I\\\": \\\"don't\\\",\\n\\t\\\"think\\\": false }", "isThisAnObjec\\tt?::\\n:::,  ");
+    type_eq(liminal_json_io::types::ValueTypes::STRING, "isThisAnObjec\\tt?::\\n:::,  ");
+
+    has_value<liminal_json_io::types::Object_t>(true, "12345");
+    type_eq(liminal_json_io::types::ValueTypes::OBJECT, "12345");
+
+    // FIXME : overwrite operator [] instead of using a get method, but how to handle get_type ?
+    has_value<liminal_json_io::types::Array_t>(true, "-78.40014");
+    type_eq(liminal_json_io::types::ValueTypes::ARRAY, "-78.40014");
 }
 
 TEST_F(LiminalJsonIOInJsonGetMethod, WhenGivenLargeJsonFile) {

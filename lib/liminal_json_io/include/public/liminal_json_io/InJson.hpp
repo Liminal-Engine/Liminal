@@ -47,7 +47,6 @@ namespace liminal_json_io {
             requires is_in_variant_v<T, types::Any_t>
             std::optional<T> get(const std::string &jsonPath = "") const;
        
-
         private:
             class _InJsonImpl;
             std::unique_ptr<_InJsonImpl> _inJsonImpl;

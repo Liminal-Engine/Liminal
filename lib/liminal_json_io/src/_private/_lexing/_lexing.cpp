@@ -62,8 +62,10 @@ namespace liminal_json_io {
                             if (res.back().isEqual(_syntax::_COLON_C) and res.size() >= 2 and res.at(res.size() - 2).type == _types::_TokenTypes_e_c::STRING) { //If current token is ":" and last token is a string. Last token is transform to a KEY
                                 if (res.at(res.size() - 3).strValue != "{" && res.at(res.size() - 3).strValue != ",") {
                                     throw std::runtime_error("Error : missing comma approximately at " + jsonIndices.at(0).getPosDescription()); // if token before the supposed key is not ",", it means that a "," is missing so throw error    
-                                }
+                                }                                
                                 res.at(res.size() - 2).type = _types::_TokenTypes_e_c::KEY;
+                                // TODO : remove this
+                                // if (res.at(res.size() -2).strValue.contains('.')) throw std::runtime_error("Error : Key " + res.at(res.size() - 2).strValue + " contains a dot. This is forbidden by the library");
                             }
                             jsonIndices.erase(jsonIndices.begin());
                         } else {
@@ -86,6 +88,7 @@ namespace liminal_json_io {
                                 break;
                             } 
                             __updateOptionalString(res, index.value);
+
                             escaped = index.value == '\\';
                         }
                     }
