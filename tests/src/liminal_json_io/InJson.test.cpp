@@ -261,9 +261,43 @@ TEST_F(LiminalJsonIOInJsonGetMethod, WhenGivenEdgeCasesJsonFile) {
     has_value<liminal_json_io::types::Object_t>(true, "12345");
     type_eq(liminal_json_io::types::ValueTypes::OBJECT, "12345");
 
-    // FIXME : overwrite operator [] instead of using a get method, but how to handle get_type ?
     has_value<liminal_json_io::types::Array_t>(true, "-78.40014", std::vector<std::string>{"/", "[", "["});
     type_eq(liminal_json_io::types::ValueTypes::ARRAY, "-78.40014", std::vector<std::string>{"/", "[", "["});
+
+    has_value<liminal_json_io::types::Object_t>(true, "78");
+    type_eq(liminal_json_io::types::ValueTypes::OBJECT, "78");
+
+    has_value<liminal_json_io::types::Array_t>(true, "78.40014");
+    type_eq(liminal_json_io::types::ValueTypes::ARRAY, "78.40014");
+
+    has_value<liminal_json_io::types::Object_t>(true, "78.40014[0]");
+    type_eq(liminal_json_io::types::ValueTypes::OBJECT, "78.40014[0]");
+
+    has_value<liminal_json_io::types::Array_t>(true, "78.40014[0].yes");
+    type_eq(liminal_json_io::types::ValueTypes::ARRAY, "78.40014[0].yes");
+
+    has_value<liminal_json_io::types::String_t>(true, "78.40014[0].yes[0]");
+    value_eq<liminal_json_io::types::String_t>("no", "78.40014[0].yes[0]");
+    type_eq(liminal_json_io::types::ValueTypes::STRING, "78.40014[0].yes[0]");
+
+    has_value<liminal_json_io::types::String_t>(true, "78.40014[0].yes[1]");
+    value_eq<liminal_json_io::types::String_t>("maybe", "78.40014[0].yes[1]");
+    type_eq(liminal_json_io::types::ValueTypes::STRING, "78.40014[0].yes[1]");
+
+    has_value<liminal_json_io::types::String_t>(true, "78.40014[0].yes[2]");
+    value_eq<liminal_json_io::types::String_t>("this[is]a.[key]", "78.40014[0].yes[2]");
+    type_eq(liminal_json_io::types::ValueTypes::STRING, "78.40014[0].yes[2]");
+
+    has_value<liminal_json_io::types::Array_t>(true, "78/an.other.[ke.y]", std::vector<std::string>{"/", "<", ">"});
+    type_eq(liminal_json_io::types::ValueTypes::ARRAY, "78/an.other.[ke.y]", std::vector<std::string>{"/", "<", ">"});
+
+    has_value<liminal_json_io::types::String_t>(true, "78/an.other.[ke.y]<0>/yes", std::vector<std::string>{"/", "<", ">"});
+    value_eq<liminal_json_io::types::String_t>("no", "78/an.other.[ke.y]<0>/yes", std::vector<std::string>{"/", "<", ">"});
+    type_eq(liminal_json_io::types::ValueTypes::STRING, "78/an.other.[ke.y]<0>/yes", std::vector<std::string>{"/", "<", ">"});
+
+    has_value<liminal_json_io::types::Null_t>(true, "78/an.other.[ke.y]<1>/no", std::vector<std::string>{"/", "<", ">"});
+    value_eq<liminal_json_io::types::Null_t>(nullptr, "78/an.other.[ke.y]<1>/no", std::vector<std::string>{"/", "<", ">"});
+    type_eq(liminal_json_io::types::ValueTypes::NULL_VALUE, "78/an.other.[ke.y]<1>/no", std::vector<std::string>{"/", "<", ">"});
 }
 
 TEST_F(LiminalJsonIOInJsonGetMethod, WhenGivenLargeJsonFile) {

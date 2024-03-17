@@ -20,28 +20,6 @@
 #include <tuple>
 #include <filesystem>
 
-/**
- * Class liminal_json_io::types::Object
-*       -> Object(const Object &other) : test with simple values, nested values, edge cases
-            -> for each of the following tetsts, test with both InJson.parsing and this constructor
- *      -> &operator= : test with simple values, nested values, edge cases
-            -> for each of the following tetsts, test with both InJson.parsing and this constructor, and the operator =
- *      -> hasNestedComplexValues(void) : test both with nested and non nested, several nested, edge cases
-            -> test fixture, and test_p with returned value
- *      -> getNestedComplexValuesKeys : test both with nested and non nested, several nested, edge cases, test every values
- *          -> test fixture, and test_p with returned value
- *      ->  template <typename T>
-            requires is_in_variant_v<T, types::SimpleTypes_t>
-            std::optional<T> get(const types::Key_t &key) const : same that with in json but for object only
- *              -> for each case, make a test_f for each case and tests each or almost each values depending on the size
-
-        -> make sure to test equality with each simple types
-
-        -> edge case :
-            -> json object inside of which there's a stringed object : "{"yes": "no"}" for has complexvalues and getcomplexvalues
-            -> test if special chars match : '\n', '\t', etc... (option in parse to read special chars ?)
- */
-
 // param = tuple<string:  filePath, string: jsonKeyPath, bool: expectedValue>
 class LiminalJsonIoObjectHasComplexValueMethod : public ::testing::TestWithParam<std::tuple<std::string, std::string, bool>> {
     protected:
