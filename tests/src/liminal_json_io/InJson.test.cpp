@@ -85,10 +85,8 @@ INSTANTIATE_TEST_SUITE_P(
         std::make_pair(liminal_json_io_test::paths::INVALID__COMMA__MISSING_IN_ARRAY, liminal_json_io::Status::PARSING_ERR),
         std::make_pair(liminal_json_io_test::paths::INVALID__COMMA__MISSING_IN_NESTED_ARRAY, liminal_json_io::Status::PARSING_ERR),
         std::make_pair(liminal_json_io_test::paths::INVALID__COMMA__MISSING_IN_NUM_ARRAY, liminal_json_io::Status::PARSING_ERR),
-        std::make_pair(liminal_json_io_test::paths::INVALID__COMMA__MULTIPLE_MISSING_IN_ARRAY, liminal_json_io::Status::PARSING_ERR),
+        std::make_pair(liminal_json_io_test::paths::INVALID__COMMA__MULTIPLE_MISSING_IN_ARRAY, liminal_json_io::Status::PARSING_ERR)
 
-        // TODO : remove this
-        std::make_pair(liminal_json_io_test::paths::INVALID__DOT__KEY_CONTAINING_DOT, liminal_json_io::Status::PARSING_ERR)
     )
 );
 
@@ -126,21 +124,21 @@ class LiminalJsonIOInJsonGetMethod : public ::testing::Test {
         
         template <typename T>
         requires liminal_json_io::is_in_variant_v<T, liminal_json_io::types::Any_t>
-        void has_value(const bool &expected, const std::string &jsonPath = "") {
-            EXPECT_EQ(this->_instance.get<T>(jsonPath).has_value(), expected);
+        void has_value(const bool &expected, const std::string &jsonPath = "", const std::vector<std::string> &separators = std::vector<std::string>{".", "[", "]"}) {
+            EXPECT_EQ(this->_instance.get<T>(jsonPath, separators).has_value(), expected);
         }
 
         template <typename T>
         requires liminal_json_io::is_in_variant_v<T, liminal_json_io::types::Any_t>
-        void value_eq(const T &expected, const std::string &jsonPath = "") {
+        void value_eq(const T &expected, const std::string &jsonPath = "", const std::vector<std::string> &separators = std::vector<std::string>{".", "[", "]"}) {
             if constexpr (std::is_same_v<T, liminal_json_io::types::FloatNum_t>)
-                EXPECT_NEAR(this->_instance.get<liminal_json_io::types::FloatNum_t>(jsonPath).value(), expected, constants::EXPECT_NEAR_ABSOLUTE_ERROR);
+                EXPECT_NEAR(this->_instance.get<liminal_json_io::types::FloatNum_t>(jsonPath, separators).value(), expected, constants::EXPECT_NEAR_ABSOLUTE_ERROR);
             else 
-                EXPECT_EQ(this->_instance.get<T>(jsonPath).value(), expected);
+                EXPECT_EQ(this->_instance.get<T>(jsonPath, separators).value(), expected);
         }
 
-        void type_eq(const liminal_json_io::types::ValueTypes &expected, const std::string &jsonPath = "") {
-            EXPECT_EQ(this->_instance.getType(jsonPath), expected);
+        void type_eq(const liminal_json_io::types::ValueTypes &expected, const std::string &jsonPath = "", const std::vector<std::string> &separators = std::vector<std::string>{".", "[", "]"}) {
+            EXPECT_EQ(this->_instance.getType(jsonPath, separators), expected);
         }
 };
 
@@ -264,8 +262,8 @@ TEST_F(LiminalJsonIOInJsonGetMethod, WhenGivenEdgeCasesJsonFile) {
     type_eq(liminal_json_io::types::ValueTypes::OBJECT, "12345");
 
     // FIXME : overwrite operator [] instead of using a get method, but how to handle get_type ?
-    has_value<liminal_json_io::types::Array_t>(true, "-78.40014");
-    type_eq(liminal_json_io::types::ValueTypes::ARRAY, "-78.40014");
+    has_value<liminal_json_io::types::Array_t>(true, "-78.40014", std::vector<std::string>{"/", "[", "["});
+    type_eq(liminal_json_io::types::ValueTypes::ARRAY, "-78.40014", std::vector<std::string>{"/", "[", "["});
 }
 
 TEST_F(LiminalJsonIOInJsonGetMethod, WhenGivenLargeJsonFile) {

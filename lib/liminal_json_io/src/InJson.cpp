@@ -32,8 +32,11 @@ namespace liminal_json_io
 
             }
 
-            types::ValueTypes getType(const std::string &jsonPath) const {
-                const _private::_JsonValueTypes jsonValueType = this->__getJsonValueFromPath(jsonPath).getType();
+            types::ValueTypes getType(
+                const std::string &jsonPath = "",
+                const std::vector<std::string> &separators = std::vector<std::string>{".", "[", "]"}
+            ) const {
+                const _private::_JsonValueTypes jsonValueType = this->__getJsonValueFromPath(jsonPath, separators).getType();
                 
                 switch (jsonValueType) {
                     case _private::_JsonValueTypes::_STRING :
@@ -57,8 +60,11 @@ namespace liminal_json_io
 
             template <typename T>
             requires is_in_variant_v<T, types::Any_t>
-            std::optional<T> get(const std::string &jsonPath = "") const {
-                _private::_JsonValue jsonValue{__getJsonValueFromPath(jsonPath)};
+            std::optional<T> get(
+                const std::string &jsonPath = "",
+                const std::vector<std::string> &separators = std::vector<std::string>{".", "[", "]"}
+            ) const {
+                _private::_JsonValue jsonValue{__getJsonValueFromPath(jsonPath, separators)};
                 if constexpr (!std::is_same_v<T, types::Object_t> && !std::is_same_v<T, types::Array_t>)
                 {
                     std::optional<T> res{};
@@ -74,11 +80,14 @@ namespace liminal_json_io
             }
 
         private:
-            _private::_JsonValue __getJsonValueFromPath(const std::string &jsonPath) const {
+            _private::_JsonValue __getJsonValueFromPath(
+                const std::string &jsonPath,
+                const std::vector<std::string> &separators = std::vector<std::string>{".", "[", "]"}
+            ) const {
                 if (this->_rootValue.has_value() == false) {
                     throw std::runtime_error("JSON has not been loaded.");
                 }
-                std::vector<std::string> tokenizedPath = liminal_parser::string::tokenize(jsonPath, std::vector<std::string>{".", "[", "]"});
+                std::vector<std::string> tokenizedPath = liminal_parser::string::tokenize(jsonPath, separators);
                 _private::_JsonValue tmpJsonValue{this->_rootValue.value()};
 
                 for (const std::string &key : tokenizedPath) {
@@ -142,12 +151,15 @@ namespace liminal_json_io
 
     template <typename T>
     requires is_in_variant_v<T, types::Any_t>
-    std::optional<T> InJson::get(const std::string &jsonPath) const {
-        return this->_inJsonImpl->get<T>(jsonPath);
+    std::optional<T> InJson::get(
+        const std::string &jsonPath,
+        const std::vector<std::string> &separators
+    ) const {
+        return this->_inJsonImpl->get<T>(jsonPath, separators);
     }
 
         #define instantiate_template_function(type)\
-            template std::optional<type> InJson::get(const std::string &) const;
+            template std::optional<type> InJson::get(const std::string &, const std::vector<std::string> &) const;
 
         instantiate_template_function(types::String_t)
         instantiate_template_function(types::IntNum_t)
@@ -159,8 +171,11 @@ namespace liminal_json_io
 
         #undef instantiate_template_function
 
-    types::ValueTypes InJson::getType(const std::string &jsonPath) const {
-        return _inJsonImpl->getType(jsonPath);
+    types::ValueTypes InJson::getType(
+        const std::string &jsonPath,
+        const std::vector<std::string> &separators
+        ) const {
+        return _inJsonImpl->getType(jsonPath, separators);
     }
 
 } // namespace liminal_json_io
