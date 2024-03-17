@@ -85,7 +85,8 @@ INSTANTIATE_TEST_SUITE_P(
         std::make_pair(liminal_json_io_test::paths::INVALID__COMMA__MISSING_IN_ARRAY, liminal_json_io::Status::PARSING_ERR),
         std::make_pair(liminal_json_io_test::paths::INVALID__COMMA__MISSING_IN_NESTED_ARRAY, liminal_json_io::Status::PARSING_ERR),
         std::make_pair(liminal_json_io_test::paths::INVALID__COMMA__MISSING_IN_NUM_ARRAY, liminal_json_io::Status::PARSING_ERR),
-        std::make_pair(liminal_json_io_test::paths::INVALID__COMMA__MULTIPLE_MISSING_IN_ARRAY, liminal_json_io::Status::PARSING_ERR)
+        std::make_pair(liminal_json_io_test::paths::INVALID__COMMA__MULTIPLE_MISSING_IN_ARRAY, liminal_json_io::Status::PARSING_ERR),
+        std::make_pair(liminal_json_io_test::paths::INVALID__COMMA__TOO_MUCH, liminal_json_io::Status::PARSING_ERR)
 
     )
 );
@@ -253,7 +254,7 @@ TEST_F(LiminalJsonIOInJsonGetMethod, WhenGivenEdgeCasesJsonFile) {
     has_value<liminal_json_io::types::Object_t>(true);
     type_eq(liminal_json_io::types::ValueTypes::OBJECT);
 
-    //TODO : test a liminal_string interpret escaped chars func
+    //TODO : create and test a liminal_string interpret escaped chars func
     has_value<liminal_json_io::types::String_t>(true, "isThisAnObjec\\tt?::\\n:::,  ");
     value_eq<liminal_json_io::types::String_t>("{\\\"I\\\": \\\"don't\\\",\\n\\t\\\"think\\\": false }", "isThisAnObjec\\tt?::\\n:::,  ");
     type_eq(liminal_json_io::types::ValueTypes::STRING, "isThisAnObjec\\tt?::\\n:::,  ");

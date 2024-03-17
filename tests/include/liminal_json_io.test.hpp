@@ -45,6 +45,7 @@ namespace liminal_json_io_test {
         const std::string INVALID__COMMA__MISSING_IN_NESTED_ARRAY = "./assets/json/comma/missingInNestedArray.json";
         const std::string INVALID__COMMA__MISSING_IN_NUM_ARRAY = "./assets/json/comma/missingInNumArray.json";
         const std::string INVALID__COMMA__MULTIPLE_MISSING_IN_ARRAY = "./assets/json/comma/multipleMissingInArray.json";
+        const std::string INVALID__COMMA__TOO_MUCH = "./assets/json/comma/tooMuch.json";
 
         const std::string INEXISTANT_PATH = "~~~~/**//---IDo|||NotExists&&.json";
         const std::string MISSING_LETTER_IN_FILE_EXT = "./assets/json/basicNoError.jso";

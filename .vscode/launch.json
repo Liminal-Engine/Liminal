@@ -30,7 +30,7 @@
         "request": "launch",
         "args": [
           "-R",
-          "LiminalJsonIOInJsonGetMethod.WhenGivenEdgeCasesJsonFile",
+          "WhenGivenPathOfObjectNotContainingComplexValues/LiminalJsonIoObjectHasComplexValueMethod.ReturnGivenBool",
           "--output-on-failure"
           // "WhenGivenPathOfObjectNotContainingComplexValues/LiminalJsonIoObjectHasComplexValueMethod.ReturnGivenBool",
         ],
