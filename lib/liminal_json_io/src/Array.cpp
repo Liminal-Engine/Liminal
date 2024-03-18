@@ -81,6 +81,8 @@ namespace liminal_json_io {
                     return res;
                 }
 
+                std::size_t getLen(void) const { return this->_internalArray.size(); };
+
             private:
                 std::vector<_private::_JsonValue> _internalArray;
                 
@@ -142,6 +144,8 @@ namespace liminal_json_io {
         instantiate_template_function(Null_t)
 
         #undef instantiate_template_function
+
+        std::size_t Array::getLen(void) const { return this->_arrayImpl->getLen(); };
 
     } // namespace types
 
