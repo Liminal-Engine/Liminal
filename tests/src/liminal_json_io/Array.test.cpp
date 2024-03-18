@@ -20,8 +20,9 @@
 #include <tuple>
 #include <filesystem>
 
-using ArrayparamType = std::tuple<std::string, std::string, bool, std::vector<std::string>>;
-class LiminalJsonIoArrayHasComplexValueMethod : public ::testing::TestWithParam<ArrayparamType> {
+// param = tuple<string:  filePath, string: jsonKeyPath, bool: expectedValue, std::vector<std::string>: separators>
+using ArrayHasComplexValueMethodParamType = std::tuple<std::string, std::string, bool, std::vector<std::string>>;
+class LiminalJsonIoArrayHasComplexValueMethod : public ::testing::TestWithParam<ArrayHasComplexValueMethodParamType> {
     protected:
         liminal_json_io::types::Array_t _instanceCreatedFromInJsonParseMethod;
         liminal_json_io::types::Array_t _instanceCreatedFromCopyConstructor;
@@ -51,7 +52,7 @@ class LiminalJsonIoArrayHasComplexValueMethod : public ::testing::TestWithParam<
         }
 };
 
-ArrayparamType createArrayParams(
+ArrayHasComplexValueMethodParamType createArrayHasComplexValueMethodParams(
     const std::string &filePath,
     const std::string &jsonKeyPath,
     const bool &res,
@@ -67,39 +68,39 @@ TEST_P(LiminalJsonIoArrayHasComplexValueMethod, ReturnGivenBool) {
 }
 
 INSTANTIATE_TEST_SUITE_P(
-    WhenGivenPathOfObjectContainingComplexValues,
+    WhenGivenPathOfArrayContainingComplexValues,
     LiminalJsonIoArrayHasComplexValueMethod,
     testing::Values(
-        createArrayParams(liminal_json_io_test::paths::VALID__BASIC, "hobbies", true),
+        createArrayHasComplexValueMethodParams(liminal_json_io_test::paths::VALID__BASIC, "hobbies", true),
 
         
-        createArrayParams(liminal_json_io_test::paths::VALID__EDGE_CASES, "78/40014", true, std::vector<std::string>{"/", "[", "]"}),
-        createArrayParams(liminal_json_io_test::paths::VALID__EDGE_CASES, "78/an.other.[ke.y]", true, std::vector<std::string>{"/", "<", ">"}),
+        createArrayHasComplexValueMethodParams(liminal_json_io_test::paths::VALID__EDGE_CASES, "78/40014", true, std::vector<std::string>{"/", "[", "]"}),
+        createArrayHasComplexValueMethodParams(liminal_json_io_test::paths::VALID__EDGE_CASES, "78/an.other.[ke.y]", true, std::vector<std::string>{"/", "<", ">"}),
 
-        createArrayParams(liminal_json_io_test::paths::VALID__NESTED, "nestedData.level1.level2.level3.level4.level5.level6.level7.level8.level9.friends", true),
+        createArrayHasComplexValueMethodParams(liminal_json_io_test::paths::VALID__NESTED, "nestedData.level1.level2.level3.level4.level5.level6.level7.level8.level9.friends", true),
 
-        createArrayParams(liminal_json_io_test::paths::VALID__LARGE, "[0].friends", true),
-        createArrayParams(liminal_json_io_test::paths::VALID__LARGE, "[9].friends", true),
-        createArrayParams(liminal_json_io_test::paths::VALID__LARGE, "[14].friends", true)
+        createArrayHasComplexValueMethodParams(liminal_json_io_test::paths::VALID__LARGE, "[0].friends", true),
+        createArrayHasComplexValueMethodParams(liminal_json_io_test::paths::VALID__LARGE, "[9].friends", true),
+        createArrayHasComplexValueMethodParams(liminal_json_io_test::paths::VALID__LARGE, "[14].friends", true)
     )
 );
 
 INSTANTIATE_TEST_SUITE_P(
-    WhenGivenPathOfObjectNotContainingComplexValues,
+    WhenGivenPathOfArrayNotContainingComplexValues,
     LiminalJsonIoArrayHasComplexValueMethod,
     testing::Values(
-        createArrayParams(liminal_json_io_test::paths::VALID__BASIC, "hobbies[4].secondNestedHobbies", false),
+        createArrayHasComplexValueMethodParams(liminal_json_io_test::paths::VALID__BASIC, "hobbies[4].secondNestedHobbies", false),
 
-        createArrayParams(liminal_json_io_test::paths::VALID__EDGE_CASES, "78.40014", false, std::vector<std::string>{"/", "[", "]"}),
-        createArrayParams(liminal_json_io_test::paths::VALID__EDGE_CASES, "78/40014[0]/yes", false, std::vector<std::string>{"/", "[", "]"}),
+        createArrayHasComplexValueMethodParams(liminal_json_io_test::paths::VALID__EDGE_CASES, "78.40014", false, std::vector<std::string>{"/", "[", "]"}),
+        createArrayHasComplexValueMethodParams(liminal_json_io_test::paths::VALID__EDGE_CASES, "78/40014[0]/yes", false, std::vector<std::string>{"/", "[", "]"}),
 
-        createArrayParams(liminal_json_io_test::paths::VALID__NESTED, "interests", false),
-        createArrayParams(liminal_json_io_test::paths::VALID__NESTED, "nestedData.level1.level2.level3.level4.level5.level6.level7.level8.level9.tags", false),
+        createArrayHasComplexValueMethodParams(liminal_json_io_test::paths::VALID__NESTED, "interests", false),
+        createArrayHasComplexValueMethodParams(liminal_json_io_test::paths::VALID__NESTED, "nestedData.level1.level2.level3.level4.level5.level6.level7.level8.level9.tags", false),
         
 
-        createArrayParams(liminal_json_io_test::paths::VALID__LARGE, "[0].tags", false),
-        createArrayParams(liminal_json_io_test::paths::VALID__LARGE, "[9].tags", false),
-        createArrayParams(liminal_json_io_test::paths::VALID__LARGE, "[14].tags", false)
+        createArrayHasComplexValueMethodParams(liminal_json_io_test::paths::VALID__LARGE, "[0].tags", false),
+        createArrayHasComplexValueMethodParams(liminal_json_io_test::paths::VALID__LARGE, "[9].tags", false),
+        createArrayHasComplexValueMethodParams(liminal_json_io_test::paths::VALID__LARGE, "[14].tags", false)
 
     )
 );
@@ -265,3 +266,99 @@ TEST_F(LiminalJsonIoArrayGetMethod, ShoudlMatchExpectedValuesNestedJsonFile2) {
     value_eq<liminal_json_io::types::String_t>("proident", 5);
     value_eq<liminal_json_io::types::String_t>("sint", 6);
 };
+
+// param = tuple<string:  filePath, string: jsonKeyPath, std::size_t: expectedValue, std::vector<std::string>: separators>
+using ArrayGetLenMethodParamType = std::tuple<std::string, std::string, std::size_t, std::vector<std::string>>;
+class LiminalJsonIoArrayGetLenMethod : public ::testing::TestWithParam<ArrayGetLenMethodParamType> {
+
+    protected:
+        liminal_json_io::types::Array_t _instanceCreatedFromInJsonParseMethod;
+        liminal_json_io::types::Array_t _instanceCreatedFromCopyConstructor;
+        liminal_json_io::types::Array_t _instanceCreatedFromEqualOperator; 
+
+    LiminalJsonIoArrayGetLenMethod(void) : 
+    _instanceCreatedFromInJsonParseMethod{__createInstanceFromInJsonParseMethod()},
+    _instanceCreatedFromCopyConstructor{__createInstanceFromCopyConstructor()},
+    _instanceCreatedFromEqualOperator{__createInstanceFromEqualOperator()}
+    {}
+
+    private:
+        liminal_json_io::types::Array_t __createInstanceFromInJsonParseMethod(void) {
+            std::filesystem::current_path("../../tests");
+            liminal_json_io::InJson inJson{};
+            inJson.parse(std::get<0>(GetParam()));
+            return inJson.get<liminal_json_io::types::Array_t>(std::get<1>(GetParam()), std::get<3>(GetParam())).value();
+        }
+
+        liminal_json_io::types::Array_t __createInstanceFromCopyConstructor(void) {
+            return liminal_json_io::types::Array_t(this->_instanceCreatedFromInJsonParseMethod);
+        }
+
+        liminal_json_io::types::Array_t __createInstanceFromEqualOperator(void) {
+            liminal_json_io::types::Array_t copy = this->_instanceCreatedFromInJsonParseMethod;
+            return copy;
+        }
+};
+
+ArrayGetLenMethodParamType createArrayGetLenMethodParams(
+    const std::string &filePath,
+    const std::string &jsonKeyPath,
+    const std::size_t &res,
+    const std::vector<std::string> &separators = std::vector<std::string>{".", "[", "]"}
+) {
+    return std::make_tuple(filePath, jsonKeyPath, res, separators);
+}
+
+TEST_P(LiminalJsonIoArrayGetLenMethod, ReturnGivenLength) {
+    EXPECT_EQ(_instanceCreatedFromInJsonParseMethod.getLen(), std::get<2>(GetParam()));
+    EXPECT_EQ(_instanceCreatedFromCopyConstructor.getLen(), std::get<2>(GetParam()));
+    EXPECT_EQ(_instanceCreatedFromEqualOperator.getLen(), std::get<2>(GetParam()));
+};
+
+INSTANTIATE_TEST_SUITE_P(
+    WhenGivenPathOfArraysInValidJsonFiles,
+    LiminalJsonIoArrayGetLenMethod,
+    testing::Values(
+        createArrayGetLenMethodParams(liminal_json_io_test::paths::VALID__BASIC, "hobbies", 5),
+        createArrayGetLenMethodParams(liminal_json_io_test::paths::VALID__BASIC, "hobbies[4].secondNestedHobbies", 4),
+
+        createArrayGetLenMethodParams(liminal_json_io_test::paths::VALID__EDGE_CASES, "78.40014", 0, std::vector<std::string>{"/", "[", "]"}),
+        createArrayGetLenMethodParams(liminal_json_io_test::paths::VALID__EDGE_CASES, "78.40014", 1),
+        createArrayGetLenMethodParams(liminal_json_io_test::paths::VALID__EDGE_CASES, "78.40014[0].yes", 3),
+        createArrayGetLenMethodParams(liminal_json_io_test::paths::VALID__EDGE_CASES, "78/an.other.[ke.y]", 2, std::vector<std::string>{"/", "<", ">"}),
+
+
+        createArrayGetLenMethodParams(liminal_json_io_test::paths::VALID__LARGE, "[0].tags", 7),
+        createArrayGetLenMethodParams(liminal_json_io_test::paths::VALID__LARGE, "[0].friends", 3),
+        createArrayGetLenMethodParams(liminal_json_io_test::paths::VALID__LARGE, "[1].tags", 7),
+        createArrayGetLenMethodParams(liminal_json_io_test::paths::VALID__LARGE, "[1].friends", 3),
+        createArrayGetLenMethodParams(liminal_json_io_test::paths::VALID__LARGE, "[2].tags", 7),
+        createArrayGetLenMethodParams(liminal_json_io_test::paths::VALID__LARGE, "[2].friends", 3),
+        createArrayGetLenMethodParams(liminal_json_io_test::paths::VALID__LARGE, "[3].tags", 7),
+        createArrayGetLenMethodParams(liminal_json_io_test::paths::VALID__LARGE, "[3].friends", 3),
+        createArrayGetLenMethodParams(liminal_json_io_test::paths::VALID__LARGE, "[4].tags", 7),
+        createArrayGetLenMethodParams(liminal_json_io_test::paths::VALID__LARGE, "[4].friends", 3),
+        createArrayGetLenMethodParams(liminal_json_io_test::paths::VALID__LARGE, "[5].tags", 7),
+        createArrayGetLenMethodParams(liminal_json_io_test::paths::VALID__LARGE, "[5].friends", 3),
+        createArrayGetLenMethodParams(liminal_json_io_test::paths::VALID__LARGE, "[6].tags", 7),
+        createArrayGetLenMethodParams(liminal_json_io_test::paths::VALID__LARGE, "[6].friends", 3),
+        createArrayGetLenMethodParams(liminal_json_io_test::paths::VALID__LARGE, "[7].tags", 7),
+        createArrayGetLenMethodParams(liminal_json_io_test::paths::VALID__LARGE, "[7].friends", 3),
+        createArrayGetLenMethodParams(liminal_json_io_test::paths::VALID__LARGE, "[8].tags", 7),
+        createArrayGetLenMethodParams(liminal_json_io_test::paths::VALID__LARGE, "[8].friends", 3),
+        createArrayGetLenMethodParams(liminal_json_io_test::paths::VALID__LARGE, "[9].tags", 7),
+        createArrayGetLenMethodParams(liminal_json_io_test::paths::VALID__LARGE, "[9].friends", 3),
+        createArrayGetLenMethodParams(liminal_json_io_test::paths::VALID__LARGE, "[10].tags", 7),
+        createArrayGetLenMethodParams(liminal_json_io_test::paths::VALID__LARGE, "[10].friends", 3),
+        createArrayGetLenMethodParams(liminal_json_io_test::paths::VALID__LARGE, "[11].tags", 7),
+        createArrayGetLenMethodParams(liminal_json_io_test::paths::VALID__LARGE, "[11].friends", 3),
+        createArrayGetLenMethodParams(liminal_json_io_test::paths::VALID__LARGE, "[12].tags", 7),
+        createArrayGetLenMethodParams(liminal_json_io_test::paths::VALID__LARGE, "[12].friends", 3),
+        createArrayGetLenMethodParams(liminal_json_io_test::paths::VALID__LARGE, "[13].tags", 7),
+        createArrayGetLenMethodParams(liminal_json_io_test::paths::VALID__LARGE, "[13].friends", 3),
+        createArrayGetLenMethodParams(liminal_json_io_test::paths::VALID__LARGE, "[14].tags", 7),
+        createArrayGetLenMethodParams(liminal_json_io_test::paths::VALID__LARGE, "[14].friends", 3),
+        createArrayGetLenMethodParams(liminal_json_io_test::paths::VALID__LARGE, "[15].tags", 7),
+        createArrayGetLenMethodParams(liminal_json_io_test::paths::VALID__LARGE, "[15].friends", 3)
+    )
+);

@@ -94,6 +94,8 @@ namespace liminal_json_io {
                 template <typename T>
                 requires is_in_variant_v<T, types::SimpleTypes_t>
                 std::optional<T> get(const std::size_t &index) const;
+
+                std::size_t getLen(void) const;
             
             private:
                 class _ArrayImpl; //Forward declaration
