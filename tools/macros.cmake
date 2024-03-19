@@ -4,7 +4,6 @@ macro(_set_project_name)
 endmacro(_set_project_name)
 
 macro(discover_lib)
-
     file(GLOB_RECURSE SOURCES "src/*.cpp")
     _set_project_name()
 
@@ -14,11 +13,9 @@ macro(discover_lib)
 endmacro()
 
 macro(link_external_libs mode libs)
-    get_filename_component(PROJECT_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
-    project(${PROJECT_NAME})
+    _set_project_name()
 
     target_link_libraries(${PROJECT_NAME} ${mode} ${libs})
-    
 endmacro(link_external_libs)
 
 macro(link_internal_libs mode)

@@ -28,4 +28,3 @@ endforeach()
 
 enable_testing()
 add_subdirectory(tests)
-# add_test(Liminal_tests, ${CMAKE_CURRENT_SOURCE_DIR}/build/tests/LiminalUnitTests)
