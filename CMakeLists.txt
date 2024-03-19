@@ -15,6 +15,8 @@ add_executable(Liminal src/main.cpp)
 
 target_include_directories(Liminal PUBLIC include)
 
+include(${CMAKE_CURRENT_SOURCE_DIR}/tools/macros.cmake)
+
 # Build each libs and link them to the final binary
 file(GLOB FULL_LIB_DIRS LIST_DIRECTORIES true "lib/*")
 foreach(FULL_DIR ${FULL_LIB_DIRS})
