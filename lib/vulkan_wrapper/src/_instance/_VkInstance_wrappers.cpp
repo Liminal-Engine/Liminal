@@ -45,7 +45,7 @@ namespace vulkan_wrapper {
         }
 
         /**
-         * @brief Loadqs a VkInstanceCreateInfo
+         * @brief Loads a VkInstanceCreateInfo
          * 
          * @param app_info (VkApplicationInfo *) - A pointer to a VkApplicationInfo to
          * integrate in the final VkInstanceCreateInfo
