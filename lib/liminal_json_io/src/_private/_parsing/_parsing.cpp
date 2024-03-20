@@ -23,9 +23,9 @@ namespace liminal_json_io {
         namespace _parsing {
 
             _JsonValue _processParsing(_lexing::_types::_Token_s &currentToken, _lexing::_types::_Tokens_t &tokens, std::size_t &index) {
-                if (currentToken.isEqual(_syntax::_LEFT_BRACE_C)) {
+                if (currentToken == _syntax::_LEFT_BRACE_C) {
                     return __parseObject(currentToken, tokens, index);
-                } else if (currentToken.isEqual(_syntax::_LEFT_BRACKET_C)) {
+                } else if (currentToken == _syntax::_LEFT_BRACKET_C) {
                     return __parseArray(currentToken, tokens, index);
                 }
                 return _JsonValue(currentToken);
@@ -35,18 +35,20 @@ namespace liminal_json_io {
                 _types::_Object_t object{};
 
                 currentToken = tokens.at(++index);
-                if (currentToken.type != _lexing::_types::_TokenTypes_e_c::KEY && currentToken.strValue != std::string{_syntax::_RIGHT_BRACE_C} ) {
-                    throw std::runtime_error("Key was expected. Got " + currentToken.getTypeAsStr() + "value = " + currentToken.strValue);
+                if (currentToken.getType() != _lexing::_types::_TokenTypes_e_c::KEY && currentToken.getValueAsStr() != std::string{_syntax::_RIGHT_BRACE_C} ) {
+                    throw std::runtime_error("Key was expected. Got " + currentToken.getTypeAsStr() + "value = " + currentToken.getValueAsStr());
                 }
-                while (currentToken.isEqual(_syntax::_RIGHT_BRACE_C) == false) {
-                    _types::_Key_t key{currentToken.strValue}; // TODO: check if token is indeed a key. same in __parseArray()
-                    if ( (currentToken = tokens.at(++index)).isEqual(_syntax::_COLON_C) == false ) {
-                        throw std::runtime_error("Error. Expected colon after key in JSON. Got :" + currentToken.strValue);
+                while (currentToken != _syntax::_RIGHT_BRACE_C) {
+                    if (currentToken.getType() != _lexing::_types::_TokenTypes_e_c::KEY)
+                        throw std::runtime_error("Error. Expected key. Got :" + currentToken.getValueAsStr());
+                    _types::_Key_t key{currentToken.getValueAsStr()};
+                    if ( (currentToken = tokens.at(++index)) != _syntax::_COLON_C ) {
+                        throw std::runtime_error("Error. Expected colon after key in JSON. Got :" + currentToken.getValueAsStr());
                     }
                     currentToken = tokens.at(++index); //Advance to the actual value
                     _JsonValue newJsonValue = _processParsing(currentToken, tokens, index);
                     object.insert({key, std::make_shared<_JsonValue>(newJsonValue)});
-                    if ( (currentToken = tokens.at(++index)).isEqual(_syntax::_COMMA_C) ) {
+                    if ( (currentToken = tokens.at(++index)) == _syntax::_COMMA_C ) {
                         currentToken = tokens.at(++index); //If on a comma, go to following token
                     }
                 }
@@ -57,10 +59,10 @@ namespace liminal_json_io {
                 _types::_Array_t array{};
 
                 currentToken = tokens.at(++index);
-                while (currentToken.isEqual(_syntax::_RIGHT_BRACKET_C) == false) {
+                while (currentToken != _syntax::_RIGHT_BRACKET_C) {
                     _JsonValue newJsonValue = _processParsing(currentToken, tokens, index);
                     array.push_back(std::make_shared<_JsonValue>(newJsonValue));
-                    if ( (currentToken = tokens.at(++index)).isEqual(_syntax::_COMMA_C) ) {
+                    if ( (currentToken = tokens.at(++index)) == _syntax::_COMMA_C ) {
                         currentToken = tokens.at(++index); //If on a comma, go to following token
                     }
                 }

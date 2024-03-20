@@ -17,6 +17,7 @@
 
 #include <string>
 #include <stdexcept>
+#include <optional>
 
 namespace liminal_fs {
     namespace _private {
@@ -54,11 +55,11 @@ namespace liminal_fs {
 
                 // Getters :
                 bool has_extension(void) const {
-                    return this->_extension != "";
+                    return this->_extension.has_value();
                 }
 
-                std::string get_extension(void) const {
-                    return this->_extension; //TODO : check if has extension first
+                std::optional<std::string> get_extension(void) const {
+                    return this->_extension;
                 }
 
             protected:
@@ -75,7 +76,7 @@ namespace liminal_fs {
                 const std::string _name;
                 const std::string _registered_path;
                 const std::string _absolute_path;
-                const std::string _extension;
+                const std::optional<std::string> _extension;
                 // const size_t _size_bytes;
 
                 _StreamType _stream;
@@ -117,8 +118,8 @@ namespace liminal_fs {
                  * @param path 
                  * @return const std::string& 
                  */
-                const std::string __load_extension(const path::path_t &path) {
-                    std::string res{""};
+                const std::optional<std::string> __load_extension(const path::path_t &path) {
+                    std::optional<std::string> res;
 
                     if (path::get_file_extension(res, path) != Status::OK) {
                         throw std::runtime_error("Failed to get file absolute path");

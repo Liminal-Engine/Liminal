@@ -31,8 +31,8 @@
 #include <tuple>
 #include <type_traits>
 
-//TODO : add edgeCases.json file tests
-
+// TODO : test if send a non-json file
+// TODO : test with a json that has { 43: "yes" } or { john: "doe" } wrong formatted key
 class LiminalJsonIOInJsonParseMethod : public ::testing::TestWithParam<std::pair<std::string, liminal_json_io::Status>> {
 
     protected:

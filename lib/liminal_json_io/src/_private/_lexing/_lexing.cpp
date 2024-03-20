@@ -32,40 +32,38 @@ namespace liminal_json_io {
                     
                     while (jsonIndices.size()) {
                         if ( (tmpValue = __tryLexingString(jsonIndices)).has_value() ) {
-                            res.push_back(_types::_Token_s{.strValue = liminal_parser::string::trim(tmpValue.value(), '\"'), .type = _types::_TokenTypes_e_c::STRING });
+                            res.push_back(_types::_Token_s{liminal_parser::string::trim(tmpValue.value(), '\"'), _types::_TokenTypes_e_c::STRING });
                             jsonIndices = _types::_Indices(jsonIndices.begin() + tmpValue.value().length(), jsonIndices.end());
 
                             continue;
                         } else if ( (tmpValue = __tryLexingNumber(jsonIndices)).has_value() ) {
                             res.push_back(_types::_Token_s{
-                                .strValue = tmpValue.value(),
-                                .type = liminal_parser::string::contains(tmpValue.value(), '.') ? _types::_TokenTypes_e_c::FLOAT_NUM : _types::_TokenTypes_e_c::INT_NUM
+                                tmpValue.value(),
+                                liminal_parser::string::contains(tmpValue.value(), '.') ? _types::_TokenTypes_e_c::FLOAT_NUM : _types::_TokenTypes_e_c::INT_NUM
                             });
                             jsonIndices = _types::_Indices(jsonIndices.begin() + tmpValue.value().length(), jsonIndices.end());
                             continue;
                         } else if ( (tmpValue = __tryLexingBool(jsonIndices)).has_value() ) {
-                            res.push_back(_types::_Token_s{.strValue = tmpValue.value(), .type = _types::_TokenTypes_e_c::BOOL});
+                            res.push_back(_types::_Token_s{tmpValue.value(), _types::_TokenTypes_e_c::BOOL});
                             jsonIndices = _types::_Indices(jsonIndices.begin() + tmpValue.value().length(), jsonIndices.end());
                             continue;
                         } else if ( (tmpValue = __tryLexingNull(jsonIndices)).has_value() ) {
-                            res.push_back(_types::_Token_s{.strValue = tmpValue.value(), .type = _types::_TokenTypes_e_c::NULL_});
+                            res.push_back(_types::_Token_s{tmpValue.value(), _types::_TokenTypes_e_c::NULL_});
                             jsonIndices = _types::_Indices(jsonIndices.begin() + tmpValue.value().length(), jsonIndices.end());
                             continue;
                         }
                         // Reset tmp optional value
                         tmpValue = std::optional<std::string>{};
-                        char currentChar = jsonIndices.at(0).value;
+                        char currentChar = jsonIndices.at(0).getValue();
                         if (std::find( std::begin(_syntax::_WHITE_SPACES_C_A), std::end(_syntax::_WHITE_SPACES_C_A), currentChar ) != std::end(_syntax::_WHITE_SPACES_C_A)) {
                             jsonIndices.erase(jsonIndices.begin());
                         } else if (std::find( std::begin(_syntax::_FORMAT_TOKENS_C_A), std::end(_syntax::_FORMAT_TOKENS_C_A), currentChar ) != std::end(_syntax::_FORMAT_TOKENS_C_A)) {
-                            res.push_back(_types::_Token_s{.strValue = std::string{currentChar}, .type = _types::_TokenTypes_e_c::SYNTAX});
-                            if (res.back().isEqual(_syntax::_COLON_C) and res.size() >= 2 and res.at(res.size() - 2).type == _types::_TokenTypes_e_c::STRING) { //If current token is ":" and last token is a string. Last token is transform to a KEY
-                                if (res.at(res.size() - 3).strValue != "{" && res.at(res.size() - 3).strValue != ",") {
+                            res.push_back(_types::_Token_s{std::string{currentChar}, _types::_TokenTypes_e_c::SYNTAX});
+                            if (res.back() == _syntax::_COLON_C and res.size() >= 2 and res.at(res.size() - 2).getType() == _types::_TokenTypes_e_c::STRING) { //If current token is ":" and last token is a string. Last token is transform to a KEY
+                                if (res.at(res.size() - 3).getValueAsStr() != "{" && res.at(res.size() - 3).getValueAsStr() != ",") {
                                     throw std::runtime_error("Error : missing comma approximately at " + jsonIndices.at(0).getPosDescription()); // if token before the supposed key is not ",", it means that a "," is missing so throw error    
                                 }                                
-                                res.at(res.size() - 2).type = _types::_TokenTypes_e_c::KEY;
-                                // TODO : remove this
-                                // if (res.at(res.size() -2).strValue.contains('.')) throw std::runtime_error("Error : Key " + res.at(res.size() - 2).strValue + " contains a dot. This is forbidden by the library");
+                                res.at(res.size() - 2).setType(_types::_TokenTypes_e_c::KEY);
                             }
                             jsonIndices.erase(jsonIndices.begin());
                         } else {
@@ -79,17 +77,17 @@ namespace liminal_json_io {
                     std::optional<std::string> res{};
                     bool escaped = false;
                     
-                    if (jsonIndices.at(0).value == _syntax::_QUOTE_C) {
-                        __updateOptionalString(res, jsonIndices.at(0).value); //if start with a quote, it's a string                    
+                    if (jsonIndices.at(0).getValue() == _syntax::_QUOTE_C) {
+                        __updateOptionalString(res, jsonIndices.at(0).getValue()); //if start with a quote, it's a string                    
                         jsonIndices.erase(jsonIndices.begin());
                         for (const _types::_Index &index : jsonIndices) {
-                            if (escaped == false && index.value == _syntax::_QUOTE_C) { // if end of string, but quote is not escaped
-                                __updateOptionalString(res,index.value);
+                            if (escaped == false && index.getValue() == _syntax::_QUOTE_C) { // if end of string, but quote is not escaped
+                                __updateOptionalString(res,index.getValue());
                                 break;
                             } 
-                            __updateOptionalString(res, index.value);
+                            __updateOptionalString(res, index.getValue());
 
-                            escaped = index.value == '\\';
+                            escaped = index.getValue() == '\\';
                         }
                     }
                     return res;
@@ -99,8 +97,8 @@ namespace liminal_json_io {
                     std::optional<std::string> res{};
 
                     for (const _types::_Index &index : jsonIndices) {
-                        if (std::find(std::begin(_syntax::_NUM_CHARS_C_A), std::end(_syntax::_NUM_CHARS_C_A), index.value) != std::end(_syntax::_NUM_CHARS_C_A)) {
-                            __updateOptionalString(res, index.value);
+                        if (std::find(std::begin(_syntax::_NUM_CHARS_C_A), std::end(_syntax::_NUM_CHARS_C_A), index.getValue()) != std::end(_syntax::_NUM_CHARS_C_A)) {
+                            __updateOptionalString(res, index.getValue());
                         } else {
                             break;
                         }
@@ -135,18 +133,11 @@ namespace liminal_json_io {
                 }
 
                 _types::_Indices __convertFileToIndicesContent(const std::string &path) {
-                    std::string extension{""};
                     _types::_Indices res{};
                     std::size_t tmpLine{1};
                     std::size_t tmpLineOffset{0};
                     std::string stringFileContent{};
 
-                    if (liminal_fs::path::get_file_extension(extension, path) != liminal_fs::Status::OK) {
-                        throw std::runtime_error("Failed to load JSON file : " + path);
-                    }
-                    if (extension != std::string(std::string(".") + std::string(_syntax::_FILE_EXTENSION_S))) {
-                        throw std::runtime_error("Error : file is not a JSON");
-                    }
                     liminal_fs::InFile jsonFile(path);
                     if (jsonFile.open() != liminal_fs::Status::OK) {
                         throw std::runtime_error("Failed to open JSON file : " + path);
@@ -164,7 +155,7 @@ namespace liminal_json_io {
                             tmpLine++;
                             tmpLineOffset = 0;
                         }
-                        res.push_back(_types::_Index{.value = c, .line = tmpLine, .lineOffset = tmpLineOffset});
+                        res.push_back(_types::_Index{c, tmpLine, tmpLineOffset});
                     }
                     return res;
                 }
@@ -185,7 +176,7 @@ namespace liminal_json_io {
                     std::string res(indices.size(), '\0');
 
                     std::transform(indices.begin(), indices.end(), res.begin(), [](const _types::_Index &index) {
-                        return index.value;
+                        return index.getValue();
                     });
                     return res;
                 }

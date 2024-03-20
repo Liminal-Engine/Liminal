@@ -4,12 +4,12 @@ macro(_set_project_name)
 endmacro(_set_project_name)
 
 macro(discover_lib)
-    file(GLOB_RECURSE SOURCES "src/*.cpp")
     _set_project_name()
 
+    file(GLOB_RECURSE SOURCES "src/*.cpp")
     add_library(${PROJECT_NAME} STATIC ${SOURCES})
-    target_include_directories(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/include/public/${PROJECT_NAME})
-    target_include_directories(${PROJECT_NAME} PRIVATE  ${CMAKE_CURRENT_SOURCE_DIR}/include/)
+    target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/public/${PROJECT_NAME})
+    target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/)
 endmacro()
 
 macro(link_external_libs mode libs)

@@ -39,7 +39,6 @@ int main() {
     file.read();
     file.close();
     std::cout << file.get_content() << std::endl;
-    std::cout << "extension  = " << file.get_extension() << " has extension = " << file.has_extension() << std::endl;
     
     liminal_json_io::InJson json;
 

@@ -14,6 +14,7 @@
 
 #include <fstream>
 #include <memory>
+#include <optional>
 
 namespace liminal_fs {
 
@@ -34,7 +35,7 @@ namespace liminal_fs {
             Status open(void);
             Status close(void);
             bool has_extension(void) const;
-            std::string get_extension(void) const;
+            std::optional<std::string> get_extension(void) const;
 
             Status read(void);
             // Getters :

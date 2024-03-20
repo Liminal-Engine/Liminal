@@ -13,6 +13,7 @@
 #define LIMINAL_LIB_LIMINAL_FS_PATH_PATH_HPP_
 
 #include <string>
+#include <optional>
 
 namespace liminal_fs {
     
@@ -24,7 +25,7 @@ namespace liminal_fs {
         using path_t = std::string;
         
         Status get_file_name(std::string &res, const path_t &path);
-        Status get_file_extension(std::string &res, const path_t &path);
+        Status get_file_extension(std::optional<std::string> &res, const path_t &path);
         Status get_absolute_path(std::string &res, const path_t &relative_path);
         Status path_exists(bool &res, const path_t &path);
         Status str_is_path(bool &res, const path_t &path);

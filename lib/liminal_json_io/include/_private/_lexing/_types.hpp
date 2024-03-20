@@ -30,23 +30,35 @@ namespace liminal_json_io {
                     SYNTAX
                 };
 
-                struct _Token_s {//TODO: private and public members
-                    std::string strValue;
-                    _TokenTypes_e_c type;
-                    bool isEqual(const char &value) const;//TODO: rewrite '==' operator instead
-                    bool isEqual(const char value[]) const;
-                    bool isEqual(const std::string &value) const;
-                    std::string getTypeAsStr(void) const;
-                    std::string getValueAsStr(void) const;
+                struct _Token_s {
+                    public:
+                        _Token_s(const std::string &strValue, const _TokenTypes_e_c &type);
+
+                        bool operator==(const char &value) const;
+                        bool operator==(const char value[]) const;
+                        bool operator==(const std::string &value) const;
+
+                        std::string getTypeAsStr(void) const;
+                        std::string getValueAsStr(void) const;
+                        _TokenTypes_e_c getType(void) const;
+                        void setType(const _TokenTypes_e_c &type);
+                    private:
+                        std::string _strValue;
+                        _TokenTypes_e_c _type;
                 };
 
                 using _Tokens_t = std::vector<_Token_s>;
 
-                struct _Index {//TODO: private and public members
-                    char value = 0;
-                    std::size_t line = 1;
-                    std::size_t lineOffset = 0;
-                    const std::string getPosDescription(void) const;
+                struct _Index {
+                    public:
+                        _Index(const char &value, const std::size_t &line, const std::size_t &lineOffset);
+
+                        char getValue(void) const;
+                        const std::string getPosDescription(void) const;
+                    private:
+                        char _value = 0;
+                        std::size_t _line = 1;
+                        std::size_t _lineOffset = 0;
                 };
 
                 using _Indices = std::vector<_Index>;

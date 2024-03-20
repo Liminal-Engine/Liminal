@@ -28,7 +28,7 @@ namespace vulkan_wrapper {
                         queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
                         queueCreateInfo.queueFamilyIndex = index;
                         queueCreateInfo.queueCount = 1;
-                        queueCreateInfo.pQueuePriorities = queuePriorities; //TODO new float{x} but we need to free it
+                        queueCreateInfo.pQueuePriorities = queuePriorities;
 
                         res.push_back(queueCreateInfo);
                     }

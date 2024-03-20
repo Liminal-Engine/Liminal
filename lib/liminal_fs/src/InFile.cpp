@@ -53,7 +53,7 @@ namespace liminal_fs {
     Status InFile::open(void) { return this->_pImpl->open(); }
     Status InFile::close(void) { return this->_pImpl->close(); }
     bool InFile::has_extension(void) const { return this->_pImpl->has_extension(); }
-    std::string InFile::get_extension(void) const { return this->_pImpl->get_extension(); }
+    std::optional<std::string> InFile::get_extension(void) const { return this->_pImpl->get_extension(); }
 
     //Current class methods definition
     Status InFile::read(void) { return this->_pImpl->read(); }

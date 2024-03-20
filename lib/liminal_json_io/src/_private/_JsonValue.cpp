@@ -18,10 +18,10 @@ namespace liminal_json_io {
 
         _JsonValue::_JsonValue(const _lexing::_types::_Token_s &token) :
         _type{[&]() ->  _JsonValueTypes {
-            if (token.type == _lexing::_types::_TokenTypes_e_c::SYNTAX) {
-                throw std::runtime_error("Error : _JsonValue constructor received a syntax token. Got : " + token.strValue);
+            if (token.getType() == _lexing::_types::_TokenTypes_e_c::SYNTAX) {
+                throw std::runtime_error("Error : _JsonValue constructor received a syntax token. Got : " + token.getValueAsStr());
             }
-            return this->__tokenTypeToJsonValueType(token.type);
+            return this->__tokenTypeToJsonValueType(token.getType());
         }()},
         _value{this->__tokenToValue(token)}
         {
@@ -100,15 +100,15 @@ namespace liminal_json_io {
         }
 
         _parsing::_types::_Any_t _JsonValue::__tokenToValue(const _lexing::_types::_Token_s &token) const {
-            switch (token.type) {
+            switch (token.getType()) {
                 case _lexing::_types::_TokenTypes_e_c::STRING:
-                    return token.strValue;
+                    return token.getValueAsStr();
                 case _lexing::_types::_TokenTypes_e_c::INT_NUM:
-                    return liminal_parser::string::toIntMax(token.strValue);
+                    return liminal_parser::string::toIntMax(token.getValueAsStr());
                 case _lexing::_types::_TokenTypes_e_c::FLOAT_NUM:
-                    return liminal_parser::string::toLongDouble(token.strValue);
+                    return liminal_parser::string::toLongDouble(token.getValueAsStr());
                 case _lexing::_types::_TokenTypes_e_c::BOOL:
-                    return liminal_parser::string::toBool(token.strValue);
+                    return liminal_parser::string::toBool(token.getValueAsStr());
                 case _lexing::_types::_TokenTypes_e_c::NULL_:
                     return nullptr;
                 case _lexing::_types::_TokenTypes_e_c::SYNTAX:

@@ -40,7 +40,7 @@ namespace liminal_fs {
             return Status::OK;
         }
 
-        Status get_file_extension(std::string &res, const path_t &path) {
+        Status get_file_extension(std::optional<std::string> &res, const path_t &path) {
             Status tmp_status = Status::NOK;
             if ((tmp_status = get_path_status(path)) != Status::OK) {
                 return tmp_status;
