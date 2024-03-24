@@ -4,18 +4,19 @@
 #include <vector>
 
 namespace vulkan_wrapper {
-    namespace _layer {
+    namespace _private {
+        namespace _layer {
+            using _Layers_t = std::vector<const char *>;
 
-        using _Layers_t = std::vector<const char *>;
+            /**
+             * @brief Loads additional layers
+             * 
+             * @return The The loaded layers (_Layers_t)
+             */
+            _Layers_t _load(void);        
 
-        /**
-         * @brief Loads additional layers
-         * 
-         * @return The The loaded layers (_Layers_t)
-         */
-        _Layers_t _load(void);        
-
-    } // namespace _layer 
+        } // namespace _layer 
+    } // namespace _private
 } // namespace vulkan_wrapper
 
 

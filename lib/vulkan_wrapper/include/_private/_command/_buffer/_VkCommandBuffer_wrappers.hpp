@@ -15,20 +15,22 @@
 #include <vulkan/vulkan.h>
 
 namespace vulkan_wrapper {
-    namespace _command {
-        namespace _buffer {
-            
-            /**
-             * @brief Loads a Vulkan command buffer
-             * 
-             * @param logical_device (const VkDevice &) The related Vulkan logical device
-             * @param command_pool (const VkCommandPool &) The related command pool
-             * @return The created Vulkan command buffer (VkCommandBuffer )
-             */
-            VkCommandBuffer _load(const VkDevice &logical_device, const VkCommandPool &command_pool);
+    namespace _private {
+        namespace _command {
+            namespace _buffer {
 
-        } // namespace _buffer
-    } // namespace _command
+                /**
+                 * @brief Loads a Vulkan command buffer
+                 * 
+                 * @param logical_device (const VkDevice &) The related Vulkan logical device
+                 * @param command_pool (const VkCommandPool &) The related command pool
+                 * @return The created Vulkan command buffer (VkCommandBuffer )
+                 */
+                VkCommandBuffer _load(const VkDevice &logical_device, const VkCommandPool &command_pool);
+
+            } // namespace _buffer
+        } // namespace _command
+    } // namespace _private
 } // namespace vulkan_wrapper
 
 

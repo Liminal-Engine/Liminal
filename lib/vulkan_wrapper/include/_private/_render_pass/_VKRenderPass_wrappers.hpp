@@ -15,31 +15,33 @@
 #include <vulkan/vulkan.h>
 
 namespace vulkan_wrapper {
-    namespace _render_pass {
+    namespace _private {
+        namespace _render_pass {
 
-        /**
-         * @brief Load a render pass
-         * 
-         * @param logical_device (const VkDevice &) The related Vulkan logical device
-         * @param swap_chain_images_format (const VkFormat &) The related swap chain images format
-         * @return The created Vulkan render pass (VkRenderPass)
-         */
-        VkRenderPass _load(const VkDevice &logical_device, const VkFormat &swap_chain_images_format);
+            /**
+             * @brief Load a render pass
+             * 
+             * @param logical_device (const VkDevice &) The related Vulkan logical device
+             * @param swap_chain_images_format (const VkFormat &) The related swap chain images format
+             * @return The created Vulkan render pass (VkRenderPass)
+             */
+            VkRenderPass _load(const VkDevice &logical_device, const VkFormat &swap_chain_images_format);
 
-        /**
-         * @brief Destroy a render pass
-         * 
-         * @param logical_device [const VkDevice &] The related logical device
-         * @param render_pass [const VkRenderPass &] The render pass to destroy
-         * @param p_allocator [VkAllocationCallbacks *] Vulkan allocation callbacks 
-        */
-        void _destroy(
-            const VkDevice &logical_device,
-            const VkRenderPass &render_pass,
-            VkAllocationCallbacks *p_allocator = nullptr
-        );
+            /**
+             * @brief Destroy a render pass
+             * 
+             * @param logical_device [const VkDevice &] The related logical device
+             * @param render_pass [const VkRenderPass &] The render pass to destroy
+             * @param p_allocator [VkAllocationCallbacks *] Vulkan allocation callbacks 
+            */
+            void _destroy(
+                const VkDevice &logical_device,
+                const VkRenderPass &render_pass,
+                VkAllocationCallbacks *p_allocator = nullptr
+            );
 
-    } // _render_pass
+        } // _render_pass
+    } // namespace _private
 } // vulkan_wrapper
 
 

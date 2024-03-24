@@ -13,7 +13,7 @@
 */
 
 
-#include "liminal_windowing/WindowWrapper.hpp"
+#include "windowing/WindowWrapper.hpp"
 
 #include <vulkan/vulkan.h>
 
@@ -25,18 +25,20 @@
 
 // Forward declarations :
 namespace vulkan_wrapper {
-    namespace _queue {
-        using  _QueueHandlers_t = std::unordered_map<std::string, VkQueue>; ///< _QueueHandlers_t type = queue handlers for a specific device
-        struct _QueueFamilies;
-    }
-    namespace _swap_chain {
-        struct _Supports;
-    }
-    namespace _layer {
-        using _Layers_t = std::vector<const char *>;
-    }
-    namespace _extension {
-        using _Extensions_t = std::unordered_map<std::string, std::vector<const char *>>;
+    namespace _private {
+        namespace _queue {
+            using  _QueueHandlers_t = std::unordered_map<std::string, VkQueue>; ///< _QueueHandlers_t type = queue handlers for a specific device
+            struct _QueueFamilies;
+        }
+        namespace _swap_chain {
+            struct _Supports;
+        }
+        namespace _layer {
+            using _Layers_t = std::vector<const char *>;
+        }
+        namespace _extension {
+            using _Extensions_t = std::unordered_map<std::string, std::vector<const char *>>;
+        }
     }
 }
 
@@ -52,7 +54,7 @@ namespace vulkan_wrapper {
         private:
             const std::string _appName; ///< Name of the application
             const std::string _engineName; ///< Name of the engine
-            _layer::_Layers_t _layers; ///< Vulkan optional additional layers
+            _private::_layer::_Layers_t _layers; ///< Vulkan optional additional layers
 
         public:
             /**
@@ -64,17 +66,17 @@ namespace vulkan_wrapper {
             void drawFrame(void);
             void waitIdle(void) const;
 
-            window_wrapper::WindowWrapper window; ///< The window related to the vulkan instace. This will be taken out later in a separate lib
+            windowing::WindowWrapper window; ///< The window related to the vulkan instace. This will be taken out later in a separate lib
 
         private:
-            _extension::_Extensions_t _extensions; ///< Vulkan compatible required extensions for the app to work
+            _private::_extension::_Extensions_t _extensions; ///< Vulkan compatible required extensions for the app to work
             VkInstance _instance; ///< The Vulkan instance
             VkSurfaceKHR _surface; ///< A surface is an interface between Vulkan and the windowing system
             VkPhysicalDevice _physicalDevice; ///< The choosen physical device
-            std::unique_ptr<_swap_chain::_Supports> _swapChainSupports; ///< swap chain supported features for the related physical device
-            std::unique_ptr<_queue::_QueueFamilies> _queueFamilies; ///< The physical device queue families
+            std::unique_ptr<_private::_swap_chain::_Supports> _swapChainSupports; ///< swap chain supported features for the related physical device
+            std::unique_ptr<_private::_queue::_QueueFamilies> _queueFamilies; ///< The physical device queue families
             VkDevice _logicalDevice; ///< Interface between Vulkan and a physical device
-            _queue::_QueueHandlers_t _queueHandlers; ///< Queue handlers as specified in the config file
+            _private::_queue::_QueueHandlers_t _queueHandlers; ///< Queue handlers as specified in the config file
             VkSurfaceFormatKHR _swapChainImageFormat; ///< The swap chain images format
             VkExtent2D _swapChainExtent; ///< The swap chain images extent
             VkSwapchainKHR _swapChain; ///< The swap chain (e.g.) basically the queue for the images to draw

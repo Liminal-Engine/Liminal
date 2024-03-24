@@ -1,0 +1,64 @@
+/**
+ * @file InJson.hpp
+ * @author DE VITA Matteo (matteo.devita7@gmail.com)
+ * @brief 
+ * @version 0.1
+ * @date 2023-12-26
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+*/
+
+#ifndef LIMINAL_LIB_JSON_IO_INJSON_HPP_
+#define LIMINAL_LIB_JSON_IO_INJSON_HPP_
+
+#include "Status.hpp"
+#include "types.hpp"
+#include "is_in_variant_v.hpp"
+
+#include "parser/string.hpp"
+
+#include <string>
+#include <optional>
+#include <stdexcept>
+#include <variant>
+#include <cstdint>
+#include <cstddef>
+#include <vector>
+#include <unordered_map>
+#include <memory>
+#include <variant>
+
+namespace json_io {
+
+    class InJson {
+        
+        public:
+            InJson(void);
+            ~InJson();
+
+            // Re declaration of _JsonBase methods :
+            Status parse(const std::string &path);
+
+            // Own methods declaration :
+            types::ValueTypes getType(
+                const std::string &jsonPath = "",
+                const std::vector<std::string> &separators = std::vector<std::string>{".", "[", "]"}
+            ) const;
+
+            template <typename T>
+            requires is_in_variant_v<T, types::Any_t>
+            std::optional<T> get(
+                const std::string &jsonPath = "",
+                const std::vector<std::string> &separators = std::vector<std::string>{".", "[", "]"}
+            ) const;
+       
+        private:
+            class _InJsonImpl;
+            std::unique_ptr<_InJsonImpl> _inJsonImpl;
+    };
+
+} // namespace json_io
+
+
+#endif // LIMINAL_LIB_JSON_IO_INJSON_HPP_

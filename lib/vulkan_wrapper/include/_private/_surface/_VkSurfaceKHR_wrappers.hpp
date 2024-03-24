@@ -12,38 +12,38 @@
 #ifndef LIMINAL_LIB_VULKANWRAPPER__SURFACE__VKSURFACEKHR_WRAPPERS_HPP_
 #define LIMINAL_LIB_VULKANWRAPPER__SURFACE__VKSURFACEKHR_WRAPPERS_HPP_
 
-#include "liminal_windowing/WindowWrapper.hpp"
+#include "windowing/WindowWrapper.hpp"
 
 #include <vulkan/vulkan.h>
 
 namespace vulkan_wrapper {
-    namespace _surface {
-        
-        /**
-         * @brief Loads a VkSurfaceKHR
-         * 
-         * @param instance (const VkInstance &) The related vulkan instance
-         * @param window (const window_wrapper::WindowWrapper &) The application window
-         * @throw
-         * @return The created VkSurfaceKHR
-         */
-        VkSurfaceKHR _load(const VkInstance &instance, const window_wrapper::WindowWrapper &window);
+    namespace _private {    
+        namespace _surface {
+            
+            /**
+             * @brief Loads a VkSurfaceKHR
+             * 
+             * @param instance (const VkInstance &) The related vulkan instance
+             * @param window (const windowing::WindowWrapper &) The application window
+             * @throw
+             * @return The created VkSurfaceKHR
+             */
+            VkSurfaceKHR _load(const VkInstance &instance, const windowing::WindowWrapper &window);
 
-        /**
-         * @brief Destroy a VkSurfaceKHR
-         * 
-         * @param instance (const VkInstance &) The related VkInstance
-         * @param surface (const VkSurfaceKHR &) The surface to destroy
-         * @param p_allocator (VkAllocationCallbacks *) (default = nullptr) Vulkan custom allcator
-         */
-        void _destroy(
-            const VkInstance &instance,
-            const VkSurfaceKHR &surface,
-            VkAllocationCallbacks *p_allocator = nullptr
-        );
-
-
-    } // namespace _surface
+            /**
+             * @brief Destroy a VkSurfaceKHR
+             * 
+             * @param instance (const VkInstance &) The related VkInstance
+             * @param surface (const VkSurfaceKHR &) The surface to destroy
+             * @param p_allocator (VkAllocationCallbacks *) (default = nullptr) Vulkan custom allcator
+             */
+            void _destroy(
+                const VkInstance &instance,
+                const VkSurfaceKHR &surface,
+                VkAllocationCallbacks *p_allocator = nullptr
+            );
+        } // namespace _surface
+    } // namespace _private
 } // namespace liminal_vulkan_wrapper 
 
 #endif // LIMINAL_LIB_VULKANWRAPPER__SURFACE__VKSURFACEKHR_WRAPPERS_HPP_

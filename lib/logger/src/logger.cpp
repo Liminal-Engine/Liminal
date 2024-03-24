@@ -163,7 +163,7 @@ namespace liminal {
         bool Logger::_LoggerImpl::_firstLog = true;
         /**
          * TODO : concerning the _file :
-         *  -   handle with liminal_fs OutFile;
+         *  -   handle with fs OutFile;
          *  -   use liminal_string_extra that overload String class to replace '' with '_'
          * -    handle file closing
         **/

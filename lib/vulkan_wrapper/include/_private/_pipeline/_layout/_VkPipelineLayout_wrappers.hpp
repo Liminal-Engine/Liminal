@@ -15,32 +15,34 @@
 #include <vulkan/vulkan.h>
 
 namespace vulkan_wrapper {
-    namespace _pipeline {
-        namespace _layout {
+    namespace _private {
+        namespace _pipeline {
+            namespace _layout {
 
-            /**
-             * @brief Loads a Vulkan pipeline layout
-             * 
-             * @param logical_device 
-             * @return The created Vulkan pipeline layout (VkPipelineLayout)
-             */
-            VkPipelineLayout _load(const VkDevice &logical_device);
+                /**
+                 * @brief Loads a Vulkan pipeline layout
+                 * 
+                 * @param logical_device 
+                 * @return The created Vulkan pipeline layout (VkPipelineLayout)
+                 */
+                VkPipelineLayout _load(const VkDevice &logical_device);
 
-            /**
-             * @brief Destroy a Vulkan pipeline layout
-             * 
-             * @param logical_device (const VkDevice &) The related Vulkan logical device
-             * @param pipeline_layout (const VkPipelineLayout &) The Vulkan pipeline layout to destroy
-             * @param p_allocator (const VkAllocationCallbacks *) (default = nullptr) Vulkan custom allocator
-             */
-            void _destroy(
-                const VkDevice &logical_device,
-                const VkPipelineLayout &pipeline_layout,
-                const VkAllocationCallbacks *p_allocator = nullptr
-            );
+                /**
+                 * @brief Destroy a Vulkan pipeline layout
+                 * 
+                 * @param logical_device (const VkDevice &) The related Vulkan logical device
+                 * @param pipeline_layout (const VkPipelineLayout &) The Vulkan pipeline layout to destroy
+                 * @param p_allocator (const VkAllocationCallbacks *) (default = nullptr) Vulkan custom allocator
+                 */
+                void _destroy(
+                    const VkDevice &logical_device,
+                    const VkPipelineLayout &pipeline_layout,
+                    const VkAllocationCallbacks *p_allocator = nullptr
+                );
 
-        } // namespace _layout
-    } // _pipeline
+            } // namespace _layout
+        } // _pipeline
+    } // namespace _private
 } // vulkan_wrapper
 
 

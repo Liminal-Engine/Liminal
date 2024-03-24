@@ -15,7 +15,7 @@
 #include "_private/_layer/_Layer_t.hpp"
 #include "_private/_extension/_Extensions_t.hpp"
 
-#include "liminal_windowing/WindowWrapper.hpp"
+#include "windowing/WindowWrapper.hpp"
 
 #include <vulkan/vulkan.h>
 #include <string>
@@ -28,30 +28,32 @@
 #endif
 
 namespace vulkan_wrapper {
-    namespace _instance {
-        /**
-         * @brief Loads a vulkan instance
-         * 
-         * @param app_name (const std::string &) The application name
-         * @param engine_name (const std::string &) The engine name
-         * @throw std::runtime_error if any error occurs
-         * @return The created VkInstance 
-         */
-        VkInstance _load(
-            const std::string &app_name,
-            const std::string &engine_name,
-            const _layer::_Layers_t &layers,
-            const _extension::_Extensions_t &extensions
-        );
+    namespace _private {
+        namespace _instance {
+            /**
+             * @brief Loads a vulkan instance
+             * 
+             * @param app_name (const std::string &) The application name
+             * @param engine_name (const std::string &) The engine name
+             * @throw std::runtime_error if any error occurs
+             * @return The created VkInstance 
+             */
+            VkInstance _load(
+                const std::string &app_name,
+                const std::string &engine_name,
+                const _layer::_Layers_t &layers,
+                const _extension::_Extensions_t &extensions
+            );
 
-        /**
-         * @brief Destroy a VkInstance
-         * 
-         * @param instance (const VkInstance &) The instance to destroy
-         * @param p_allocator (VkAllocationCallbacks *) (default = nullptr) Vulkan's custom allocator
-         */
-        void _destroy(const VkInstance &instance, VkAllocationCallbacks *p_allocator = nullptr);
-    } // vulkan_wrapper
-} // _instance
+            /**
+             * @brief Destroy a VkInstance
+             * 
+             * @param instance (const VkInstance &) The instance to destroy
+             * @param p_allocator (VkAllocationCallbacks *) (default = nullptr) Vulkan's custom allocator
+             */
+            void _destroy(const VkInstance &instance, VkAllocationCallbacks *p_allocator = nullptr);
+        } // namespace  _instance
+    } // namespace _private
+} // vulkan_wrapper
 
 #endif // LIMINAL_LIB_VULKANWRAPPER__INSTANCE__VKINSTANCE_WRAPPERS_HPP_

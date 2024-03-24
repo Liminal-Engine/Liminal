@@ -16,20 +16,22 @@
 #include <vector>
 
 namespace vulkan_wrapper {
-    namespace _swap_chain {
-        namespace _image {
+    namespace _private {
+        namespace _swap_chain {
+            namespace _image {
 
-            /**
-             * @brief Loads a swap chain images
-             * 
-             * @param logical_device (const VkDevice &)  The related logical device
-             * @param swap_chain (const VkSwapchainKHR &) The related swap chain
-             * @return The created vector of Vulkan images (std::vector<VkImage>)
-             */
-            std::vector<VkImage> _load(const VkDevice &logical_device, const VkSwapchainKHR &swap_chain);
+                /**
+                 * @brief Loads a swap chain images
+                 * 
+                 * @param logical_device (const VkDevice &)  The related logical device
+                 * @param swap_chain (const VkSwapchainKHR &) The related swap chain
+                 * @return The created vector of Vulkan images (std::vector<VkImage>)
+                 */
+                std::vector<VkImage> _load(const VkDevice &logical_device, const VkSwapchainKHR &swap_chain);
 
-        } // _image
-    } // namespace _swap_chain
+            } // namespace _image
+        } // namespace _swap_chain
+    } // namespace _private
 } // vulkan_wrapper
 
 

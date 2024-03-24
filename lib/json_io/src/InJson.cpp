@@ -1,0 +1,181 @@
+/**
+ * @file InJson.cpp
+ * @author DE VITA Matteo (matteo.devita7@gmail.com)
+ * @brief
+ * @version 0.1
+ * @date 2023-12-30
+ *
+ * @copyright Copyright (c) 2023
+ *
+ */
+
+#include "InJson.hpp"
+
+#include "is_in_variant_v.hpp"
+
+#include "_private/_JsonValue.hpp"
+#include "_private/_parsing/_types.hpp"
+#include "_private/_JsonBase.hpp"
+
+#include <iostream>
+
+namespace json_io
+{
+
+    class InJson::_InJsonImpl : public _private::_JsonBase
+    {
+
+        public:
+            _InJsonImpl(void) :
+            _private::_JsonBase{}
+            {
+
+            }
+
+            types::ValueTypes getType(
+                const std::string &jsonPath = "",
+                const std::vector<std::string> &separators = std::vector<std::string>{".", "[", "]"}
+            ) const {
+                const _private::_JsonValueTypes jsonValueType = this->__getJsonValueFromPath(jsonPath, separators).getType();
+                
+                switch (jsonValueType) {
+                    case _private::_JsonValueTypes::_STRING :
+                        return types::ValueTypes::STRING;
+                    case _private::_JsonValueTypes::_INT:
+                        return types::ValueTypes::INT_NUM;
+                    case _private::_JsonValueTypes::_FLOAT:
+                        return types::ValueTypes::FLOAT_NUM;
+                    case _private::_JsonValueTypes::_BOOL:
+                        return types::ValueTypes::BOOL;
+                    case _private::_JsonValueTypes::_JSON_NULL:
+                        return types::ValueTypes::NULL_VALUE;
+                    case _private::_JsonValueTypes::_OBJECT:
+                        return types::ValueTypes::OBJECT;
+                    case _private::_JsonValueTypes::_ARRAY:
+                        return types::ValueTypes::ARRAY;
+                    default:
+                        return types::ValueTypes::UNKNOWN;
+                    }                
+            }
+
+            template <typename T>
+            requires is_in_variant_v<T, types::Any_t>
+            std::optional<T> get(
+                const std::string &jsonPath = "",
+                const std::vector<std::string> &separators = std::vector<std::string>{".", "[", "]"}
+            ) const {
+                _private::_JsonValue jsonValue{__getJsonValueFromPath(jsonPath, separators)};
+                if constexpr (!std::is_same_v<T, types::Object_t> && !std::is_same_v<T, types::Array_t>)
+                {
+                    std::optional<T> res{};
+                    _private::_parsing::_types::_Any_t resAnyValue = jsonValue.getValue();
+                    T *resPtr = std::get_if<T>(&resAnyValue);
+                    if (resPtr != nullptr) {
+                        res.emplace(*resPtr);
+                    }
+                    return res;
+                }
+                if constexpr (std::is_same_v<T, types::Object_t>) return types::Object_t(jsonValue);
+                if constexpr (std::is_same_v<T, types::Array_t>) return types::Array_t(jsonValue);
+            }
+
+        private:
+            _private::_JsonValue __getJsonValueFromPath(
+                const std::string &jsonPath,
+                const std::vector<std::string> &separators = std::vector<std::string>{".", "[", "]"}
+            ) const {
+                if (this->_rootValue.has_value() == false) {
+                    throw std::runtime_error("JSON has not been loaded.");
+                }
+                std::vector<std::string> tokenizedPath = parser::string::tokenize(jsonPath, separators);
+                _private::_JsonValue tmpJsonValue{this->_rootValue.value()};
+
+                for (const std::string &key : tokenizedPath) {
+                    if (tmpJsonValue.getType() == _private::_JsonValueTypes::_OBJECT) {
+                        tmpJsonValue = _private::_JsonValue{__getObjectValue(tmpJsonValue, key)};
+                    }
+                    else if (tmpJsonValue.getType() == _private::_JsonValueTypes::_ARRAY) {
+                        tmpJsonValue = _private::_JsonValue{__getArrayValue(tmpJsonValue, key)};
+                    }
+                }
+                return tmpJsonValue;
+            }
+
+            static _private::_JsonValue __getObjectValue(const _private::_JsonValue &objectAsJsonValue, const std::string &key) {
+                _private::_parsing::_types::_Any_t tmpAnyValue = objectAsJsonValue.getValue();
+                _private::_parsing::_types::_Object_t *tmpObjectPtr = std::get_if<_private::_parsing::_types::_Object_t>(&tmpAnyValue);
+
+                if (tmpObjectPtr == nullptr) {
+                    throw std::runtime_error("Value is set as object but is not an actual object. Critical error in parsing.");
+                }
+                // Now, find the specific key
+                if ((*tmpObjectPtr).contains(key) == false) {
+                    throw std::runtime_error("Failed to find given key in Object. Got key = " + key);
+                }
+                _private::_JsonValue *nextJsonValuePtr = (*tmpObjectPtr)[key].get();
+                return _private::_JsonValue(*nextJsonValuePtr);
+            }
+
+            static _private::_JsonValue __getArrayValue(const _private::_JsonValue &arrayAsJsonValue, const std::string &indexAsString) {
+                _private::_parsing::_types::_Any_t tmpAnyValue = arrayAsJsonValue.getValue();
+                _private::_parsing::_types::_Array_t *tmpArrayPtr = std::get_if<_private::_parsing::_types::_Array_t>(&tmpAnyValue);
+
+                if (tmpArrayPtr == nullptr) {
+                    throw std::runtime_error("Value is set as array but is not an actual array. Critical error in parsing.");
+                }
+                if (parser::string::isNonNegativeInteger(indexAsString) == false) {
+                    throw std::runtime_error("Received an invalid index : " + indexAsString);
+                }
+                std::size_t index = parser::string::toSize_t(indexAsString);
+                if (index >= (*tmpArrayPtr).size()) {
+                    throw std::runtime_error("Index greater than the array size. Index = " + indexAsString + " array size = " + std::to_string((*tmpArrayPtr).size()));
+                }
+                _private::_JsonValue *nextJsonValuePtr = (*tmpArrayPtr).at(index).get();
+                return _private::_JsonValue(*nextJsonValuePtr);
+            }
+
+    };
+
+    // Public :
+    InJson::InJson(void) :
+    _inJsonImpl{std::make_unique<_InJsonImpl>()}
+    {
+    }
+
+    InJson::~InJson() = default;
+
+    // Re declaration of _JsonBase methods :
+    Status InJson::parse(const std::string &path) { return this->_inJsonImpl->parse(path); }
+
+    // Own methods 
+
+    template <typename T>
+    requires is_in_variant_v<T, types::Any_t>
+    std::optional<T> InJson::get(
+        const std::string &jsonPath,
+        const std::vector<std::string> &separators
+    ) const {
+        return this->_inJsonImpl->get<T>(jsonPath, separators);
+    }
+
+        #define instantiate_template_function(type)\
+            template std::optional<type> InJson::get(const std::string &, const std::vector<std::string> &) const;
+
+        instantiate_template_function(types::String_t)
+        instantiate_template_function(types::IntNum_t)
+        instantiate_template_function(types::FloatNum_t)
+        instantiate_template_function(types::Bool_t)
+        instantiate_template_function(types::Null_t)
+        instantiate_template_function(types::Object_t)
+        instantiate_template_function(types::Array_t)
+
+        #undef instantiate_template_function
+
+    types::ValueTypes InJson::getType(
+        const std::string &jsonPath,
+        const std::vector<std::string> &separators
+        ) const {
+        return _inJsonImpl->getType(jsonPath, separators);
+    }
+
+} // namespace json_io

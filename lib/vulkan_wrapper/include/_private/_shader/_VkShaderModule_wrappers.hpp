@@ -16,31 +16,33 @@
 #include <string>
 
 namespace vulkan_wrapper {
-    namespace _shader {
+    namespace _private {
+        namespace _shader {
 
-        /**
-         * @brief Loads a Vulkan shader module, representing a shader
-         * 
-         * @param logical_device (const VkDevice &) The related Vulkan logical device
-         * @param shader_file_path (const std::string &) The compiled shader file path
-         * @return The created vulkan shader module handler (VkShaderModule )
-         */
-        VkShaderModule _load(const VkDevice &logical_device, const std::string &shader_file_path);
+            /**
+             * @brief Loads a Vulkan shader module, representing a shader
+             * 
+             * @param logical_device (const VkDevice &) The related Vulkan logical device
+             * @param shader_file_path (const std::string &) The compiled shader file path
+             * @return The created vulkan shader module handler (VkShaderModule )
+             */
+            VkShaderModule _load(const VkDevice &logical_device, const std::string &shader_file_path);
 
-        /**
-         * @brief Destroy a shader module
-         * 
-         * @param logical_device (const VkDevice &) The related Vulkan logical device
-         * @param sahder_module (const VkShaderModule &) The shader module to destroy
-         * @param p_allocator (const VkAllocationCallbacks *) (defualt = nullptr) The Vulkan custom allocator
-         */
-        void _destroy(
-            const VkDevice &logical_device,
-            const VkShaderModule &sahder_module,
-            const VkAllocationCallbacks *p_allocator = nullptr
-        );
+            /**
+             * @brief Destroy a shader module
+             * 
+             * @param logical_device (const VkDevice &) The related Vulkan logical device
+             * @param sahder_module (const VkShaderModule &) The shader module to destroy
+             * @param p_allocator (const VkAllocationCallbacks *) (defualt = nullptr) The Vulkan custom allocator
+             */
+            void _destroy(
+                const VkDevice &logical_device,
+                const VkShaderModule &sahder_module,
+                const VkAllocationCallbacks *p_allocator = nullptr
+            );
 
-    } // _shader
+        } // _shader
+    } // namespace _private
 } // vulkan_wrapper
 
 #endif // LIMINAL_LIB_VULKAN_WRAPPER__SHADER__VKSHADERMODULE_WRAPPERS_HPP_

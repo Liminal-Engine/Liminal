@@ -16,38 +16,39 @@
 #include <vector>
 
 namespace vulkan_wrapper {
-    namespace _frame_buffer {
+    namespace _private {
+        namespace _frame_buffer {
+            /**
+             * @brief Loads an array of Vulkan frame buffers
+             * 
+             * @param logical_device (const VkDevice &) The related Vulkan instance
+             * @param swap_chain_image_views (const std::vector<VkImageView> &) The related Vulkan swap chain image views array
+             * @param swap_chain_extent (const VkExtent2D &) The related Vulkan swap chain extent
+             * @param render_pass (const VkRenderPass &) The related Vulkan render pass
+             * @return The created array of Vulkan frame buffer (std::vector<VkFramebuffer>)
+             */
+            std::vector<VkFramebuffer> _load(
+                const VkDevice &logical_device,
+                const std::vector<VkImageView> &swap_chain_image_views,
+                const VkExtent2D &swap_chain_extent,
+                const VkRenderPass &render_pass
+            );
 
-        /**
-         * @brief Loads an array of Vulkan frame buffers
-         * 
-         * @param logical_device (const VkDevice &) The related Vulkan instance
-         * @param swap_chain_image_views (const std::vector<VkImageView> &) The related Vulkan swap chain image views array
-         * @param swap_chain_extent (const VkExtent2D &) The related Vulkan swap chain extent
-         * @param render_pass (const VkRenderPass &) The related Vulkan render pass
-         * @return The created array of Vulkan frame buffer (std::vector<VkFramebuffer>)
-         */
-        std::vector<VkFramebuffer> _load(
-            const VkDevice &logical_device,
-            const std::vector<VkImageView> &swap_chain_image_views,
-            const VkExtent2D &swap_chain_extent,
-            const VkRenderPass &render_pass
-        );
-
-        /**
-         * @brief Destroy an array of Vulkan frame buffer
-         * 
-         * @param logical_device (const VkDevice &) The related Vulkan logical device
-         * @param frame_buffers (const std::vector<VkFramebuffer> &) The Vulkan frame buffer to destroy
-         * @param pp_allocators  (const VkAllocationCallbacks **) (default = nullptr) A pointer to an array of Vulkan custom allocators
-         */
-        void _destroy(
-            const VkDevice &logical_device,
-            const std::vector<VkFramebuffer> &frame_buffers,
-            const VkAllocationCallbacks **pp_allocators = nullptr
-        );
-        
-    } // namespace _frame_buffer
+            /**
+             * @brief Destroy an array of Vulkan frame buffer
+             * 
+             * @param logical_device (const VkDevice &) The related Vulkan logical device
+             * @param frame_buffers (const std::vector<VkFramebuffer> &) The Vulkan frame buffer to destroy
+             * @param pp_allocators  (const VkAllocationCallbacks **) (default = nullptr) A pointer to an array of Vulkan custom allocators
+             */
+            void _destroy(
+                const VkDevice &logical_device,
+                const std::vector<VkFramebuffer> &frame_buffers,
+                const VkAllocationCallbacks **pp_allocators = nullptr
+            );
+            
+        } // namespace _frame_buffer
+    } // namespace _private
 } // namespace vulkan_wrapper
 
 

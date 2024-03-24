@@ -43,48 +43,48 @@ namespace vulkan_wrapper {
     VulkanHdl::VulkanHdl(void) :
     _appName{"Liminal Engine"},
     _engineName{"Liminal Engine"},
-    _layers{_layer::_load()},    
-    window{window_wrapper::WindowWrapper(this->_appName)},
-    _extensions{_extension::_load()},
-    _instance{_instance::_load(this->_appName, this->_engineName, this->_layers, this->_extensions)},
-    _surface{_surface::_load(this->_instance, this->window)},
-    _physicalDevice{_device::_physical::_pick(this->_instance, this->_surface, this->_extensions.at("device"))},
-    _swapChainSupports{ std::make_unique<_swap_chain::_Supports>(_swap_chain::_getSupports(this->_physicalDevice, this->_surface)) },
-    _queueFamilies{ std::make_unique<_queue::_QueueFamilies>(_queue::_load(this->_physicalDevice, this->_surface) ) },
-    _logicalDevice{_device::_logical::_load(this->_physicalDevice, this->_queueFamilies.get()->_toSet(), this->_extensions.at("device"), this->_layers)},
-    _queueHandlers{_queue::_load(this->_logicalDevice, *this->_queueFamilies.get())},
-    _swapChainImageFormat{_swap_chain::_getBestSurfaceFormat(this->_swapChainSupports.get()->_surfaceFormats)},
-    _swapChainExtent{_swap_chain::_getBestExtent(this->window, this->_swapChainSupports.get()->_surfaceCapabilities)},
-    _swapChain{_swap_chain::_load(this->_logicalDevice, this->_surface, *this->_swapChainSupports.get(), *this->_queueFamilies.get(), this->_swapChainImageFormat, this->_swapChainExtent)},
-    _swapChainImagesHandlers{_swap_chain::_image::_load(this->_logicalDevice, this->_swapChain)},
-    _swapChainImagesViewsHandlers{_swap_chain::_image_view::_load(this->_logicalDevice, this->_swapChainImagesHandlers, this->_swapChainImageFormat.format)},
-    _renderPass{_render_pass::_load(this->_logicalDevice, this->_swapChainImageFormat.format)},
-    _pipelineLayout{_pipeline::_layout::_load(this->_logicalDevice)},
-    _graphicsPipeline{_pipeline::_load(this->_logicalDevice, this->_swapChainExtent, this->_pipelineLayout, this->_renderPass)},
-    _frameBuffers{_frame_buffer::_load(this->_logicalDevice, this->_swapChainImagesViewsHandlers, this->_swapChainExtent, this->_renderPass)},
-    _commandPool{_command::_pool::_load(this->_logicalDevice, *this->_queueFamilies.get())},
-    _commandBuffer{_command::_buffer::_load(this->_logicalDevice, this->_commandPool)},
-    _imageAvailableSemaphore{_semaphore::_load(this->_logicalDevice)},
-    _renderFinishedSemaphore{_semaphore::_load(this->_logicalDevice)},
-    _inFlightFence{_fence::_load(this->_logicalDevice)}
+    _layers{_private::_layer::_load()},    
+    window{windowing::WindowWrapper(this->_appName)},
+    _extensions{_private::_extension::_load()},
+    _instance{_private::_instance::_load(this->_appName, this->_engineName, this->_layers, this->_extensions)},
+    _surface{_private::_surface::_load(this->_instance, this->window)},
+    _physicalDevice{_private::_device::_physical::_pick(this->_instance, this->_surface, this->_extensions.at("device"))},
+    _swapChainSupports{std::make_unique<_private::_swap_chain::_Supports>(_private::_swap_chain::_getSupports(this->_physicalDevice, this->_surface)) },
+    _queueFamilies{std::make_unique<_private::_queue::_QueueFamilies>(_private::_queue::_load(this->_physicalDevice, this->_surface) ) },
+    _logicalDevice{_private::_device::_logical::_load(this->_physicalDevice, this->_queueFamilies.get()->_toSet(), this->_extensions.at("device"), this->_layers)},
+    _queueHandlers{_private::_queue::_load(this->_logicalDevice, *this->_queueFamilies.get())},
+    _swapChainImageFormat{_private::_swap_chain::_getBestSurfaceFormat(this->_swapChainSupports.get()->_surfaceFormats)},
+    _swapChainExtent{_private::_swap_chain::_getBestExtent(this->window, this->_swapChainSupports.get()->_surfaceCapabilities)},
+    _swapChain{_private::_swap_chain::_load(this->_logicalDevice, this->_surface, *this->_swapChainSupports.get(), *this->_queueFamilies.get(), this->_swapChainImageFormat, this->_swapChainExtent)},
+    _swapChainImagesHandlers{_private::_swap_chain::_image::_load(this->_logicalDevice, this->_swapChain)},
+    _swapChainImagesViewsHandlers{_private::_swap_chain::_image_view::_load(this->_logicalDevice, this->_swapChainImagesHandlers, this->_swapChainImageFormat.format)},
+    _renderPass{_private::_render_pass::_load(this->_logicalDevice, this->_swapChainImageFormat.format)},
+    _pipelineLayout{_private::_pipeline::_layout::_load(this->_logicalDevice)},
+    _graphicsPipeline{_private::_pipeline::_load(this->_logicalDevice, this->_swapChainExtent, this->_pipelineLayout, this->_renderPass)},
+    _frameBuffers{_private::_frame_buffer::_load(this->_logicalDevice, this->_swapChainImagesViewsHandlers, this->_swapChainExtent, this->_renderPass)},
+    _commandPool{_private::_command::_pool::_load(this->_logicalDevice, *this->_queueFamilies.get())},
+    _commandBuffer{_private::_command::_buffer::_load(this->_logicalDevice, this->_commandPool)},
+    _imageAvailableSemaphore{_private::_semaphore::_load(this->_logicalDevice)},
+    _renderFinishedSemaphore{_private::_semaphore::_load(this->_logicalDevice)},
+    _inFlightFence{_private::_fence::_load(this->_logicalDevice)}
     {
 
     }
     
     VulkanHdl::~VulkanHdl() {
-        _semaphore::_destroy(this->_logicalDevice, this->_imageAvailableSemaphore, nullptr);
-        _semaphore::_destroy(this->_logicalDevice, this->_renderFinishedSemaphore, nullptr);
-        _fence::_destroy(this->_logicalDevice, this->_inFlightFence, nullptr);
-        _command::_pool::_destroy(this->_logicalDevice, this->_commandPool, nullptr);
-        _frame_buffer::_destroy(this->_logicalDevice, this->_frameBuffers, nullptr);
-        _pipeline::_destroy(this->_logicalDevice, this->_graphicsPipeline, nullptr);
-        _pipeline::_layout::_destroy(this->_logicalDevice, this->_pipelineLayout, nullptr);
-        _render_pass::_destroy(this->_logicalDevice, this->_renderPass, nullptr);
-        _swap_chain::_image_view::_destroy(this->_logicalDevice, this->_swapChainImagesViewsHandlers, nullptr);
-        _swap_chain::_destroy(this->_logicalDevice, this->_swapChain, nullptr);
-        _device::_logical::_destroy(this->_logicalDevice, nullptr);
-        _surface::_destroy(this->_instance, this->_surface, nullptr);
-        _instance::_destroy(this->_instance, nullptr);
+        _private::_semaphore::_destroy(this->_logicalDevice, this->_imageAvailableSemaphore, nullptr);
+        _private::_semaphore::_destroy(this->_logicalDevice, this->_renderFinishedSemaphore, nullptr);
+        _private::_fence::_destroy(this->_logicalDevice, this->_inFlightFence, nullptr);
+        _private::_command::_pool::_destroy(this->_logicalDevice, this->_commandPool, nullptr);
+        _private::_frame_buffer::_destroy(this->_logicalDevice, this->_frameBuffers, nullptr);
+        _private::_pipeline::_destroy(this->_logicalDevice, this->_graphicsPipeline, nullptr);
+        _private::_pipeline::_layout::_destroy(this->_logicalDevice, this->_pipelineLayout, nullptr);
+        _private::_render_pass::_destroy(this->_logicalDevice, this->_renderPass, nullptr);
+        _private::_swap_chain::_image_view::_destroy(this->_logicalDevice, this->_swapChainImagesViewsHandlers, nullptr);
+        _private::_swap_chain::_destroy(this->_logicalDevice, this->_swapChain, nullptr);
+        _private::_device::_logical::_destroy(this->_logicalDevice, nullptr);
+        _private::_surface::_destroy(this->_instance, this->_surface, nullptr);
+        _private::_instance::_destroy(this->_instance, nullptr);
     }
 
     void VulkanHdl::drawFrame(void) {
