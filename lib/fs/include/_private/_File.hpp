@@ -18,6 +18,8 @@
 #include <string>
 #include <stdexcept>
 #include <optional>
+#include <variant>
+#include <iostream>
 
 namespace fs {
     namespace _private {
@@ -27,12 +29,13 @@ namespace fs {
          * This class must be defined and declared in a header file since it is a template class
          * 
          */
+        using _StreamType = std::variant<std::ofstream, std::ifstream>;
         template <typename _StreamType> //TODO : create a is_a_variant here : must be a std::stream
         class _File {
             public:
-                Status open(void) {
+                Status open(const bool &clear = false) {
                     if (this->_stream_opened == false) {
-                        this->_stream = _StreamType(this->_registered_path);
+                        this->_stream = clear ? _StreamType(this->_registered_path, std::ios::trunc) : _StreamType(this->_registered_path);
 
                         if (!this->_stream) {
                             return Status::OPEN_FILE_ERR;

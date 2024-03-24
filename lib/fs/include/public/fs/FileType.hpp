@@ -1,5 +1,5 @@
-#ifndef LIMINAL_LIB_FS_FILETYPE_HPP
-#define LIMINAL_LIB_FS_FILETYPE_HPP
+#ifndef LIMINAL_LIB_FS_FILETYPE_HPP_
+#define LIMINAL_LIB_FS_FILETYPE_HPP_
 
 #include <string>
 
@@ -23,4 +23,4 @@ namespace fs {
 } // namespace fs 
 
 
-#endif // LIMINAL_LIB_FS_FILETYPE_HPP
+#endif // LIMINAL_LIB_FS_FILETYPE_HPP_

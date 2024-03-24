@@ -1,5 +1,5 @@
-#ifndef LIMINAL_LIB_LOGGER_HPP
-#define LIMINAL_LIB_LOGGER_HPP
+#ifndef LIMINAL_LIB_LOGGER_HPP_
+#define LIMINAL_LIB_LOGGER_HPP_
 
 #include <iostream>
 #include <sstream>
@@ -63,4 +63,4 @@ namespace liminal {
 
 } // namespace liminal
 
-#endif // LIMINAL_LIB_LOGGER_HPP
+#endif // LIMINAL_LIB_LOGGER_HPP_

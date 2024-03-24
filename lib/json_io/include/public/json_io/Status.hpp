@@ -9,8 +9,8 @@
  * 
 */
 
-#ifndef LIMINAL_LIB_JSON_IO_STATUS_HPP
-#define LIMINAL_LIB_JSON_IO_STATUS_HPP
+#ifndef LIMINAL_LIB_JSON_IO_STATUS_HPP_
+#define LIMINAL_LIB_JSON_IO_STATUS_HPP_
 
 namespace json_io {
     enum class Status {
@@ -21,4 +21,4 @@ namespace json_io {
 } // namespace json_io
 
 
-#endif // LIMINAL_LIB_JSON_IO_STATUS_HPP
+#endif // LIMINAL_LIB_JSON_IO_STATUS_HPP_

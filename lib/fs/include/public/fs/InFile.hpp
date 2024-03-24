@@ -9,8 +9,8 @@
  * 
 */
 
-#ifndef FS_LIB_IFILE_HPP
-#define FS_LIB_IFILE_HPP
+#ifndef FS_LIB_IFILE_HPP_
+#define FS_LIB_IFILE_HPP_
 
 #include <fstream>
 #include <memory>
@@ -24,7 +24,7 @@ namespace fs {
         using path_t = std::string;
     }
 
-    class InFile { //Using pimpl idiom to hide class template
+    class InFile {
 
         public:
 
@@ -47,4 +47,4 @@ namespace fs {
     };
 }
 
-#endif // FS_LIB_IFILE_HPP
+#endif // FS_LIB_IFILE_HPP_

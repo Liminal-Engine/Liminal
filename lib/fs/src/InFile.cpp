@@ -1,5 +1,13 @@
-#ifndef LIMINAL_LIB_FS_IFILE_HPP
-#define LIMINAL_LIB_FS_IFILE_HPP
+/**
+ * @file InFile.cpp
+ * @author DE VITA Matteo (matteo.devita7@gmail.com)
+ * @brief 
+ * @version 0.1
+ * @date 2023-12-20
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 
 #include "Status.hpp"
 #include "path/path.hpp"
@@ -60,5 +68,3 @@ namespace fs {
     std::string InFile::get_content(void) const { return this->_pImpl->get_content(); }
 
 }
-
-#endif // LIMINAL_LIB_FS_IFILE_HPP
