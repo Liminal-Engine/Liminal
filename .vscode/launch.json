@@ -52,6 +52,35 @@
             "ignoreFailures": true
           }
         ]
+      },
+      {
+        "name": "Debug lib",
+        "type": "cppdbg",
+        "request": "launch",
+        "args": [
+          // "-R",
+          // "WhenGivenPathOfArraysInValidJsonFiles/LiminalJsonIoArrayGetLenMethod.ReturnGivenLength",
+          "--output-on-failure"
+          // "WhenGivenPathOfObjectNotContainingComplexValues/LiminalJsonIoObjectHasComplexValueMethod.ReturnGivenBool",
+        ],
+        "stopAtEntry": false,
+        "internalConsoleOptions": "neverOpen",
+        "externalConsole": false,
+        "cwd": "${workspaceFolder}/lib/logger",
+        "program": "${workspaceFolder}/lib/logger/a.out",
+        "MIMode": "gdb",
+        "miDebuggerPath": "gdb",
+        "setupCommands": [
+          {
+            "description": "Enable pretty-printing for gdb",
+            "text": "-enable-pretty-printing",
+            "ignoreFailures": true
+          },
+          {
+            "text": "set follow-fork-mode child",
+            "ignoreFailures": true
+          }
+        ]
       }
     ]
 }

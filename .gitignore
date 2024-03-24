@@ -48,3 +48,4 @@ build
 ### CMake Patch ###
 # External projects
 *-prefix/
+*.log
