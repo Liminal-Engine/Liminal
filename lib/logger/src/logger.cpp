@@ -1,3 +1,17 @@
+/**
+ * @file logger.cpp
+ * @author DE VITA Matteo (matteo.devita7@gmail.com)
+ * @brief 
+ * @version 0.1
+ * @date 2024-03-24
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+*/
+
+#include "fs/OutFile.hpp"
+#include "fs/Path.hpp"
+
 #include "logger.hpp"
 #include "_private/_template_instances.hpp"
 
@@ -64,7 +78,7 @@ namespace liminal {
 
 
                 static bool _firstLog;
-                static std::ofstream _file;
+                static fs::OutFile _file;
 
                 static std::string _colorToAnsi(const _private::_Color &color) {
                     switch (color) {
@@ -78,7 +92,7 @@ namespace liminal {
                         case _private::_Color::CYAN:    return "\033[36m";
                         case _private::_Color::ORANGE:  return "\033[38;5;208m";
                         case _private::_Color::WHITE:   return "\033[37m";
-                        default:                    return ""; // TODO : print or throw (mey slow down) error instead
+                        default:                        return "UNKNOWN_COLOR";
                     }
                 };
 
@@ -99,14 +113,23 @@ namespace liminal {
                 _level{level},
                 _strLevel{_private::_levelToStr(this->_level)},
                 _ansiColor{this->_colorToAnsi(color)}
-                {}
+                {
+                    //TODO : handle file creation (calling OutFIle constructor with a param that creates the file if don't exists ?, also, is it possible in the constructor's list ?)
+                    // open it in constructor, destroy it in destructor
+                    //ssysteme intelligent qui clear lezs fihcers de logs tous lex x (dépedent du fichier de conf ?)
+                    if ( !Logger::_LoggerImpl::_file.isOpen() ) Logger::_LoggerImpl::_file.open();
+                }
+
+                ~_LoggerImpl() {
+                    if (Logger::_LoggerImpl::_file.isOpen()) Logger::_LoggerImpl::_file.close();
+                }
 
                 void log(void) {
                     if (this->_level >= _private::_level) {
                         std::string prefix{_private::_getFormatedDate() + " " + this->_getFormatedLogLevel()};
                         std::string bufferStr{this->_buffer.str() + "\n"};
 
-                        _LoggerImpl::_file << prefix << bufferStr;
+                        _LoggerImpl::_file.write(prefix + bufferStr);
                         this->_stream << this->_ansiColor << prefix << bufferStr;
                         _LoggerImpl::_firstLog = false;
                         this->_buffer.str(""); // reset buffer;
@@ -168,7 +191,7 @@ namespace liminal {
          * -    handle file closing
         **/
             
-        std::ofstream Logger::_LoggerImpl::_file = std::ofstream{std::string{_private::_getFormatedDate() + ".log"}};
+        fs::OutFile Logger::_LoggerImpl::_file = fs::OutFile{fs::Path{_private::_getFormatedDate() + ".log"}};
 
         Logger trace{std::cerr, Level::TRACE, _private::_Color::GREEN};
         Logger debug{std::cerr, Level::DEBUG, _private::_Color::BLUE};

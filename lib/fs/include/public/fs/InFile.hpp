@@ -12,23 +12,19 @@
 #ifndef FS_LIB_IFILE_HPP_
 #define FS_LIB_IFILE_HPP_
 
+#include "Status.hpp"
+#include "Path.hpp"
+
 #include <fstream>
 #include <memory>
 #include <optional>
 
 namespace fs {
-
-    // Forward declarations :
-    enum class Status;
-    namespace path {
-        using path_t = std::string;
-    }
-
     class InFile {
 
         public:
 
-            InFile(const path::path_t &path);
+            InFile(const Path &path);
             ~InFile();
 
             //Common methods for each template class (redefined because template class is hidden)
@@ -36,6 +32,7 @@ namespace fs {
             Status close(void);
             bool has_extension(void) const;
             std::optional<std::string> get_extension(void) const;
+            bool isOpen(void) const;
 
             Status read(void);
             // Getters :

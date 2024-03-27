@@ -42,7 +42,7 @@ if [[ $confirm != "y" ]]; then
 fi
 
 # Write the new version back to the VERSION file
-echo "$new_version" > VERSION
+echo -n "$new_version" > VERSION
 
 # Stage the VERSION file for commit
 git add VERSION

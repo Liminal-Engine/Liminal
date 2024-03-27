@@ -29,8 +29,8 @@
         "type": "cppdbg",
         "request": "launch",
         "args": [
-          // "-R",
-          // "WhenGivenPathOfArraysInValidJsonFiles/LiminalJsonIoArrayGetLenMethod.ReturnGivenLength",
+          "-R",
+          "WhenGivenValidJsonContent/LiminalJsonIOInJsonParseMethod",
           "--output-on-failure"
           // "WhenGivenPathOfObjectNotContainingComplexValues/LiminalJsonIoObjectHasComplexValueMethod.ReturnGivenBool",
         ],

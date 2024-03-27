@@ -17,6 +17,7 @@
 #include "is_in_variant_v.hpp"
 
 #include "parser/string.hpp"
+#include "fs/Path.hpp"
 
 #include <string>
 #include <optional>
@@ -38,7 +39,7 @@ namespace json_io {
             ~InJson();
 
             // Re declaration of _JsonBase methods :
-            Status parse(const std::string &path);
+            Status parse(const fs::Path &path);
 
             // Own methods declaration :
             types::ValueTypes getType(

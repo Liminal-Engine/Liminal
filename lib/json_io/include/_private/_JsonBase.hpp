@@ -16,6 +16,7 @@
 #include "_private/_JsonValue.hpp"
 
 #include "parser/string.hpp"
+#include "fs/Path.hpp"
 
 #include <string>
 #include <optional>
@@ -27,7 +28,7 @@ namespace json_io {
         class _JsonBase {
             public:
                 // _Json(void) = default;
-                Status parse(const std::string &path);
+                Status parse(const fs::Path &path);
 
             protected:
                 std::optional<_JsonValue>  _rootValue;

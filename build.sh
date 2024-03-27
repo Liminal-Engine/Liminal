@@ -12,8 +12,8 @@ else
     cd $(dirname $0)
     rm -rf build
     mkdir build && cd build
-    cmake -DCMAKE_BUILD_TYPE=$1 ..
-    cmake --build . -- -j$(nproc)
+    cmake -DCMAKE_BUILD_TYPE=$1 .. # -DCMAKE_VERBOSE_MAKEFILE=ON // TODO : make those parameters depends on $1 == "Debug"
+    cmake --build . -- -j$(nproc) # VERBOSE=1
 fi
 
 exit 0

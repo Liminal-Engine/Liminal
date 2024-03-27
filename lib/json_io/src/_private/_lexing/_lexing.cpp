@@ -12,7 +12,6 @@
 #include "_private/_lexing/_lexing.hpp"
 #include "_private/_syntax.hpp"
 
-#include "fs/path/path.hpp"
 #include "fs/InFile.hpp"
 #include "fs/Status.hpp"
 
@@ -25,7 +24,7 @@ namespace json_io {
     namespace _private  {
         namespace _lexing {
 
-                _types::_Tokens_t _processLexing(const std::string &path) {
+                _types::_Tokens_t _processLexing(const fs::Path &path) {
                     _types::_Indices jsonIndices = __convertFileToIndicesContent(path);
                     std::optional<std::string> tmpValue{};
                     _types::_Tokens_t res{};
@@ -132,7 +131,7 @@ namespace json_io {
 
                 }
 
-                _types::_Indices __convertFileToIndicesContent(const std::string &path) {
+                _types::_Indices __convertFileToIndicesContent(const fs::Path &path) {
                     _types::_Indices res{};
                     std::size_t tmpLine{1};
                     std::size_t tmpLineOffset{0};
@@ -140,13 +139,13 @@ namespace json_io {
 
                     fs::InFile jsonFile(path);
                     if (jsonFile.open() != fs::Status::OK) {
-                        throw std::runtime_error("Failed to open JSON file : " + path);
+                        throw std::runtime_error("Failed to open JSON file : " + path.toStr());
                     }
                     if (jsonFile.read() != fs::Status::OK) {
-                        throw std::runtime_error("Failed to read JSON file : " + path);
+                        throw std::runtime_error("Failed to read JSON file : " + path.toStr());
                     }
                     if (jsonFile.close() != fs::Status::OK) {
-                        throw std::runtime_error("Failed to close JSON file : " + path);
+                        throw std::runtime_error("Failed to close JSON file : " + path.toStr());
                     }
                     stringFileContent = jsonFile.get_content();
                     for (const char &c : stringFileContent) {

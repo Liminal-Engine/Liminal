@@ -19,6 +19,7 @@
 #include <algorithm>
 #include <string>
 #include <numeric>
+#include <sstream>
 
 namespace parser {
     namespace string {
@@ -205,7 +206,7 @@ namespace parser {
             return tokenize(input, std::vector<std::string>{delimiter}, includeDelimiter);
         }
 
-        std::vector<std::string> tokensize(
+        std::vector<std::string> tokenize(
             const std::string &input,
             const char &delimiter,
             const bool &includeDelimiter
@@ -299,6 +300,23 @@ namespace parser {
             return trim(input, std::vector<char>{charToTrim});
         }
     
+        std::string join(const std::vector<std::string> &input, const std::string &separator) {
+            if (input.empty()) return "";
+            if (separator.empty()) {
+                std::string res{};
+                for (const std::string &elem : input) res += elem;
+                return res;
+            }
+            std::ostringstream oss;
+            std::copy(input.begin(), input.end() - 1, std::ostream_iterator<std::string>(oss, separator.c_str()));
+            oss << input.back(); // Add last elem
+            return oss.str();
+        }
+
+        std::string join(const std::vector<std::string> &input, const char &separator) {
+            return join(input, std::string(1, separator));
+        }
+
     } // namespace string
 } // namespace parser
 

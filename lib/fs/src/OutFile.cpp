@@ -10,16 +10,14 @@
  */
 
 #include "Status.hpp"
-#include "path/path.hpp"
 #include "_private/_File.hpp"
 #include "OutFile.hpp"
-
 
 namespace fs {
     class OutFile::_OutFileImpl : public _private::_File<std::ofstream> {
 
         public:
-            _OutFileImpl(const path::path_t &path) :
+            _OutFileImpl(const Path &path) :
             _File{path}
             {}
 
@@ -46,7 +44,7 @@ namespace fs {
 
 
     // exposed OutFile class :
-    OutFile::OutFile(const path::path_t &path) :
+    OutFile::OutFile(const Path &path) :
     _pImpl{std::make_unique<_OutFileImpl>(path)}
     {}
 
@@ -57,6 +55,7 @@ namespace fs {
     Status OutFile::close(void) { return this->_pImpl->close(); }
     bool OutFile::has_extension(void) const { return this->_pImpl->has_extension(); }
     std::optional<std::string> OutFile::get_extension(void) const { return this->_pImpl->get_extension(); }
+    bool OutFile::isOpen(void) const { return this->_pImpl->isOpen(); }
 
     // Actual OutFile class methods :
     Status OutFile::write(const std::stringstream &data) { return this->_pImpl->write(data); }

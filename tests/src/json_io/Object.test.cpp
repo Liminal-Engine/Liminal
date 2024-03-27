@@ -21,7 +21,7 @@
 #include <filesystem>
 
 // param = tuple<string:  filePath, string: jsonKeyPath, bool: expectedValue, std::vector<std::string>: separators>
-using ObjectparamType = std::tuple<std::string, std::string, bool, std::vector<std::string>>;
+using ObjectparamType = std::tuple<fs::Path, std::string, bool, std::vector<std::string>>;
 class LiminalJsonIoObjectHasComplexValueMethod : public ::testing::TestWithParam<ObjectparamType> {
     protected:
         json_io::types::Object_t _instanceCreatedFromInJsonParseMethod;
@@ -53,7 +53,7 @@ class LiminalJsonIoObjectHasComplexValueMethod : public ::testing::TestWithParam
 };
 
 ObjectparamType createObjectParams(
-    const std::string &filePath,
+    const fs::Path &filePath,
     const std::string &jsonKeyPath,
     const bool &res,
     const std::vector<std::string> &separators = std::vector<std::string>{".", "[", "]"}
@@ -128,7 +128,7 @@ class LiminalJsonIoObjectGetMethod : public ::testing::Test {
         {}
 
         void load_object(
-            const std::string &filePath,
+            const fs::Path &filePath,
             const std::string &jsonPath = "",
             const std::vector<std::string> &separators = std::vector<std::string>{".", "[", "]"}
         ) {
@@ -161,7 +161,7 @@ class LiminalJsonIoObjectGetMethod : public ::testing::Test {
         std::unique_ptr<json_io::types::Object_t> __instanceCreatedFromEqualOperator;
 
         json_io::types::Object_t __createInstanceFromInJsonParseMethod(
-            const std::string &filePath = "",
+            const fs::Path &filePath = fs::Path{""},
             const std::string &jsonPath = "",
             const std::vector<std::string> &separators = std::vector<std::string>{".", "[", "]"}
         ) {

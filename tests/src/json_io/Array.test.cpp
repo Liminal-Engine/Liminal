@@ -21,7 +21,7 @@
 #include <filesystem>
 
 // param = tuple<string:  filePath, string: jsonKeyPath, bool: expectedValue, std::vector<std::string>: separators>
-using ArrayHasComplexValueMethodParamType = std::tuple<std::string, std::string, bool, std::vector<std::string>>;
+using ArrayHasComplexValueMethodParamType = std::tuple<fs::Path, std::string, bool, std::vector<std::string>>;
 class LiminalJsonIoArrayHasComplexValueMethod : public ::testing::TestWithParam<ArrayHasComplexValueMethodParamType> {
     protected:
         json_io::types::Array_t _instanceCreatedFromInJsonParseMethod;
@@ -53,7 +53,7 @@ class LiminalJsonIoArrayHasComplexValueMethod : public ::testing::TestWithParam<
 };
 
 ArrayHasComplexValueMethodParamType createArrayHasComplexValueMethodParams(
-    const std::string &filePath,
+    const fs::Path &filePath,
     const std::string &jsonKeyPath,
     const bool &res,
     const std::vector<std::string> &separators = std::vector<std::string>{".", "[", "]"}
@@ -112,7 +112,7 @@ class LiminalJsonIoArrayGetMethod : public ::testing::Test {
         {}
 
         void load_array(
-            const std::string &filePath,
+            const fs::Path &filePath,
             const std::string &jsonPath = "",
             const std::vector<std::string> &separators = std::vector<std::string>{".", "[", "]"}
         ) {
@@ -145,7 +145,7 @@ class LiminalJsonIoArrayGetMethod : public ::testing::Test {
         std::unique_ptr<json_io::types::Array_t> __instanceCreatedFromEqualOperator;
 
         json_io::types::Array_t __createInstanceFromInJsonParseMethod(
-            const std::string &filePath = "",
+            const fs::Path &filePath = fs::Path{""},
             const std::string &jsonPath = "",
             const std::vector<std::string> &separators = std::vector<std::string>{".", "[", "]"}
         ) {
@@ -268,7 +268,7 @@ TEST_F(LiminalJsonIoArrayGetMethod, ShoudlMatchExpectedValuesNestedJsonFile2) {
 };
 
 // param = tuple<string:  filePath, string: jsonKeyPath, std::size_t: expectedValue, std::vector<std::string>: separators>
-using ArrayGetLenMethodParamType = std::tuple<std::string, std::string, std::size_t, std::vector<std::string>>;
+using ArrayGetLenMethodParamType = std::tuple<fs::Path, std::string, std::size_t, std::vector<std::string>>;
 class LiminalJsonIoArrayGetLenMethod : public ::testing::TestWithParam<ArrayGetLenMethodParamType> {
 
     protected:
@@ -301,7 +301,7 @@ class LiminalJsonIoArrayGetLenMethod : public ::testing::TestWithParam<ArrayGetL
 };
 
 ArrayGetLenMethodParamType createArrayGetLenMethodParams(
-    const std::string &filePath,
+    const fs::Path &filePath,
     const std::string &jsonKeyPath,
     const std::size_t &res,
     const std::vector<std::string> &separators = std::vector<std::string>{".", "[", "]"}

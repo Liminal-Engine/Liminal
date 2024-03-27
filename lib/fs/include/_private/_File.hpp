@@ -13,7 +13,7 @@
 #define LIMINAL_LIB_FS__PRIVATE__FILE_HPP_
 
 #include "Status.hpp"
-#include "path/path.hpp"
+#include "Path.hpp"
 
 #include <string>
 #include <stdexcept>
@@ -35,7 +35,7 @@ namespace fs {
             public:
                 Status open(const bool &clear = false) {
                     if (this->_stream_opened == false) {
-                        this->_stream = clear ? _StreamType(this->_registered_path, std::ios::trunc) : _StreamType(this->_registered_path);
+                        this->_stream = clear ? _StreamType(this->_registered_path.toStr(), std::ios::trunc) : _StreamType(this->_registered_path.toStr());
 
                         if (!this->_stream) {
                             return Status::OPEN_FILE_ERR;
@@ -61,24 +61,27 @@ namespace fs {
                     return this->_extension.has_value();
                 }
 
+                // TODO : fix method syntax case
                 std::optional<std::string> get_extension(void) const {
                     return this->_extension;
                 }
 
+                bool isOpen(void) const { return this->_stream_opened; }
+
             protected:
-                _File(const path::path_t &path) :
+                _File(const Path &path) :
                 _name{this->__load_name(path)},
                 _registered_path{path},
-                _absolute_path{this->__load_abolute_path(path)},
-                _extension{this->__load_extension(path)},
+                _absolute_path{path.getAbsolute()},
+                _extension{path.getExtension()},
                 _stream_opened{false}
                 {
                 }
 
                 ~_File() = default;
                 const std::string _name;
-                const std::string _registered_path;
-                const std::string _absolute_path;
+                const Path _registered_path;
+                const Path _absolute_path;
                 const std::optional<std::string> _extension;
                 // const size_t _size_bytes;
 
@@ -93,46 +96,15 @@ namespace fs {
                  * @throw 
                  * @return const std::string& 
                  */
-                const std::string __load_name(const path::path_t &path) {
-                    std::string res{""};
+                const std::string __load_name(const Path &path) {
+                    std::optional<std::string> res = path.getEntry();
 
-                    if (path::get_file_name(res, path) != Status::OK) {
+                    if ( !res.has_value() ) {
                         throw std::runtime_error("Failed to get file name");
                     }
-                    return res;
+                    return res.value();
                 }
-                /**
-                 * @brief Loads the abosulte version of the path
-                 * 
-                 * @param path 
-                 * @return const std::string& 
-                 */
-                const std::string __load_abolute_path(const path::path_t &path) {
-                    std::string res{""};
-
-                    if (path::get_absolute_path(res, path) != Status::OK) {
-                        throw std::runtime_error("Failed to get file absolute path");
-                    }
-                    return res;
-                }
-                /**
-                 * @brief Loads the extension of the specified path
-                 * 
-                 * @param path 
-                 * @return const std::string& 
-                 */
-                const std::optional<std::string> __load_extension(const path::path_t &path) {
-                    std::optional<std::string> res;
-
-                    if (path::get_file_extension(res, path) != Status::OK) {
-                        throw std::runtime_error("Failed to get file absolute path");
-                    }
-                    return res;
-                }
-
         };
-
-
     }
 } // namespace name
 

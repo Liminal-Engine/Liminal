@@ -24,7 +24,7 @@ namespace json_io {
     namespace _private {
 
         // Public :
-        Status _JsonBase::parse(const std::string &path) {
+        Status _JsonBase::parse(const fs::Path &path) {
             try {
                 _lexing::_types::_Tokens_t tokens = _lexing::_processLexing(path);
                 std::size_t index{0};

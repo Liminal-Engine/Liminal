@@ -145,7 +145,7 @@ namespace json_io
     InJson::~InJson() = default;
 
     // Re declaration of _JsonBase methods :
-    Status InJson::parse(const std::string &path) { return this->_inJsonImpl->parse(path); }
+    Status InJson::parse(const fs::Path &path) { return this->_inJsonImpl->parse(path); }
 
     // Own methods 
 

@@ -51,7 +51,7 @@ namespace parser {
             const std::string &delimiter,
             const bool &includeDelimiters = false
         );
-        std::vector<std::string> tokensize(
+        std::vector<std::string> tokenize(
             const std::string &input,
             const char &delimiter,
             const bool &includeDelimiter = false
@@ -74,6 +74,9 @@ namespace parser {
         std::string trim(const std::string &input, const std::string &charsToTrim = std::string{" "});
         std::string trim(const std::string &input, const std::vector<std::string> &stringsToTrim = std::vector<std::string>{" "});
         std::string trim(const std::string &input, const char &charToTrim = ' ');
+
+        std::string join(const std::vector<std::string> &input, const std::string &separator = "");
+        std::string join(const std::vector<std::string> &input, const char &separator);
 
     } // namespace string
 } // namespace parser

@@ -12,6 +12,8 @@
 #ifndef LIMINAL_LIB_JSON_IO__PRIVATE__LEXING__PROCESS_HPP_
 #define LIMINAL_LIB_JSON_IO__PRIVATE__LEXING__PROCESS_HPP_
 
+#include "fs/Path.hpp"
+
 #include "_private/_lexing/_types.hpp"
 
 #include <optional>
@@ -21,14 +23,14 @@ namespace json_io {
         namespace _lexing {
 
                 /**This is the only function you should be using here*/
-                _types::_Tokens_t _processLexing(const std::string &path);
+                _types::_Tokens_t _processLexing(const fs::Path &path);
 
                 std::optional<std::string> __tryLexingString(_types::_Indices jsonIndices);
                 std::optional<std::string> __tryLexingNumber(const _types::_Indices &jsonIndices);
                 std::optional<std::string> __tryLexingBool(const _types::_Indices &jsonIndices);
                 std::optional<std::string> __tryLexingNull(const _types::_Indices &jsonIndices);
 
-                _types::_Indices __convertFileToIndicesContent(const std::string &path);
+                _types::_Indices __convertFileToIndicesContent(const fs::Path &path);
 
                 std::string __convertIndicesToString(const _types::_Indices &indices);
 

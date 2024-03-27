@@ -12,43 +12,45 @@
 #ifndef LIMINAL_TESTS_JSON_IO_TEST_HPP_
 #define LIMINAL_TESTS_JSON_IO_TEST_HPP_
 
+#include "fs/Path.hpp"
+
 #include <string>
 #include <filesystem>
 
 namespace liminal_json_io_test {
     namespace paths {
 
-        const std::string VALID__BASIC = "./assets/json/valid/basic.json";
-        const std::string VALID__EDGE_CASES = "./assets/json/valid/edgeCases.json";
-        const std::string VALID__NESTED  = "./assets/json/valid/nested.json";
-        const std::string VALID__LARGE = "./assets/json/valid/large.json";
+        const fs::Path VALID__BASIC{"./assets/json/valid/basic.json"};
+        const fs::Path VALID__EDGE_CASES{"./assets/json/valid/edgeCases.json"};
+        const fs::Path VALID__NESTED {"./assets/json/valid/nested.json"};
+        const fs::Path VALID__LARGE{"./assets/json/valid/large.json"};
 
-        const std::string INVALID__ARRAY__WRONG_FORMAT = "./assets/json/array/wrongFormat.json";
+        const fs::Path INVALID__ARRAY__WRONG_FORMAT{"./assets/json/array/wrongFormat.json"};
         
-        const std::string INVALID__BOOL__INCOMPLETE = "./assets/json/bool/incomplete.json";
+        const fs::Path INVALID__BOOL__INCOMPLETE{"./assets/json/bool/incomplete.json"};
 
-        const std::string INVALID__BRACE__MISSING_CLOSING = "./assets/json/brace/missingClosing.json";
-        const std::string INVALID__BRACE__MISSING_OPENING = "./assets/json/brace/missingOpening.json";
+        const fs::Path INVALID__BRACE__MISSING_CLOSING{"./assets/json/brace/missingClosing.json"};
+        const fs::Path INVALID__BRACE__MISSING_OPENING{"./assets/json/brace/missingOpening.json"};
         
-        const std::string INVALID__BRACKET__MISING_CLOSING = "./assets/json/bracket/missingClosing.json";
-        const std::string INVALID__BRACKET__MISING_OPENING = "./assets/json/bracket/missingOpening.json";
-        const std::string INVALID__BRACKET__MISING_OPENING_AT_ROOT = "./assets/json/bracket/missingOpeningAtRoot.json";
+        const fs::Path INVALID__BRACKET__MISING_CLOSING{"./assets/json/bracket/missingClosing.json"};
+        const fs::Path INVALID__BRACKET__MISING_OPENING{"./assets/json/bracket/missingOpening.json"};
+        const fs::Path INVALID__BRACKET__MISING_OPENING_AT_ROOT{"./assets/json/bracket/missingOpeningAtRoot.json"};
 
-        const std::string INVALID_COLON__MISSING = "./assets/json/colon/missing.json";
-        const std::string INVALID_COLON__TOO_MANY = "./assets/json/colon/tooMany.json";
-        const std::string INVALID_COLON__TOO_MANY_IN_SIMPLE_KEY_VALUE_PAIR = "./assets/json/colon/tooManyInSimpleKeyValuePair.json";
-        const std::string INVALID_COLON__WRONG_CHAR = "./assets/json/colon/wrongChar.json";
+        const fs::Path INVALID_COLON__MISSING{"./assets/json/colon/missing.json"};
+        const fs::Path INVALID_COLON__TOO_MANY{"./assets/json/colon/tooMany.json"};
+        const fs::Path INVALID_COLON__TOO_MANY_IN_SIMPLE_KEY_VALUE_PAIR{"./assets/json/colon/tooManyInSimpleKeyValuePair.json"};
+        const fs::Path INVALID_COLON__WRONG_CHAR{"./assets/json/colon/wrongChar.json"};
 
-        const std::string INVALID__COMMA__MISPLACED = "./assets/json/comma/misplaced.json";
-        const std::string INVALID__COMMA__MISSING = "./assets/json/comma/missing.json";
-        const std::string INVALID__COMMA__MISSING_IN_ARRAY = "./assets/json/comma/missingInArray.json";
-        const std::string INVALID__COMMA__MISSING_IN_NESTED_ARRAY = "./assets/json/comma/missingInNestedArray.json";
-        const std::string INVALID__COMMA__MISSING_IN_NUM_ARRAY = "./assets/json/comma/missingInNumArray.json";
-        const std::string INVALID__COMMA__MULTIPLE_MISSING_IN_ARRAY = "./assets/json/comma/multipleMissingInArray.json";
-        const std::string INVALID__COMMA__TOO_MUCH = "./assets/json/comma/tooMuch.json";
+        const fs::Path INVALID__COMMA__MISPLACED{"./assets/json/comma/misplaced.json"};
+        const fs::Path INVALID__COMMA__MISSING{"./assets/json/comma/missing.json"};
+        const fs::Path INVALID__COMMA__MISSING_IN_ARRAY{"./assets/json/comma/missingInArray.json"};
+        const fs::Path INVALID__COMMA__MISSING_IN_NESTED_ARRAY{"./assets/json/comma/missingInNestedArray.json"};
+        const fs::Path INVALID__COMMA__MISSING_IN_NUM_ARRAY{"./assets/json/comma/missingInNumArray.json"};
+        const fs::Path INVALID__COMMA__MULTIPLE_MISSING_IN_ARRAY{"./assets/json/comma/multipleMissingInArray.json"};
+        const fs::Path INVALID__COMMA__TOO_MUCH{"./assets/json/comma/tooMuch.json"};
 
-        const std::string INEXISTANT_PATH = "~~~~/**//---IDo|||NotExists&&.json";
-        const std::string MISSING_LETTER_IN_FILE_EXT = "./assets/json/basicNoError.jso";
+        const fs::Path INEXISTANT_PATH{"~~~~/**//---IDo|||NotExists&&.json"};
+        const fs::Path MISSING_LETTER_IN_FILE_EXT{"./assets/json/basicNoError.jso"};
 
     } // namespace jons_file_paths
 

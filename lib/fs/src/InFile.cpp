@@ -10,7 +10,7 @@
  */
 
 #include "Status.hpp"
-#include "path/path.hpp"
+#include "Path.hpp"
 #include "_private/_File.hpp"
 
 #include "InFile.hpp"
@@ -21,7 +21,7 @@
 namespace fs {
     class InFile::_InFileImpl : public _private::_File<std::ifstream> {
         public:
-            _InFileImpl(const path::path_t &path) :
+            _InFileImpl(const Path &path) :
             _File{path}
             {
 
@@ -49,7 +49,7 @@ namespace fs {
     };
 
     //In File class definition starts here :
-    InFile::InFile(const path::path_t &path) :
+    InFile::InFile(const Path &path) :
     _pImpl(std::make_unique<_InFileImpl>(path))
     {
 
@@ -62,6 +62,7 @@ namespace fs {
     Status InFile::close(void) { return this->_pImpl->close(); }
     bool InFile::has_extension(void) const { return this->_pImpl->has_extension(); }
     std::optional<std::string> InFile::get_extension(void) const { return this->_pImpl->get_extension(); }
+    bool InFile::isOpen(void) const { return this->_pImpl->isOpen(); }
 
     //Current class methods definition
     Status InFile::read(void) { return this->_pImpl->read(); }

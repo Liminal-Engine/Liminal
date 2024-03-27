@@ -12,33 +12,32 @@
 #ifndef LIMINAL_LIB_FS_OUTFILE_HPP_
 #define LIMINAL_LIB_FS_OUTFILE_HPP_
 
+#include "Status.hpp"
+#include "Path.hpp"
+
 #include <fstream>
 #include <memory>
 #include <sstream>
 
 namespace fs {
-
-    // Forward declarations :
-    enum class Status;
-    namespace path {
-        using path_t = std::string;
-    }
-
     class OutFile {
-        OutFile(const path::path_t &path);
-        ~OutFile();
+        public:
 
-        // From base class :
-        Status open(const bool &clear = false);
-        Status close(void);
-        bool has_extension(void) const;
-        std::optional<std::string> get_extension(void) const;
+            OutFile(const Path &path);
+            ~OutFile();
 
-        Status write(const std::stringstream &data);
-        Status write(const std::string &data);
-        Status clear(void);
+            // From base class :
+            Status open(const bool &clear = false);
+            Status close(void);
+            bool has_extension(void) const; // TOOD : since get_extension returns an optional, is this stil necessary (I think NO)
+            std::optional<std::string> get_extension(void) const;
+            bool isOpen(void) const;
 
-        static Status create(const path::path_t path); // TODO : implement full path type and logic first then implement it
+            Status write(const std::stringstream &data);
+            Status write(const std::string &data);
+            Status clear(void);
+
+            static Status create(const Path &path); // TODO : implement full path type and logic first then implement it
 
         private:
             class _OutFileImpl;

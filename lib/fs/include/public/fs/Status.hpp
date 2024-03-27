@@ -8,9 +8,10 @@ namespace fs {
         OPEN_FILE_ERR,
         CLOSE_FILE_ERR,
         STR_IS_NOT_A_PATH,
-        PATH_NO_TARGET, // Path point to nothing        
+        PATH_NO_TARGET, // Path point to nothing real
         CANNOT_READ_FILE_IS_CLOSED,
-        CANNOT_WRITE_FILE_IS_CLOSED
+        CANNOT_WRITE_FILE_IS_CLOSED,
+        INVALID_PATH_POS
     };
 }
 
