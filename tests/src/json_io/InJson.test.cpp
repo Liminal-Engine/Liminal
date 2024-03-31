@@ -32,7 +32,6 @@
 #include <type_traits>
 
 // TODO : test if send a non-json file
-// TODO : test with a json that has { 43: "yes" } or { john: "doe" } wrong formatted key
 class JsonIoInJsonParseMethod : public ::testing::TestWithParam<std::pair<fs::Path, json_io::Status>> {
 
     protected:

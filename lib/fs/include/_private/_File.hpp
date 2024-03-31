@@ -30,7 +30,7 @@ namespace fs {
          * 
          */
         using _StreamType = std::variant<std::ofstream, std::ifstream>;
-        template <typename _StreamType> //TODO : create a is_a_variant here : must be a std::stream
+        template <typename _StreamType>
         class _File {
             public:
                 Status open(const bool &clear = false) {
@@ -56,13 +56,7 @@ namespace fs {
                     return Status::OK;
                 }
 
-                // Getters :
-                bool has_extension(void) const {
-                    return this->_extension.has_value();
-                }
-
-                // TODO : fix method syntax case
-                std::optional<std::string> get_extension(void) const {
+                std::optional<std::string> getExtension(void) const {
                     return this->_extension;
                 }
 
@@ -70,7 +64,7 @@ namespace fs {
 
             protected:
                 _File(const Path &path) :
-                _name{this->__load_name(path)},
+                _name{this->__loadName(path)},
                 _registered_path{path},
                 _absolute_path{path.getAbsolute()},
                 _extension{path.getExtension()},
@@ -96,7 +90,7 @@ namespace fs {
                  * @throw 
                  * @return const std::string& 
                  */
-                const std::string __load_name(const Path &path) {
+                const std::string __loadName(const Path &path) {
                     std::optional<std::string> res = path.getEntry();
 
                     if ( !res.has_value() ) {

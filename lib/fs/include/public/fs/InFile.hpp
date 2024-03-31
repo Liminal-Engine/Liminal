@@ -30,8 +30,7 @@ namespace fs {
             //Common methods for each template class (redefined because template class is hidden)
             Status open(void);
             Status close(void);
-            bool has_extension(void) const;
-            std::optional<std::string> get_extension(void) const;
+            std::optional<std::string> getExtension(void) const;
             bool isOpen(void) const;
 
             Status read(void);

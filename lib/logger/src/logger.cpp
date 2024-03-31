@@ -112,9 +112,6 @@ namespace logger {
             _strLevel{_private::_levelToStr(this->_level)},
             _ansiColor{this->_colorToAnsi(color)}
             {
-                //TODO : handle file creation (calling OutFIle constructor with a param that creates the file if don't exists ?, also, is it possible in the constructor's list ?)
-                // open it in constructor, destroy it in destructor
-                //ssysteme intelligent qui clear lezs fihcers de logs tous lex x (dépedent du fichier de conf ?)
                 if ( !Logger::_LoggerImpl::_file.isOpen() ) Logger::_LoggerImpl::_file.open();
             }
 

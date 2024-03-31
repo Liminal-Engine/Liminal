@@ -51,7 +51,6 @@ namespace fs {
             Status insert(const Entry_t &entry, const std::size_t &index) {
                 if (entry == "") return Status::PATH_INVALID_ENTRY_NAME;
                 for (const char &c : _private::_syntax::FORBIDEN_CHARS) {
-                    // TODO : tokenize FORBIDEN_CHARS instead, avoiding loop
                     if (parser::string::contains(entry, c)) {
                         logger::error << "Wrong char in entry : \'" << c << '\'' << std::endl;
                         return Status::PATH_INVALID_ENTRY_NAME;

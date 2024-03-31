@@ -29,8 +29,7 @@ namespace fs {
             // From base class :
             Status open(const bool &clear = false);
             Status close(void);
-            bool has_extension(void) const; // TOOD : since get_extension returns an optional, is this stil necessary (I think NO)
-            std::optional<std::string> get_extension(void) const;
+            std::optional<std::string> getExtension(void) const;
             bool isOpen(void) const;
 
             Status write(const std::stringstream &data);

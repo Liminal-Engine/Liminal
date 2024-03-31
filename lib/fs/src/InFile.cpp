@@ -60,8 +60,7 @@ namespace fs {
     // Redifinition of template class methods:
     Status InFile::open(void) { return this->_pImpl->open(); }
     Status InFile::close(void) { return this->_pImpl->close(); }
-    bool InFile::has_extension(void) const { return this->_pImpl->has_extension(); }
-    std::optional<std::string> InFile::get_extension(void) const { return this->_pImpl->get_extension(); }
+    std::optional<std::string> InFile::getExtension(void) const { return this->_pImpl->getExtension(); }
     bool InFile::isOpen(void) const { return this->_pImpl->isOpen(); }
 
     //Current class methods definition

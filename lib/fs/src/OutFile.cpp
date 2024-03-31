@@ -53,8 +53,7 @@ namespace fs {
     // Redefinition of base class methods
     Status OutFile::open(const bool &clear) { return this->_pImpl->open(clear); }
     Status OutFile::close(void) { return this->_pImpl->close(); }
-    bool OutFile::has_extension(void) const { return this->_pImpl->has_extension(); }
-    std::optional<std::string> OutFile::get_extension(void) const { return this->_pImpl->get_extension(); }
+    std::optional<std::string> OutFile::getExtension(void) const { return this->_pImpl->getExtension(); }
     bool OutFile::isOpen(void) const { return this->_pImpl->isOpen(); }
 
     // Actual OutFile class methods :
