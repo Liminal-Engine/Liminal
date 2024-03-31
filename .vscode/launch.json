@@ -30,9 +30,9 @@
         "request": "launch",
         "args": [
           "-R",
-          "WhenGivenValidJsonContent/LiminalJsonIOInJsonParseMethod",
-          "--output-on-failure"
-          // "WhenGivenPathOfObjectNotContainingComplexValues/LiminalJsonIoObjectHasComplexValueMethod.ReturnGivenBool",
+          "\"FSGetExtensionMethod*\""
+          // "--output-on-failure"
+          // "WhenGivenPathOfObjectNotContainingComplexValues/JsonIoObjectHasComplexValueMethod.ReturnGivenBool",
         ],
         "stopAtEntry": false,
         "internalConsoleOptions": "neverOpen",
@@ -59,9 +59,9 @@
         "request": "launch",
         "args": [
           // "-R",
-          // "WhenGivenPathOfArraysInValidJsonFiles/LiminalJsonIoArrayGetLenMethod.ReturnGivenLength",
+          // "WhenGivenPathOfArraysInValidJsonFiles/JsonIoArrayGetLenMethod.ReturnGivenLength",
           "--output-on-failure"
-          // "WhenGivenPathOfObjectNotContainingComplexValues/LiminalJsonIoObjectHasComplexValueMethod.ReturnGivenBool",
+          // "WhenGivenPathOfObjectNotContainingComplexValues/JsonIoObjectHasComplexValueMethod.ReturnGivenBool",
         ],
         "stopAtEntry": false,
         "internalConsoleOptions": "neverOpen",

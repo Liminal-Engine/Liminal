@@ -17,6 +17,7 @@ namespace fs {
 
         namespace _syntax {
             constexpr char      PATH_SEPARATOR  = '/';
+            constexpr char      FORBIDEN_CHARS[]  = "/\\<>:\"|*&~"; //TODO : check eactly forbidden cars of both OS and update tests
             
         } // namespace _syntax
         

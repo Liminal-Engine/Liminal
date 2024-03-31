@@ -16,6 +16,7 @@
 #include "_private/_parsing/_parsing.hpp"
 
 #include "fs/InFile.hpp"
+#include "logger/logger.hpp"
 
 #include <iostream>
 #include <stdexcept>
@@ -26,6 +27,7 @@ namespace json_io {
         // Public :
         Status _JsonBase::parse(const fs::Path &path) {
             try {
+                logger::debug << "Parsing JSON " << path.toStr() << std::endl;
                 _lexing::_types::_Tokens_t tokens = _lexing::_processLexing(path);
                 std::size_t index{0};
                 this->_rootValue = _parsing::_processParsing(tokens.at(0), tokens, index);

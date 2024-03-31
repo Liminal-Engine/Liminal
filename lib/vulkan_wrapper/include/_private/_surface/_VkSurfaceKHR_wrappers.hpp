@@ -44,6 +44,6 @@ namespace vulkan_wrapper {
             );
         } // namespace _surface
     } // namespace _private
-} // namespace liminal_vulkan_wrapper 
+} // namespace vulkan_wrapper 
 
 #endif // LIMINAL_LIB_VULKANWRAPPER__SURFACE__VKSURFACEKHR_WRAPPERS_HPP_

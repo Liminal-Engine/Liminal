@@ -17,7 +17,7 @@
 #include <string>
 #include <filesystem>
 
-namespace liminal_json_io_test {
+namespace json_io_test {
     namespace paths {
 
         const fs::Path VALID__BASIC{"./assets/json/valid/basic.json"};
@@ -57,7 +57,7 @@ namespace liminal_json_io_test {
     namespace json_path {
         const std::string INEXISTANT_PATH = "~~~~~thisPath/Sure----lyDontExists.unkownFileExt123456789";
     }
-} // namespace liminal_json_io_test
+} // namespace json_io_test
 
 
 #endif // LIMINAL_TESTS_JSON_IO_HPP_

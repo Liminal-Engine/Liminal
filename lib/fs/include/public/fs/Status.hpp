@@ -11,7 +11,8 @@ namespace fs {
         PATH_NO_TARGET, // Path point to nothing real
         CANNOT_READ_FILE_IS_CLOSED,
         CANNOT_WRITE_FILE_IS_CLOSED,
-        INVALID_PATH_POS
+        PATH_INVALID_INDEX,
+        PATH_INVALID_ENTRY_NAME
     };
 }
 

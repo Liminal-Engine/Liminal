@@ -34,5 +34,5 @@ namespace vulkan_wrapper {
             }
         } // namespace _surface
     } // namespace _private
-} // namespace liminal_vulkan_wrapper 
+} // namespace vulkan_wrapper 
 

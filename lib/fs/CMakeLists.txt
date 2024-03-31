@@ -1,2 +1,2 @@
 discover_lib()
-link_internal_libs(PUBLIC parser)
+link_internal_libs(PUBLIC parser logger)

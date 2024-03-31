@@ -21,14 +21,14 @@
 #include <filesystem>
 
 // param = tuple<string:  filePath, string: jsonKeyPath, bool: expectedValue, std::vector<std::string>: separators>
-using ObjectparamType = std::tuple<fs::Path, std::string, bool, std::vector<std::string>>;
-class LiminalJsonIoObjectHasComplexValueMethod : public ::testing::TestWithParam<ObjectparamType> {
+using ObjectParamType = std::tuple<fs::Path, std::string, bool, std::vector<std::string>>;
+class JsonIoObjectHasComplexValueMethod : public ::testing::TestWithParam<ObjectParamType> {
     protected:
         json_io::types::Object_t _instanceCreatedFromInJsonParseMethod;
         json_io::types::Object_t _instanceCreatedFromCopyConstructor;
         json_io::types::Object_t _instanceCreatedFromEqualOperator;
 
-        LiminalJsonIoObjectHasComplexValueMethod(void) : 
+        JsonIoObjectHasComplexValueMethod(void) : 
         _instanceCreatedFromInJsonParseMethod{__createInstanceFromInJsonParseMethod()},
         _instanceCreatedFromCopyConstructor{__createInstanceFromCopyConstructor()},
         _instanceCreatedFromEqualOperator{__createInstanceFromEqualOperator()}
@@ -52,7 +52,7 @@ class LiminalJsonIoObjectHasComplexValueMethod : public ::testing::TestWithParam
         }
 };
 
-ObjectparamType createObjectParams(
+ObjectParamType createObjectParams(
     const fs::Path &filePath,
     const std::string &jsonKeyPath,
     const bool &res,
@@ -61,7 +61,7 @@ ObjectparamType createObjectParams(
     return std::make_tuple(filePath, jsonKeyPath, res, separators);
 }
 
-TEST_P(LiminalJsonIoObjectHasComplexValueMethod, ReturnGivenBool) {
+TEST_P(JsonIoObjectHasComplexValueMethod, ReturnGivenBool) {
     EXPECT_EQ(_instanceCreatedFromInJsonParseMethod.hasNestedComplexValues(), std::get<2>(GetParam()));
     EXPECT_EQ(_instanceCreatedFromCopyConstructor.hasNestedComplexValues(), std::get<2>(GetParam()));
     EXPECT_EQ(_instanceCreatedFromEqualOperator.hasNestedComplexValues(), std::get<2>(GetParam()));
@@ -69,62 +69,62 @@ TEST_P(LiminalJsonIoObjectHasComplexValueMethod, ReturnGivenBool) {
 
 INSTANTIATE_TEST_SUITE_P(
     WhenGivenPathOfObjectContainingComplexValues,
-    LiminalJsonIoObjectHasComplexValueMethod,
+    JsonIoObjectHasComplexValueMethod,
     testing::Values(
-        createObjectParams(liminal_json_io_test::paths::VALID__BASIC, "address", true),
-        createObjectParams(liminal_json_io_test::paths::VALID__BASIC, "hobbies[4]", true),
+        createObjectParams(json_io_test::paths::VALID__BASIC, "address", true),
+        createObjectParams(json_io_test::paths::VALID__BASIC, "hobbies[4]", true),
 
-        createObjectParams(liminal_json_io_test::paths::VALID__EDGE_CASES, "", true),
-        createObjectParams(liminal_json_io_test::paths::VALID__EDGE_CASES, "78", true),
-        createObjectParams(liminal_json_io_test::paths::VALID__EDGE_CASES, "78.40014[0]", true),
+        createObjectParams(json_io_test::paths::VALID__EDGE_CASES, "", true),
+        createObjectParams(json_io_test::paths::VALID__EDGE_CASES, "78", true),
+        createObjectParams(json_io_test::paths::VALID__EDGE_CASES, "78.40014[0]", true),
 
-        createObjectParams(liminal_json_io_test::paths::VALID__NESTED, "", true),
-        createObjectParams(liminal_json_io_test::paths::VALID__NESTED, "nestedData", true),
-        createObjectParams(liminal_json_io_test::paths::VALID__NESTED, "nestedData.level1.level2.level3.level4", true),
-        createObjectParams(liminal_json_io_test::paths::VALID__NESTED, "nestedData.level1.level2.level3.level4.level5.level6.level7.level8", true),
-        createObjectParams(liminal_json_io_test::paths::VALID__NESTED, "nestedData.level1.level2.level3.level4.level5.level6.level7.level8.level9.level10.level11.level12.level13.level14.level15", true),
-        createObjectParams(liminal_json_io_test::paths::VALID__NESTED, "nestedData.level1.level2.level3.level4.level5.level6.level7.level8.level9.level10.level11.level12.level13.level14.level15.level16.level17.level18.level19.level20", true),
-        createObjectParams(liminal_json_io_test::paths::VALID__NESTED, "nestedData.level1.level2.level3.level4.level5.level6.level7.level8.level9", true),
+        createObjectParams(json_io_test::paths::VALID__NESTED, "", true),
+        createObjectParams(json_io_test::paths::VALID__NESTED, "nestedData", true),
+        createObjectParams(json_io_test::paths::VALID__NESTED, "nestedData.level1.level2.level3.level4", true),
+        createObjectParams(json_io_test::paths::VALID__NESTED, "nestedData.level1.level2.level3.level4.level5.level6.level7.level8", true),
+        createObjectParams(json_io_test::paths::VALID__NESTED, "nestedData.level1.level2.level3.level4.level5.level6.level7.level8.level9.level10.level11.level12.level13.level14.level15", true),
+        createObjectParams(json_io_test::paths::VALID__NESTED, "nestedData.level1.level2.level3.level4.level5.level6.level7.level8.level9.level10.level11.level12.level13.level14.level15.level16.level17.level18.level19.level20", true),
+        createObjectParams(json_io_test::paths::VALID__NESTED, "nestedData.level1.level2.level3.level4.level5.level6.level7.level8.level9", true),
 
-        createObjectParams(liminal_json_io_test::paths::VALID__LARGE, "[0]", true),
-        createObjectParams(liminal_json_io_test::paths::VALID__LARGE, "[14]", true),
-        createObjectParams(liminal_json_io_test::paths::VALID__LARGE, "[9].friends[0]", true)
+        createObjectParams(json_io_test::paths::VALID__LARGE, "[0]", true),
+        createObjectParams(json_io_test::paths::VALID__LARGE, "[14]", true),
+        createObjectParams(json_io_test::paths::VALID__LARGE, "[9].friends[0]", true)
     )
 );
 
 INSTANTIATE_TEST_SUITE_P(
     WhenGivenPathOfObjectNotContainingComplexValues,
-    LiminalJsonIoObjectHasComplexValueMethod,
+    JsonIoObjectHasComplexValueMethod,
     testing::Values(
-        createObjectParams(liminal_json_io_test::paths::VALID__BASIC, "address.story", false),
-        createObjectParams(liminal_json_io_test::paths::VALID__BASIC, "hobbies[3]", false),
+        createObjectParams(json_io_test::paths::VALID__BASIC, "address.story", false),
+        createObjectParams(json_io_test::paths::VALID__BASIC, "hobbies[3]", false),
 
-        createObjectParams(liminal_json_io_test::paths::VALID__EDGE_CASES, "-12345", false),
-        createObjectParams(liminal_json_io_test::paths::VALID__EDGE_CASES, "78/an.other.[ke.y]<0>", false, std::vector<std::string>{"/", "<", ">"}),
+        createObjectParams(json_io_test::paths::VALID__EDGE_CASES, "-12345", false),
+        createObjectParams(json_io_test::paths::VALID__EDGE_CASES, "78/an.other.[ke.y]<0>", false, std::vector<std::string>{"/", "<", ">"}),
 
-        createObjectParams(liminal_json_io_test::paths::VALID__NESTED, "address", false),
-        createObjectParams(liminal_json_io_test::paths::VALID__NESTED, "grades", false),
-        createObjectParams(liminal_json_io_test::paths::VALID__NESTED, "nestedData.level1.level2.level3.level4.level5.level6.level7.level8.level9.level10.level11.level12.level13.level14.level15.level16.level17.level18.level19.level20.level21", false),
-        createObjectParams(liminal_json_io_test::paths::VALID__NESTED, "nestedData.level1.level2.level3.level4.level5.level6.level7.level8.level9.friends[0]", false),
-        createObjectParams(liminal_json_io_test::paths::VALID__NESTED, "nestedData.level1.level2.level3.level4.level5.level6.level7.level8.level9.friends[1]", false),
-        createObjectParams(liminal_json_io_test::paths::VALID__NESTED, "nestedData.level1.level2.level3.level4.level5.level6.level7.level8.level9.friends[2]", false),
+        createObjectParams(json_io_test::paths::VALID__NESTED, "address", false),
+        createObjectParams(json_io_test::paths::VALID__NESTED, "grades", false),
+        createObjectParams(json_io_test::paths::VALID__NESTED, "nestedData.level1.level2.level3.level4.level5.level6.level7.level8.level9.level10.level11.level12.level13.level14.level15.level16.level17.level18.level19.level20.level21", false),
+        createObjectParams(json_io_test::paths::VALID__NESTED, "nestedData.level1.level2.level3.level4.level5.level6.level7.level8.level9.friends[0]", false),
+        createObjectParams(json_io_test::paths::VALID__NESTED, "nestedData.level1.level2.level3.level4.level5.level6.level7.level8.level9.friends[1]", false),
+        createObjectParams(json_io_test::paths::VALID__NESTED, "nestedData.level1.level2.level3.level4.level5.level6.level7.level8.level9.friends[2]", false),
 
-        createObjectParams(liminal_json_io_test::paths::VALID__LARGE, "[0].friends[0]", false),
-        createObjectParams(liminal_json_io_test::paths::VALID__LARGE, "[0].friends[1]", false),
-        createObjectParams(liminal_json_io_test::paths::VALID__LARGE, "[0].friends[2]", false),
-        createObjectParams(liminal_json_io_test::paths::VALID__LARGE, "[9].friends[0].specialFriend", false),
-        createObjectParams(liminal_json_io_test::paths::VALID__LARGE, "[9].friends[1]", false),
-        createObjectParams(liminal_json_io_test::paths::VALID__LARGE, "[9].friends[2]", false),
-        createObjectParams(liminal_json_io_test::paths::VALID__LARGE, "[13].friends[0]", false),
-        createObjectParams(liminal_json_io_test::paths::VALID__LARGE, "[13].friends[1]", false),
-        createObjectParams(liminal_json_io_test::paths::VALID__LARGE, "[13].friends[2]", false)
+        createObjectParams(json_io_test::paths::VALID__LARGE, "[0].friends[0]", false),
+        createObjectParams(json_io_test::paths::VALID__LARGE, "[0].friends[1]", false),
+        createObjectParams(json_io_test::paths::VALID__LARGE, "[0].friends[2]", false),
+        createObjectParams(json_io_test::paths::VALID__LARGE, "[9].friends[0].specialFriend", false),
+        createObjectParams(json_io_test::paths::VALID__LARGE, "[9].friends[1]", false),
+        createObjectParams(json_io_test::paths::VALID__LARGE, "[9].friends[2]", false),
+        createObjectParams(json_io_test::paths::VALID__LARGE, "[13].friends[0]", false),
+        createObjectParams(json_io_test::paths::VALID__LARGE, "[13].friends[1]", false),
+        createObjectParams(json_io_test::paths::VALID__LARGE, "[13].friends[2]", false)
     )
 );
 
-class LiminalJsonIoObjectGetMethod : public ::testing::Test {
+class JsonIoObjectGetMethod : public ::testing::Test {
     protected:
         
-        LiminalJsonIoObjectGetMethod(void)
+        JsonIoObjectGetMethod(void)
         {}
 
         void load_object(
@@ -180,17 +180,17 @@ class LiminalJsonIoObjectGetMethod : public ::testing::Test {
         }
 };
 
-TEST_F(LiminalJsonIoObjectGetMethod, ShoudlMatchExpectedValuesWithBasicJsonFile1) {
+TEST_F(JsonIoObjectGetMethod, ShoudlMatchExpectedValuesWithBasicJsonFile1) {
     std::filesystem::current_path("../../tests");
 
-    load_object(liminal_json_io_test::paths::VALID__BASIC, "address.story");
+    load_object(json_io_test::paths::VALID__BASIC, "address.story");
     value_eq<json_io::types::IntNum_t>(15, "left");
     value_eq<json_io::types::FloatNum_t>(678.5, "right");
 };
 
-TEST_F(LiminalJsonIoObjectGetMethod, ShoudlMatchExpectedValuesWithBasicJsonFile21) {
+TEST_F(JsonIoObjectGetMethod, ShoudlMatchExpectedValuesWithBasicJsonFile21) {
     std::filesystem::current_path("../../tests");
-    load_object(liminal_json_io_test::paths::VALID__BASIC, "address");
+    load_object(json_io_test::paths::VALID__BASIC, "address");
     value_eq<json_io::types::String_t>("123 Main St", "street");
     value_eq<json_io::types::String_t>("Anytown", "city");
     value_eq<json_io::types::String_t>("Anystate", "state");
@@ -198,22 +198,22 @@ TEST_F(LiminalJsonIoObjectGetMethod, ShoudlMatchExpectedValuesWithBasicJsonFile2
     value_eq<json_io::types::FloatNum_t>(42.84, "anotherData");
 };
 
-TEST_F(LiminalJsonIoObjectGetMethod, ShoudlMatchExpectedValuesWithBasicJsonFile3) {
+TEST_F(JsonIoObjectGetMethod, ShoudlMatchExpectedValuesWithBasicJsonFile3) {
     std::filesystem::current_path("../../tests");
 
-    load_object(liminal_json_io_test::paths::VALID__BASIC, "hobbies[3]");
+    load_object(json_io_test::paths::VALID__BASIC, "hobbies[3]");
     value_eq<json_io::types::String_t>("no", "nestedHobby");
 };
 
-TEST_F(LiminalJsonIoObjectGetMethod, ShoudlMatchExpectedValuesWithBasicJsonFile4) {
+TEST_F(JsonIoObjectGetMethod, ShoudlMatchExpectedValuesWithBasicJsonFile4) {
     std::filesystem::current_path("../../tests");
-    load_object(liminal_json_io_test::paths::VALID__BASIC, "hobbies[4]");
+    load_object(json_io_test::paths::VALID__BASIC, "hobbies[4]");
     value_eq<json_io::types::Null_t>(nullptr, "nothingImportantHere");
 };
 
-TEST_F(LiminalJsonIoObjectGetMethod, ShoudlMatchExpectedValuesWithBasicJsonFile5) {
+TEST_F(JsonIoObjectGetMethod, ShoudlMatchExpectedValuesWithBasicJsonFile5) {
     std::filesystem::current_path("../../tests");
-    load_object(liminal_json_io_test::paths::VALID__BASIC, "");
+    load_object(json_io_test::paths::VALID__BASIC, "");
     value_eq<json_io::types::String_t>("John Doe", "name");
     value_eq<json_io::types::IntNum_t>(30, "age");
     value_eq<json_io::types::Bool_t>(true, "isEmployed");
@@ -222,33 +222,33 @@ TEST_F(LiminalJsonIoObjectGetMethod, ShoudlMatchExpectedValuesWithBasicJsonFile5
 
 
 
-TEST_F(LiminalJsonIoObjectGetMethod, ShouldMatchExpectedValuesWithEdgeCasesJsonFile1) {
+TEST_F(JsonIoObjectGetMethod, ShouldMatchExpectedValuesWithEdgeCasesJsonFile1) {
     std::filesystem::current_path("../../tests");
 
-    load_object(liminal_json_io_test::paths::VALID__EDGE_CASES, "");
+    load_object(json_io_test::paths::VALID__EDGE_CASES, "");
     value_eq<json_io::types::String_t>("{'yes': 'no}", "/////////....//////?!?!?!!!![12e-89]");
 };
 
-TEST_F(LiminalJsonIoObjectGetMethod, ShouldMatchExpectedValuesWithEdgeCasesJsonFile2) {
+TEST_F(JsonIoObjectGetMethod, ShouldMatchExpectedValuesWithEdgeCasesJsonFile2) {
     std::filesystem::current_path("../../tests");
 
-    load_object(liminal_json_io_test::paths::VALID__EDGE_CASES, "78/an.other.[ke.y]<0>", std::vector<std::string>{"/", "<", ">"});
+    load_object(json_io_test::paths::VALID__EDGE_CASES, "78/an.other.[ke.y]<0>", std::vector<std::string>{"/", "<", ">"});
     value_eq<json_io::types::String_t>("no", "yes");
 };
 
-TEST_F(LiminalJsonIoObjectGetMethod, ShouldMatchExpectedValuesWithEdgeCasesJsonFile3) {
+TEST_F(JsonIoObjectGetMethod, ShouldMatchExpectedValuesWithEdgeCasesJsonFile3) {
     std::filesystem::current_path("../../tests");
 
-    load_object(liminal_json_io_test::paths::VALID__EDGE_CASES, "78/an.other.[ke.y]<1>", std::vector<std::string>{"/", "<", ">"});
+    load_object(json_io_test::paths::VALID__EDGE_CASES, "78/an.other.[ke.y]<1>", std::vector<std::string>{"/", "<", ">"});
     value_eq<json_io::types::Null_t>(nullptr, "no");
 };
 
 
 
-TEST_F(LiminalJsonIoObjectGetMethod, ShouldMatchExpectedValuesWithLargeJsonFile1) {
+TEST_F(JsonIoObjectGetMethod, ShouldMatchExpectedValuesWithLargeJsonFile1) {
     std::filesystem::current_path("../../tests");
 
-    load_object(liminal_json_io_test::paths::VALID__LARGE, "[0]");
+    load_object(json_io_test::paths::VALID__LARGE, "[0]");
     value_eq<json_io::types::String_t>("018a1a54-0e66-44b2-bf88-6349a4839645", "guid");
     value_eq<json_io::types::String_t>("2019-12-25T04:23:12 -01:00", "registered");
     value_eq<json_io::types::FloatNum_t>(-48.602054, "latitude");
@@ -258,63 +258,63 @@ TEST_F(LiminalJsonIoObjectGetMethod, ShouldMatchExpectedValuesWithLargeJsonFile1
     value_eq<json_io::types::String_t>("$2,399.08", "balance");
 };
 
-TEST_F(LiminalJsonIoObjectGetMethod, ShouldMatchExpectedValuesWithLargeJsonFile2) {
+TEST_F(JsonIoObjectGetMethod, ShouldMatchExpectedValuesWithLargeJsonFile2) {
     std::filesystem::current_path("../../tests");
 
-    load_object(liminal_json_io_test::paths::VALID__LARGE, "[9].friends[0]");
+    load_object(json_io_test::paths::VALID__LARGE, "[9].friends[0]");
     value_eq<json_io::types::IntNum_t>(0, "id");
     value_eq<json_io::types::String_t>("Gomez Rowe", "name");
 };
 
-TEST_F(LiminalJsonIoObjectGetMethod, ShouldMatchExpectedValuesWithLargeJsonFile3) {
+TEST_F(JsonIoObjectGetMethod, ShouldMatchExpectedValuesWithLargeJsonFile3) {
     std::filesystem::current_path("../../tests");
 
-    load_object(liminal_json_io_test::paths::VALID__LARGE, "[9].friends[0].specialFriend");
+    load_object(json_io_test::paths::VALID__LARGE, "[9].friends[0].specialFriend");
     value_eq<json_io::types::String_t>("John", "firstsName");
     value_eq<json_io::types::String_t>("Doe", "secondName");
 };
 
 
 
-TEST_F(LiminalJsonIoObjectGetMethod, ShouldMatchExpectedValuesWithNestedJsonFile1) {
+TEST_F(JsonIoObjectGetMethod, ShouldMatchExpectedValuesWithNestedJsonFile1) {
     std::filesystem::current_path("../../tests");
 
-    load_object(liminal_json_io_test::paths::VALID__NESTED, "address");
+    load_object(json_io_test::paths::VALID__NESTED, "address");
     value_eq<json_io::types::String_t>("123 Main St", "street");
     value_eq<json_io::types::String_t>("Anytown", "city");
     value_eq<json_io::types::String_t>("USA", "country");
 };
 
-TEST_F(LiminalJsonIoObjectGetMethod, ShouldMatchExpectedValuesWithNestedJsonFile2) {
+TEST_F(JsonIoObjectGetMethod, ShouldMatchExpectedValuesWithNestedJsonFile2) {
     std::filesystem::current_path("../../tests");
 
-    load_object(liminal_json_io_test::paths::VALID__NESTED, "address");
-    load_object(liminal_json_io_test::paths::VALID__NESTED, "grades");
+    load_object(json_io_test::paths::VALID__NESTED, "address");
+    load_object(json_io_test::paths::VALID__NESTED, "grades");
     value_eq<json_io::types::IntNum_t>(85, "math");
     value_eq<json_io::types::IntNum_t>(92, "english");
     value_eq<json_io::types::IntNum_t>(78, "history");
 };
 
-TEST_F(LiminalJsonIoObjectGetMethod, ShouldMatchExpectedValuesWithNestedJsonFile3) {
+TEST_F(JsonIoObjectGetMethod, ShouldMatchExpectedValuesWithNestedJsonFile3) {
     std::filesystem::current_path("../../tests");
 
-    load_object(liminal_json_io_test::paths::VALID__NESTED, "nestedData.level1.level2.level3.level4.level5.level6.level7.level8");
+    load_object(json_io_test::paths::VALID__NESTED, "nestedData.level1.level2.level3.level4.level5.level6.level7.level8");
     value_eq<json_io::types::Bool_t>(true, "isNested");
 };
 
-TEST_F(LiminalJsonIoObjectGetMethod, ShouldMatchExpectedValuesWithNestedJsonFile4) {
+TEST_F(JsonIoObjectGetMethod, ShouldMatchExpectedValuesWithNestedJsonFile4) {
     std::filesystem::current_path("../../tests");
 
-    load_object(liminal_json_io_test::paths::VALID__NESTED, "nestedData.level1.level2.level3.level4.level5.level6.level7.level8.level9.level10.level11.level12.level13.level14.level15.level16.level17.level18.level19.level20.level21");
+    load_object(json_io_test::paths::VALID__NESTED, "nestedData.level1.level2.level3.level4.level5.level6.level7.level8.level9.level10.level11.level12.level13.level14.level15.level16.level17.level18.level19.level20.level21");
     value_eq<json_io::types::String_t>("Random Value 1", "randomKey1");
     value_eq<json_io::types::IntNum_t>(42, "randomKey2");
     value_eq<json_io::types::Bool_t>(true, "randomKey3");
 };
 
-TEST_F(LiminalJsonIoObjectGetMethod, ShouldMatchExpectedValuesWithNestedJsonFile5) {
+TEST_F(JsonIoObjectGetMethod, ShouldMatchExpectedValuesWithNestedJsonFile5) {
     std::filesystem::current_path("../../tests");
 
-    load_object(liminal_json_io_test::paths::VALID__NESTED, "nestedData.level1.level2.level3.level4.level5.level6.level7.level8.level9");
+    load_object(json_io_test::paths::VALID__NESTED, "nestedData.level1.level2.level3.level4.level5.level6.level7.level8.level9");
     value_eq<json_io::types::FloatNum_t>(155.61306, "longitude");
     value_eq<json_io::types::String_t>("Hello, Madelyn Gilliam! You have 8 unread messages.", "greeting");
     value_eq<json_io::types::String_t>("banana", "favoriteFruit");

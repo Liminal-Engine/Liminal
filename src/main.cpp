@@ -28,6 +28,8 @@
 // #include "parser/string.hpp"
 
 #include "logger/logger.hpp"
+#include "json_io/InJson.hpp"
+#include "fs/Path.hpp"
 
 #include <iostream>
 #include <typeinfo>
@@ -35,8 +37,30 @@
 #include <string>
 
 int main() {
-    liminal::logger::debug << "je debug" << "" << '7' << 45*89 << std::endl;
-    liminal::logger::trace << "je trace" << std::endl;
+    logger::debug << "je debug" << "" << '7' << 45*89 << std::endl;
+    logger::trace << "je trace" << std::endl;
+
+    fs::Path path{};
+
+    path.insert("ccc");
+    path.insert("..");
+    path.insert("aaa", 2);
+    path.insert("bbb", 2);
+    path.insert("index.ftp--zeraaa");
+    logger::debug << path.toStr() << std::endl;
+    path.clean();
+    logger::debug << path.toStr() << std::endl;
+    logger::fatal << "3=" + path.getEntry().has_value() << std::endl; //<< " 4=" + path.getEntry(4).has_value() << " 5=" + path.getEntry(5).has_value() << std::endl;
+    logger::info << path.getExtension().value() << std::endl; //<< " 4=" + path.getEntry(4).has_value() << " 5=" + path.getEntry(5).has_value() << std::endl;
+    fs::Path path2{"ggg/hhh/jjj/lll.old.d"};
+    logger::info << path2.getExtension().value() << std::endl; //<< " 4=" + path.getEntry(4).has_value() << " 5=" + path.getEntry(5).has_value() << std::endl;
+    logger::info << fs::Path{"./"}.getAbsolute().toStr() << std::endl;
+    // json_io::InJson inJson;
+    // inJson.parse(fs::Path{"/home/matteo/Projects/Liminal/tests/assets/json/valid/basic.json"});
+
+
+
+
     // vulkan_wrapper::VulkanHdl handler;
     // fs::InFile file("./README.md");
     // file.open();
