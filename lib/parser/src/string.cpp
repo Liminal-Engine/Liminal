@@ -24,7 +24,7 @@
 namespace parser {
     namespace string {
 
-        bool isNonNegativeInteger(const std::string &str) {
+        bool isPositiveInteger(const std::string &str) {
             return !str.empty() && std::all_of(str.begin(), str.end(), ::isdigit);
         }
         
@@ -33,7 +33,7 @@ namespace parser {
                 return false;
             }
             if (include_nb) {
-                return str == "false" || str == "true" || isNonNegativeInteger(str);
+                return str == "false" || str == "true" || isPositiveInteger(str);
             } else {
                 return str == "false" || str == "true";
             }
@@ -41,20 +41,15 @@ namespace parser {
 
         bool toBool(
             const std::string &str,
-            const bool &include_nb,
-            const bool &throw_error
+            const bool &include_nb
         ) {
-            if (!isBool(str, include_nb)) {
-                throw std::runtime_error("String cannot be converted to bool. Received : " + str);
-            }
+            if (!isBool(str, include_nb)) return false;
             if (include_nb) {
                 if (isOnlyChar(str, '0')) return false;
-                if (isNonNegativeInteger(str)) return true;
-                if (throw_error) throw std::runtime_error("Error in toBool");
+                if (isPositiveInteger(str)) return true;
             }
             if (str == "false") return false;
             if (str == "true") return true;
-            if (throw_error) throw std::runtime_error("Error in toBool");
             return false;
         }
 
@@ -66,74 +61,33 @@ namespace parser {
             return str.find(subStr) != std::string::npos;
         }
 
-        inline bool isOnlyChar(const std::string &str, const char &c) {
+        bool isOnlyChar(const std::string &str, const char &c) {
             return std::all_of(str.begin(), str.end(), [&c](char ch) { return ch == c; });
         }
 
-        intmax_t toIntMax(const std::string &str, const bool &throw_error) {
+        intmax_t toIntMax(const std::string &str) {
             if (isOnlyChar(str, '0')) return (intmax_t)0;
-
-            if (throw_error) {
-                try {
-                    return (intmax_t)std::stol(str);
-                } catch (std::invalid_argument const& ex)
-                {
-                    std::cout << "std::invalid_argument::what(): " << ex.what() << '\n';
-                    throw std::runtime_error("");
-                }
-                catch (std::out_of_range const& ex)
-                {
-                    std::size_t pos{};
-
-                    std::cout << "std::out_of_range::what(): " << ex.what() << '\n';
-                    const long long ll{std::stoll(str, &pos)};
-                    std::cout << "std::stoll(" << std::quoted(str) << "): " << ll
-                            << "; pos: " << pos << '\n';
-                    throw std::runtime_error("");
-                }
-            }
             return (intmax_t)std::stol(str);
         }
 
-        long double toLongDouble(const std::string &str, const bool &throwError) {
+        long double toLongDouble(const std::string &str) {
             if (isOnlyChar(str, '0')) return (long double)0;
 
-            if (throwError) {
-                try {
-                    return std::stold(str);
-                } catch (std::invalid_argument const& ex) {
-                    std::cout << "std::invalid_argument::what(): " << ex.what() << '\n';
-                    throw std::runtime_error("");
-                } catch (std::out_of_range const& ex) {
-                    std::cout << "std::out_of_range::what(): " << ex.what() << '\n';
-                    throw std::runtime_error("");
-                }
-            }
             return std::stold(str);
         }
 
-        std::size_t toSize_t(const std::string &str, const bool &throwError) {
+        std::size_t toSize_t(const std::string &str) {
             if (isOnlyChar(str, '0')) return (std::size_t)0;
 
-            if (throwError) {
-                try {
-                    return std::stoul(str);
-                } catch (std::invalid_argument const& ex) {
-                    std::cout << "std::invalid_argument::what(): " << ex.what() << '\n';
-                    throw std::runtime_error("");
-                } catch (std::out_of_range const& ex) {
-                    std::cout << "std::out_of_range::what(): " << ex.what() << '\n';
-                    throw std::runtime_error("");
-                }
-            }
             return std::stoul(str);
         }
 
-        std::size_t getOccurences(const std::string &str, const char &c) {
+        std::size_t getNOccurences(const std::string &str, const char &c) {
             return std::count(str.begin(), str.end(), c);
         }
 
-        std::size_t getOccurences(const std::string &str, const std::string &occurence) {
+        std::size_t getNOccurences(const std::string &str, const std::string &occurence) {
+            if (occurence == "") return str == "" ? 1 : 0;
             std::size_t res{0};
             std::size_t pos{0};
 
@@ -144,59 +98,60 @@ namespace parser {
             return res;
         }
 
-        std::size_t lastIndexOf(const std::string &str, const char &c, const bool &throwError) {
-            if (throwError) {
-                std::size_t res = str.rfind(c);
-
-                if (res == std::string::npos) {
-                    throw std::runtime_error("Failed to find the given character in string in lastIndexOf");
-                }
-                return res;
-            }
+        std::size_t lastIndexOf(const std::string &str, const char &c) {
             return str.rfind(c);
         }
 
 
+        /**
+         * @brief 
+         * 
+         * @warning DELIMITERS ARE GIVEN BY ORDER OF IMPORTANCE // TODO : document this
+         * @param input 
+         * @param delimiters 
+         * @param includeDelimiter 
+         * @return std::vector<std::string> 
+         */
+        // TODO : tokenize ne convient toujours pas,
+        // il ne faut pas qu'il fasse de priorisation sur les separators mais qu'il les traite tous à égalité
+        
+        std::vector<std::string> tokenize(
+            const std::string &input,
+            const std::vector<std::string> &delimiters,
+            const bool &includeDelimiter
+        ) {
+            std::size_t currentPos{0};
+            std::vector<std::string> res{};
+            std::string nextToken{};
+            using delim_t = std::pair<std::string, std::size_t>;
+            auto delimIsEmpty = [](const delim_t &delim) -> bool { return delim.first.empty() && delim.second == std::string::npos; };
+            auto initDelim = [](void) -> delim_t { return delim_t{"", std::string::npos}; };
+            delim_t nextDelim = initDelim();
+            auto getNextDelim = [&initDelim, &delimIsEmpty, &currentPos, &input, &delimiters]() -> delim_t {
+                delim_t res = initDelim();
+                std::size_t tmp{std::string::npos};
 
-
-    std::vector<std::string> tokenize(
-        const std::string &input,
-        const std::vector<std::string> &delimiters,
-        const bool &includeDelimiter
-    ) {
-        std::vector<std::string> res;
-        size_t startPos = 0;
-        size_t foundPos;
-        std::string tmpStr{};
-
-        while (startPos < input.length()) {
-            foundPos = std::string::npos;
-            // Find the next occurrence of any delimiter
-            for (const auto &delimiter : delimiters) {
-                size_t pos = input.find(delimiter, startPos);
-                if (pos != std::string::npos && (foundPos == std::string::npos || pos < foundPos)) {
-                    foundPos = pos;
+                for (const std::string &delim : delimiters) {
+                    tmp = input.find(delim, currentPos);
+                    if (tmp != std::string::npos && (delimIsEmpty(res) || tmp < res.second)) {
+                        res.first = delim;
+                        res.second = tmp;
+                    }
                 }
+                return res;
+            };
+            auto produceNextToken = [&input, &currentPos, &nextDelim]() -> std::string { return input.substr(currentPos, nextDelim.second - currentPos); };
+
+            while (currentPos < input.size()) {
+                if (delimIsEmpty(nextDelim = getNextDelim())) break;
+                nextToken = produceNextToken();
+                if (!nextToken.empty()) res.push_back(nextToken);
+                if (includeDelimiter) res.push_back(nextDelim.first);
+                currentPos = nextDelim.second + nextDelim.first.size();
             }
-            // If no delimiter is found, break out of the loop
-            if (foundPos == std::string::npos) {
-                break;
-            }
-            // Extract the token and add it to the vector
-            if ((tmpStr = input.substr(startPos, foundPos - startPos)).empty() == false) {
-                res.push_back(tmpStr);
-            }
-            if (includeDelimiter) {
-                res.push_back(input.substr(foundPos, 1)); // Include the delimiter
-            }
-            startPos = foundPos + 1; // Move to the next character after the delimiter
+            if (currentPos < input.size() || input.empty()) res.push_back(input.substr(currentPos, input.size() - currentPos)); // add last token
+            return res;
         }
-        // Add the last token if there is any remaining text
-        if (startPos < input.length()) {
-            res.push_back(input.substr(startPos));
-        }
-        return res;
-    }
 
         std::vector<std::string> tokenize(
             const std::string &input,
@@ -225,9 +180,11 @@ namespace parser {
 
             // Erase substrings from the input string
             for (const std::string &subStr : _subStrsCpy) {
-                size_t pos;
-                while ((pos = _inputCpy.find(subStr)) != std::string::npos) {
-                    _inputCpy.erase(pos, subStr.length());
+                if (subStr != "") {
+                    size_t pos;
+                    while ((pos = _inputCpy.find(subStr)) != std::string::npos) {
+                        _inputCpy.erase(pos, subStr.length());
+                    }
                 }
             }
             return _inputCpy;
@@ -253,7 +210,13 @@ namespace parser {
         }
 
         std::string trimBegin(const std::string &input, const std::vector<std::string> &stringsToTrim) {
-            return trimBegin(input, std::accumulate(stringsToTrim.begin(), stringsToTrim.end(), std::string()));
+                std::string result = input;
+                for (const std::string &trimString : stringsToTrim) {
+                    while (result.substr(0, trimString.length()) == trimString) {
+                        result.erase(0, trimString.length());
+                    }
+                }
+                return result;
         }
 
         std::string trimBegin(const std::string &input, const char &charToTrim) {
@@ -277,7 +240,13 @@ namespace parser {
         }
 
         std::string trimEnd(const std::string &input, const std::vector<std::string> &stringsToTrim) {
-            return trimEnd(input, std::accumulate(stringsToTrim.begin(), stringsToTrim.end(), std::string()));
+            std::string result = input;
+            for (const std::string &trimString : stringsToTrim) {
+                while (result.length() >= trimString.length() && result.substr(result.length() - trimString.length()) == trimString) {
+                    result.erase(result.length() - trimString.length());
+                }
+            }
+            return result;
         }
 
         std::string trimEnd(const std::string &input, const char &charToTrim) {
@@ -293,7 +262,7 @@ namespace parser {
         }
 
         std::string trim(const std::string &input, const std::vector<std::string> &stringsToTrim) {
-            return trim(input, std::accumulate(stringsToTrim.begin(), stringsToTrim.end(), std::string()));
+            return trimEnd( trimBegin(input, stringsToTrim), stringsToTrim );
         }
 
         std::string trim(const std::string &input, const char &charToTrim) {

@@ -168,6 +168,7 @@ namespace logger {
     Logger &Logger::operator<<(std::ostream& (*manipulator)(std::ostream&)) {
         if (manipulator == static_cast<std::ostream& (*)(std::ostream&)>(std::endl))
             this->_loggerImpl->log();
+            // TODO :reset color here
         else
             this->_loggerImpl->bufferize(manipulator);
         return *this;

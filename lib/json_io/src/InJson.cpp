@@ -13,6 +13,8 @@
 
 #include "is_in_variant_v.hpp"
 
+#include <logger/logger.hpp>
+
 #include "_private/_JsonValue.hpp"
 #include "_private/_parsing/_types.hpp"
 #include "_private/_JsonBase.hpp"
@@ -22,8 +24,7 @@
 namespace json_io
 {
 
-    class InJson::_InJsonImpl : public _private::_JsonBase
-    {
+    class InJson::_InJsonImpl : public _private::_JsonBase {
 
         public:
             _InJsonImpl(void) :
@@ -87,9 +88,10 @@ namespace json_io
                 if (this->_rootValue.has_value() == false) {
                     throw std::runtime_error("JSON has not been loaded.");
                 }
-                std::vector<std::string> tokenizedPath = parser::string::tokenize(jsonPath, separators);
                 _private::_JsonValue tmpJsonValue{this->_rootValue.value()};
-
+                if (jsonPath.empty()) return tmpJsonValue;
+                std::vector<std::string> tokenizedPath = parser::string::tokenize(jsonPath, separators);
+                
                 for (const std::string &key : tokenizedPath) {
                     if (tmpJsonValue.getType() == _private::_JsonValueTypes::_OBJECT) {
                         tmpJsonValue = _private::_JsonValue{__getObjectValue(tmpJsonValue, key)};
@@ -123,7 +125,7 @@ namespace json_io
                 if (tmpArrayPtr == nullptr) {
                     throw std::runtime_error("Value is set as array but is not an actual array. Critical error in parsing.");
                 }
-                if (parser::string::isNonNegativeInteger(indexAsString) == false) {
+                if (parser::string::isPositiveInteger(indexAsString) == false) {
                     throw std::runtime_error("Received an invalid index : " + indexAsString);
                 }
                 std::size_t index = parser::string::toSize_t(indexAsString);

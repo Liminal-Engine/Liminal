@@ -102,5 +102,4 @@ namespace fs {
     }
 } // namespace name
 
-
 #endif // LIMINAL_LIB_FS__PRIVATE__FILE_HPP_

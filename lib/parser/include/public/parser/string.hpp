@@ -24,23 +24,22 @@ namespace parser {
     
         bool toBool(
             const std::string &str,
-            const bool &include_nb = false,
-            const bool &throw_error = false
+            const bool &include_nb = false
         );
 
         bool contains(const std::string &str, const char &c);
         bool contains(const std::string &str, const std::string &subStr);
 
-        inline bool isOnlyChar(const std::string &str, const char &c);
-        bool isNonNegativeInteger(const std::string &str);
-        intmax_t toIntMax(const std::string &str, const bool &throw_error = false);
-        long double toLongDouble(const std::string &str, const bool &throwError = false);
-        std::size_t toSize_t(const std::string &str, const bool &throwError = false);
+        bool isOnlyChar(const std::string &str, const char &c);
+        bool isPositiveInteger(const std::string &str);
+        intmax_t toIntMax(const std::string &str);
+        long double toLongDouble(const std::string &str);
+        std::size_t toSize_t(const std::string &str);
 
-        std::size_t getOccurences(const std::string &str, const char &c);
-        std::size_t getOccurences(const std::string &str, const std::string &occurence);
-        std::size_t lastIndexOf(const std::string &str, const char &c, const bool &throwError = false);
-
+        std::size_t getNOccurences(const std::string &str, const char &c);
+        std::size_t getNOccurences(const std::string &str, const std::string &occurence);
+        std::size_t lastIndexOf(const std::string &str, const char &c);
+        
         std::vector<std::string> tokenize(
             const std::string &input,
             const std::vector<std::string> &delimiters,
@@ -55,7 +54,7 @@ namespace parser {
             const std::string &input,
             const char &delimiter,
             const bool &includeDelimiter = false
-        );
+        );  
 
         std::string eraseAll(const std::string &input, const std::vector<std::string> &subStrs);
         std::string eraseAll(const std::string &input, const std::string &substr);
