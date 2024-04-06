@@ -10,6 +10,7 @@
 */
 
 #include "_private/_JsonValue.hpp"
+#include "_private/_error/_Errors.hpp"
 
 #include "parser/string.hpp"
 
@@ -18,9 +19,8 @@ namespace json_io {
 
         _JsonValue::_JsonValue(const _lexing::_types::_Token_s &token) :
         _type{[&]() ->  _JsonValueTypes {
-            if (token.getType() == _lexing::_types::_TokenTypes_e_c::SYNTAX) {
-                throw std::runtime_error("Error : _JsonValue constructor received a syntax token. Got : " + token.getValueAsStr());
-            }
+            if (token.getType() == _lexing::_types::_TokenTypes_e_c::SYNTAX)
+                THROW(_private::_error::_Parsing, "Error : _JsonValue constructor received a syntax token. Got : %s", token.getValueAsStr().c_str());
             return this->__tokenTypeToJsonValueType(token.getType());
         }()},
         _value{this->__tokenToValue(token)}
@@ -65,7 +65,7 @@ namespace json_io {
                 case _JsonValueTypes::_OBJECT:
                     return "object";
                 default:
-                    throw std::runtime_error("Unknown type given");
+                    THROW(_private::_error::_Type, "Unknown type, got : %d", this->_type);
             }
         }
 
@@ -95,7 +95,7 @@ namespace json_io {
                 case _lexing::_types::_TokenTypes_e_c::BOOL:
                     return _JsonValueTypes::_BOOL;
                 default:
-                    throw std::runtime_error("Unknown type given");
+                    THROW(_private::_error::_Type, "Unknown type given, got: %d", tokenType);
             }
         }
 
@@ -112,9 +112,9 @@ namespace json_io {
                 case _lexing::_types::_TokenTypes_e_c::NULL_:
                     return nullptr;
                 case _lexing::_types::_TokenTypes_e_c::SYNTAX:
-                    throw std::runtime_error("Error : syntax token encoutered.");
+                    THROW(_private::_error::_Parsing, "Error : syntax token encoutered.");
                 default:
-                    throw std::runtime_error("Unknown type given");;
+                    THROW(_private::_error::_Parsing, "Unknown type given. Got: %d", token.getType());
             }
         }
 

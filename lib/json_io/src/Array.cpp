@@ -13,6 +13,9 @@
 #include "is_in_variant_v.hpp"
 #include "_private/_complex_value/_IComplexValue.hpp"
 #include "_private/_JsonValue.hpp"
+#include "_private/_error/_Errors.hpp"
+
+#include <error/error.hpp>
 
 #include <unordered_map>
 #include <vector>
@@ -89,18 +92,15 @@ namespace json_io {
                 static std::vector<_private::_JsonValue> _createInternalArray(
                     const _private::_JsonValue &arrayAsJsonValue
                 ) {
-                    if (arrayAsJsonValue.getType() != _private::_JsonValueTypes::_ARRAY) {
-                        throw std::runtime_error("Invalid type requested.");
-                    }
+                    if (arrayAsJsonValue.getType() != _private::_JsonValueTypes::_ARRAY)
+                        THROW(_private::_error::_Type, "Invalid type requested. Expected : %d, got : %d", _private::_JsonValueTypes::_ARRAY, arrayAsJsonValue.getType());
                     std::vector<_private::_JsonValue> array{};
                     _private::_parsing::_types::_Any_t tmpAnyValue = arrayAsJsonValue.getValue();
                     _private::_parsing::_types::_Array_t *parsingArrayPtr = std::get_if<_private::_parsing::_types::_Array_t>(&tmpAnyValue);
-                    if (parsingArrayPtr == nullptr) {
-                        throw std::runtime_error("Invalid type requested.");
-                    }
-                    for (const auto &value : (*parsingArrayPtr)) {
+                    if (parsingArrayPtr == nullptr)
+                        THROW(_private::_error::_Type, "Invalid type requested. Expected : %d, got : %d", _private::_JsonValueTypes::_ARRAY, arrayAsJsonValue.getType());                        
+                    for (const auto &value : (*parsingArrayPtr))
                         array.push_back(_private::_JsonValue(*(value.get())));
-                    }
                     return array;
                 }
         };

@@ -15,8 +15,13 @@
 namespace json_io {
     enum class Status {
         OK,
-        NOK,
-        PARSING_ERR
+        E_NOK,
+        E_PARSING,
+        E_TYPE,
+        E_KEY,
+        E_INDEX,
+        E_FILE,
+        E_NOT_LOADED
     };
 } // namespace json_io
 

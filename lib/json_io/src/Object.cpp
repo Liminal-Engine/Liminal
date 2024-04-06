@@ -11,8 +11,10 @@
 
 #include "types.hpp"
 #include "is_in_variant_v.hpp"
+
 #include "_private/_complex_value/_IComplexValue.hpp"
 #include "_private/_JsonValue.hpp"
+#include "_private/_error/_Errors.hpp"
 
 #include <unordered_map>
 #include <vector>
@@ -85,15 +87,13 @@ namespace json_io {
                 static std::unordered_map<types::Key_t, _private::_JsonValue> _createInternalObject(
                     const _private::_JsonValue &objectAsJsonValue
                 ) {
-                    if (objectAsJsonValue.getType() != _private::_JsonValueTypes::_OBJECT) {
-                        throw std::runtime_error("Invalid type requested.");
-                    }
+                    if (objectAsJsonValue.getType() != _private::_JsonValueTypes::_OBJECT)
+                        THROW(_private::_error::_Type, "Invalid type requested.");
                     std::unordered_map<types::Key_t, _private::_JsonValue> object{};
                     _private::_parsing::_types::_Any_t tmpAnyValue = objectAsJsonValue.getValue();
                     _private::_parsing::_types::_Object_t *parsingObjectPtr = std::get_if<_private::_parsing::_types::_Object_t>(&tmpAnyValue);
-                    if (parsingObjectPtr == nullptr) {
-                        throw std::runtime_error("Invalid type requested.");
-                    }
+                    if (parsingObjectPtr == nullptr)
+                        THROW(_private::_error::_Type, "Invalid type requested.");
                     for (const auto &[key, value] : (*parsingObjectPtr)) {
                         object.insert({key, _private::_JsonValue(*(value.get()))});
                     }

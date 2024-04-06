@@ -11,6 +11,7 @@
 
 #include "_private/_lexing/_lexing.hpp"
 #include "_private/_syntax.hpp"
+#include "_private/_error/_Errors.hpp"
 
 #include "fs/InFile.hpp"
 #include "fs/Status.hpp"
@@ -59,15 +60,13 @@ namespace json_io {
                         } else if (std::find( std::begin(_syntax::_FORMAT_TOKENS_C_A), std::end(_syntax::_FORMAT_TOKENS_C_A), currentChar ) != std::end(_syntax::_FORMAT_TOKENS_C_A)) {
                             res.push_back(_types::_Token_s{std::string{currentChar}, _types::_TokenTypes_e_c::SYNTAX});
                             if (res.back() == _syntax::_COLON_C and res.size() >= 2 and res.at(res.size() - 2).getType() == _types::_TokenTypes_e_c::STRING) { //If current token is ":" and last token is a string. Last token is transform to a KEY
-                                if (res.at(res.size() - 3).getValueAsStr() != "{" && res.at(res.size() - 3).getValueAsStr() != ",") {
-                                    throw std::runtime_error("Error : missing comma approximately at " + jsonIndices.at(0).getPosDescription()); // if token before the supposed key is not ",", it means that a "," is missing so throw error    
-                                }                                
+                                if (res.at(res.size() - 3).getValueAsStr() != "{" && res.at(res.size() - 3).getValueAsStr() != ",")
+                                    THROW(_private::_error::_Parsing, "Error : missing comma approximately at %s", jsonIndices.at(0).getPosDescription().c_str());
                                 res.at(res.size() - 2).setType(_types::_TokenTypes_e_c::KEY);
                             }
                             jsonIndices.erase(jsonIndices.begin());
-                        } else {
-                            throw std::runtime_error("Unexpected character, got : " + std::string{currentChar} + "at position : " + jsonIndices.at(0).getPosDescription());
-                        }
+                        } else
+                            THROW(_private::_error::_Parsing, "Unexpected character, got : %s at position : %s", std::string{currentChar}.c_str(), jsonIndices.at(0).getPosDescription().c_str());
                     }
                     return res;
                 }
@@ -138,15 +137,14 @@ namespace json_io {
                     std::string stringFileContent{};
 
                     fs::InFile jsonFile(path);
-                    if (jsonFile.open() != fs::Status::OK) {
-                        throw std::runtime_error("Failed to open JSON file : " + path.toStr());
-                    }
-                    if (jsonFile.read() != fs::Status::OK) {
-                        throw std::runtime_error("Failed to read JSON file : " + path.toStr());
-                    }
-                    if (jsonFile.close() != fs::Status::OK) {
-                        throw std::runtime_error("Failed to close JSON file : " + path.toStr());
-                    }
+                    char cwd[1024];
+                    getcwd(cwd, sizeof(cwd));
+                    if (jsonFile.open() != fs::Status::OK)
+                        THROW(_private::_error::_File, "Failed to open JSON file : %s", path.toStr().c_str());
+                    if (jsonFile.read() != fs::Status::OK)
+                        THROW(_private::_error::_File, "Failed to read JSON file : %s", path.toStr().c_str());
+                    if (jsonFile.close() != fs::Status::OK)
+                        THROW(_private::_error::_File, "Failed to close JSON file : %s", path.toStr().c_str());
                     stringFileContent = jsonFile.get_content();
                     for (const char &c : stringFileContent) {
                         tmpLineOffset++;

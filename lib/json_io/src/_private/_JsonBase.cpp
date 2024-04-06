@@ -14,6 +14,7 @@
 #include "_private/_lexing/_types.hpp"
 #include "_private/_lexing/_lexing.hpp"
 #include "_private/_parsing/_parsing.hpp"
+#include "_private/_error/_Errors.hpp"
 
 #include "fs/InFile.hpp"
 #include "logger/logger.hpp"
@@ -27,15 +28,28 @@ namespace json_io {
         // Public :
         Status _JsonBase::parse(const fs::Path &path) {
             try {
-                logger::debug << "Parsing JSON " << path.toStr() << std::endl;
                 _lexing::_types::_Tokens_t tokens = _lexing::_processLexing(path);
                 std::size_t index{0};
                 this->_rootValue = _parsing::_processParsing(tokens.at(0), tokens, index);
                 return Status::OK;
+            } catch (const error::Base &e) {
+                e.log();
+                if (dynamic_cast<const _private::_error::_Parsing*>(&e))
+                    return Status::E_PARSING;
+                else if (dynamic_cast<const _private::_error::_Type*>(&e))
+                    return Status::E_TYPE;
+                else if (dynamic_cast<const _private::_error::_Key*>(&e))
+                    return Status::E_KEY;
+                else if (dynamic_cast<const _private::_error::_Index*>(&e))
+                    return Status::E_INDEX;
+                else if (dynamic_cast<const _private::_error::_File*>(&e))
+                    return Status::E_FILE;
+                else if (dynamic_cast<const _private::_error::_NotLoaded*>(&e))
+                    return Status::E_NOT_LOADED;
             } catch (...) {
-                return Status::PARSING_ERR;
+                return Status::E_NOK;
             }
-
+            return Status::E_NOK;
         }
 
     } // namespace _private

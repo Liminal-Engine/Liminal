@@ -1,5 +1,5 @@
 discover_lib()
 
-link_internal_libs(PUBLIC fs parser logger)
 # Local lib deps
+link_internal_libs(PUBLIC error fs parser logger )
 

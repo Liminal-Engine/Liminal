@@ -32,6 +32,8 @@
 #include <type_traits>
 
 // TODO : test if send a non-json file
+// TODO : test all JsonIo return status
+// TODO : test when missing root end brace and bracket
 class JsonIoInJsonParseMethod : public ::testing::TestWithParam<std::pair<fs::Path, json_io::Status>> {
 
     protected:
@@ -63,29 +65,29 @@ INSTANTIATE_TEST_SUITE_P(
     WhenGivenInvalidJsonContent,
     JsonIoInJsonParseMethod,
     testing::Values(
-        std::make_pair(json_io_test::paths::INVALID__ARRAY__WRONG_FORMAT, json_io::Status::PARSING_ERR),
+        std::make_pair(json_io_test::paths::INVALID__ARRAY__WRONG_FORMAT, json_io::Status::E_PARSING),
         
-        std::make_pair(json_io_test::paths::INVALID__BOOL__INCOMPLETE, json_io::Status::PARSING_ERR),
+        std::make_pair(json_io_test::paths::INVALID__BOOL__INCOMPLETE, json_io::Status::E_PARSING),
 
-        std::make_pair(json_io_test::paths::INVALID__BRACE__MISSING_CLOSING, json_io::Status::PARSING_ERR),
-        std::make_pair(json_io_test::paths::INVALID__BRACE__MISSING_OPENING, json_io::Status::PARSING_ERR),
+        std::make_pair(json_io_test::paths::INVALID__BRACE__MISSING_CLOSING, json_io::Status::E_PARSING),
+        std::make_pair(json_io_test::paths::INVALID__BRACE__MISSING_OPENING, json_io::Status::E_PARSING),
 
-        std::make_pair(json_io_test::paths::INVALID__BRACKET__MISING_CLOSING, json_io::Status::PARSING_ERR),
-        std::make_pair(json_io_test::paths::INVALID__BRACKET__MISING_OPENING, json_io::Status::PARSING_ERR),
-        std::make_pair(json_io_test::paths::INVALID__BRACKET__MISING_OPENING_AT_ROOT, json_io::Status::PARSING_ERR),
+        std::make_pair(json_io_test::paths::INVALID__BRACKET__MISING_CLOSING, json_io::Status::E_PARSING),
+        std::make_pair(json_io_test::paths::INVALID__BRACKET__MISING_OPENING, json_io::Status::E_PARSING),
+        std::make_pair(json_io_test::paths::INVALID__BRACKET__MISING_OPENING_AT_ROOT, json_io::Status::E_PARSING),
 
-        std::make_pair(json_io_test::paths::INVALID_COLON__MISSING, json_io::Status::PARSING_ERR),
-        std::make_pair(json_io_test::paths::INVALID_COLON__TOO_MANY, json_io::Status::PARSING_ERR),
-        std::make_pair(json_io_test::paths::INVALID_COLON__TOO_MANY_IN_SIMPLE_KEY_VALUE_PAIR, json_io::Status::PARSING_ERR),
-        std::make_pair(json_io_test::paths::INVALID_COLON__WRONG_CHAR, json_io::Status::PARSING_ERR),
+        std::make_pair(json_io_test::paths::INVALID_COLON__MISSING, json_io::Status::E_PARSING),
+        std::make_pair(json_io_test::paths::INVALID_COLON__TOO_MANY, json_io::Status::E_PARSING),
+        std::make_pair(json_io_test::paths::INVALID_COLON__TOO_MANY_IN_SIMPLE_KEY_VALUE_PAIR, json_io::Status::E_PARSING),
+        std::make_pair(json_io_test::paths::INVALID_COLON__WRONG_CHAR, json_io::Status::E_PARSING),
 
-        std::make_pair(json_io_test::paths::INVALID__COMMA__MISPLACED, json_io::Status::PARSING_ERR),
-        std::make_pair(json_io_test::paths::INVALID__COMMA__MISSING, json_io::Status::PARSING_ERR),
-        std::make_pair(json_io_test::paths::INVALID__COMMA__MISSING_IN_ARRAY, json_io::Status::PARSING_ERR),
-        std::make_pair(json_io_test::paths::INVALID__COMMA__MISSING_IN_NESTED_ARRAY, json_io::Status::PARSING_ERR),
-        std::make_pair(json_io_test::paths::INVALID__COMMA__MISSING_IN_NUM_ARRAY, json_io::Status::PARSING_ERR),
-        std::make_pair(json_io_test::paths::INVALID__COMMA__MULTIPLE_MISSING_IN_ARRAY, json_io::Status::PARSING_ERR),
-        std::make_pair(json_io_test::paths::INVALID__COMMA__TOO_MUCH, json_io::Status::PARSING_ERR)
+        std::make_pair(json_io_test::paths::INVALID__COMMA__MISPLACED, json_io::Status::E_PARSING),
+        std::make_pair(json_io_test::paths::INVALID__COMMA__MISSING, json_io::Status::E_PARSING),
+        std::make_pair(json_io_test::paths::INVALID__COMMA__MISSING_IN_ARRAY, json_io::Status::E_PARSING),
+        std::make_pair(json_io_test::paths::INVALID__COMMA__MISSING_IN_NESTED_ARRAY, json_io::Status::E_PARSING),
+        std::make_pair(json_io_test::paths::INVALID__COMMA__MISSING_IN_NUM_ARRAY, json_io::Status::E_PARSING),
+        std::make_pair(json_io_test::paths::INVALID__COMMA__MULTIPLE_MISSING_IN_ARRAY, json_io::Status::E_PARSING),
+        std::make_pair(json_io_test::paths::INVALID__COMMA__TOO_MUCH, json_io::Status::E_PARSING)
 
     )
 );

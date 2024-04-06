@@ -18,6 +18,7 @@
 #include "_private/_JsonValue.hpp"
 #include "_private/_parsing/_types.hpp"
 #include "_private/_JsonBase.hpp"
+#include "_private/_error/_Errors.hpp"
 
 #include <iostream>
 
@@ -85,9 +86,8 @@ namespace json_io
                 const std::string &jsonPath,
                 const std::vector<std::string> &separators = std::vector<std::string>{".", "[", "]"}
             ) const {
-                if (this->_rootValue.has_value() == false) {
-                    throw std::runtime_error("JSON has not been loaded.");
-                }
+                if (this->_rootValue.has_value() == false)
+                    THROW(_private::_error::_NotLoaded, "JSON has not been loaded.");
                 _private::_JsonValue tmpJsonValue{this->_rootValue.value()};
                 if (jsonPath.empty()) return tmpJsonValue;
                 std::vector<std::string> tokenizedPath = parser::string::tokenize(jsonPath, separators);
@@ -107,13 +107,11 @@ namespace json_io
                 _private::_parsing::_types::_Any_t tmpAnyValue = objectAsJsonValue.getValue();
                 _private::_parsing::_types::_Object_t *tmpObjectPtr = std::get_if<_private::_parsing::_types::_Object_t>(&tmpAnyValue);
 
-                if (tmpObjectPtr == nullptr) {
-                    throw std::runtime_error("Value is set as object but is not an actual object. Critical error in parsing.");
-                }
+                if (tmpObjectPtr == nullptr)
+                    THROW(_private::_error::_Parsing, "Value is set as object but is not an actual object. Critical error in parsing.");
                 // Now, find the specific key
-                if ((*tmpObjectPtr).contains(key) == false) {
-                    throw std::runtime_error("Failed to find given key in Object. Got key = " + key);
-                }
+                if ((*tmpObjectPtr).contains(key) == false)
+                    THROW(_private::_error::_Key, "Failed to find given key in Object. Got key = %s", key.c_str());
                 _private::_JsonValue *nextJsonValuePtr = (*tmpObjectPtr)[key].get();
                 return _private::_JsonValue(*nextJsonValuePtr);
             }
@@ -122,16 +120,13 @@ namespace json_io
                 _private::_parsing::_types::_Any_t tmpAnyValue = arrayAsJsonValue.getValue();
                 _private::_parsing::_types::_Array_t *tmpArrayPtr = std::get_if<_private::_parsing::_types::_Array_t>(&tmpAnyValue);
 
-                if (tmpArrayPtr == nullptr) {
-                    throw std::runtime_error("Value is set as array but is not an actual array. Critical error in parsing.");
-                }
-                if (parser::string::isPositiveInteger(indexAsString) == false) {
-                    throw std::runtime_error("Received an invalid index : " + indexAsString);
-                }
+                if (tmpArrayPtr == nullptr)
+                    THROW(_private::_error::_Parsing, "Value is set as array but is not an actual array. Critical error in parsing.");
+                if (parser::string::isPositiveInteger(indexAsString) == false)
+                    THROW(_private::_error::_Index, "Received an invalid index : %s", indexAsString.c_str());
                 std::size_t index = parser::string::toSize_t(indexAsString);
-                if (index >= (*tmpArrayPtr).size()) {
-                    throw std::runtime_error("Index greater than the array size. Index = " + indexAsString + " array size = " + std::to_string((*tmpArrayPtr).size()));
-                }
+                if (index >= (*tmpArrayPtr).size())
+                    THROW(_private::_error::_Index, "Index greater than the array size. Index = %s array size = %ld", indexAsString.c_str(), std::to_string((*tmpArrayPtr).size()));
                 _private::_JsonValue *nextJsonValuePtr = (*tmpArrayPtr).at(index).get();
                 return _private::_JsonValue(*nextJsonValuePtr);
             }

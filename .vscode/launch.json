@@ -50,7 +50,7 @@
         "request": "launch",
         "args": [
           "-R",
-          "\"JsonIoInJsonGetMethod.WhenGivenBasicJsonFile1\"",
+          "\"WhenGivenInvalidJsonContent/JsonIoInJsonParseMethod.ReturnsGivenStatus\"",
           "--output-on-failure"
           // "WhenGivenPathOfObjectNotContainingComplexValues/JsonIoObjectHasComplexValueMethod.ReturnGivenBool",
         ],

@@ -75,9 +75,11 @@ int main() {
     // file.close();
     // std::cout << file.get_content() << std::endl;
     
-    // json_io::InJson json;
+    json_io::InJson json;
 
-    // json.parse("./tests/assets/bitNestedNoErrors.json");
+    json.parse(fs::Path("./tests/assets/bitNestedNoErrors.json"));
+    json.parse(fs::Path("/home/matteo/Projects/Liminal/tests/assets/json/invalid/bool/incomplete.json"));
+    json.parse(fs::Path("keirhjioehjiot.json"));
 
     // json_io::types::Object_t object{json.get<json_io::types::Object_t>("address").value()};
     

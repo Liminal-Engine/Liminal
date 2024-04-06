@@ -2,6 +2,9 @@
     "nestedHobby": { "yes": "no" },
     "hobbies": [
         1,
+        {
+            "yes": "no"
+        },
         1.78,
         2.5,
         7,
