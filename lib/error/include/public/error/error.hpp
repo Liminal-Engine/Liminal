@@ -43,7 +43,6 @@ namespace error {
     class Base : std::exception {
         public:
 
-            // TODO, use va args here instead :
             Base(const std::experimental::source_location &loc, const char *prettyFunction, const char *format, ...);
             virtual ~Base();
 

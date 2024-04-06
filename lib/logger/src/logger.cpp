@@ -16,6 +16,7 @@
 #include "_private/_template_instances.hpp"
 
 #include <fstream>
+#include <type_traits>
 
 namespace logger {
 
@@ -134,13 +135,17 @@ namespace logger {
             template<typename T>
             void bufferize(const T &message) {
                 std::ostringstream tmp{this->_buffer.str()};
-                tmp << message;
+                if constexpr (std::is_same<T, bool>::value) tmp << (message ? "true" : "false");
+                else tmp << message;
 
-                if (tmp.str().size() < MAX_BUFFER_SIZE)
-                    this->_buffer << message;
-                else //should never happen since temlated compile with max 2048
+                if (tmp.str().size() < MAX_BUFFER_SIZE) {
+                    if constexpr (std::is_same<T, bool>::value) this->_buffer << (message ? "true" : "false");
+                    else this->_buffer << message;
+                } else //should never happen since temlated compile with max 2048
                     std::cerr << _private::_levelToStr(Level::WARNING) << _private::_getFormatedDate() << "[WARNING] > Logger buffer size exceeded, message may not be printed";
             }
+
+            std::ostream &getOutput(void) const { return this->_stream; };
 
     };
 
@@ -174,9 +179,12 @@ namespace logger {
         return *this;
     }
 
-    void setLevel(const Level & level) { 
-        info << "Setting level to " << _private::_levelToStr(level) << std::endl;
-        _private::_level = level;
+    std::ostream &Logger::getOutput(void) const { return this->_loggerImpl->getOutput(); }
+
+    Level setLevel(const Level & level) { 
+        // TOOD : show this no matter the old log level so that this info is always dislpayed ?
+        info << "Setting log level to " << _private::_levelToStr(level) << std::endl;
+        return (_private::_level = level);
     }
 
     bool Logger::_LoggerImpl::_firstLog = true;

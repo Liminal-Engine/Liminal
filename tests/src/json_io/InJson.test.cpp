@@ -33,7 +33,6 @@
 
 // TODO : test if send a non-json file
 // TODO : test all JsonIo return status
-// TODO : test when missing root end brace and bracket
 class JsonIoInJsonParseMethod : public ::testing::TestWithParam<std::pair<fs::Path, json_io::Status>> {
 
     protected:
@@ -143,6 +142,8 @@ class JsonIoInJsonGetMethod : public ::testing::Test {
             EXPECT_EQ(this->_instance.getType(jsonPath, separators), expected);
         }
 };
+
+// TODO : use macro instead
 
 TEST_F(JsonIoInJsonGetMethod, WhenGivenBasicJsonFile1) {
     _instance.parse(json_io_test::paths::VALID__BASIC);

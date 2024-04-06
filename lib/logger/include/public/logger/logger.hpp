@@ -23,13 +23,10 @@ namespace logger {
         FATAL
     };
 
-    void setLevel(const Level &level);
+    Level setLevel(const Level &level);
 
     class Logger {
-        private:
-            class _LoggerImpl;
-            std::unique_ptr<_LoggerImpl> _loggerImpl;
-            
+
         public:
             Logger(
                 std::ostream &stream,
@@ -46,7 +43,18 @@ namespace logger {
             Logger &operator<<(const char (&message)[N]);
 
             Logger &operator<<(std::ostream& (*manipulator)(std::ostream&));
-    };        
+
+            // TODO : implement this ?
+            // /usr/bin/ld: CMakeFiles/LiminalUnitTests.dir/src/logger/logger.test.cpp.o: in function `LoggerTest_ComplexFormatting_using_logger_trace_Test::TestBody()':
+            // /home/matteo/Projects/Liminal/tests/src/logger/logger.test.cpp:186: undefined reference to `logger::Logger& logger::Logger::operator<< <std::_Setw>(std::_Setw const&)'
+
+            // Getters:
+            std::ostream &getOutput(void) const;
+
+        private:
+            class _LoggerImpl;
+            std::unique_ptr<_LoggerImpl> _loggerImpl;
+    };
     
     // Use those instances
     extern Logger trace;

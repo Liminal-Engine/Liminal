@@ -36,8 +36,22 @@
 #include <typeinfo>
 #include <cxxabi.h>
 #include <string>
+#include <regex>
+#include <any>
+#include <vector>
 
 int main() {
+/*     logger::setLevel(logger::Level::FATAL);
+    logger::setLevel(logger::Level::ERROR);
+    logger::info << "te fousp as de ma gueuel" << std::endl; */
+    // std::regex pattern(R"(\d{4}-\d{2}-\d{2}T.*)");
+    // std::stringstream buffer;
+    // std::streambuf *sbuf = std::cout.rdbuf();
+    // std::cout.rdbuf(buffer.rdbuf());
+    // logger::info << "AAA" << std::endl;
+    // std::cout.rdbuf(sbuf);
+    // std::cout << buffer.str() << std::endl;
+    // std::cout << "RESULT OF REGEX MATCH=" << std::string{std::regex_search(buffer.str(), pattern) ? "true" : "false"} << std::endl;
     // logger::debug << "je debug" << "" << '7' << 45*89 << std::endl;
     // logger::trace << "je trace" << std::endl;
 
@@ -59,7 +73,7 @@ int main() {
 
     // std::cout << parser::string::toBool("1", true) << std::endl;
 
-    logger::info << parser::string::trimBegin("abcabcabc", std::vector<std::string>{"ab", "bc"}) << std::endl;
+    // logger::info << parser::string::trimBegin("abcabcabc", std::vector<std::string>{"ab", "bc"}) << std::endl;
 
 
     // json_io::InJson inJson;
@@ -75,11 +89,11 @@ int main() {
     // file.close();
     // std::cout << file.get_content() << std::endl;
     
-    json_io::InJson json;
+    // json_io::InJson json;
 
-    json.parse(fs::Path("./tests/assets/bitNestedNoErrors.json"));
-    json.parse(fs::Path("/home/matteo/Projects/Liminal/tests/assets/json/invalid/bool/incomplete.json"));
-    json.parse(fs::Path("keirhjioehjiot.json"));
+    // json.parse(fs::Path("./tests/assets/bitNestedNoErrors.json"));
+    // json.parse(fs::Path("/home/matteo/Projects/Liminal/tests/assets/json/invalid/bool/incomplete.json"));
+    // json.parse(fs::Path("keirhjioehjiot.json"));
 
     // json_io::types::Object_t object{json.get<json_io::types::Object_t>("address").value()};
     
