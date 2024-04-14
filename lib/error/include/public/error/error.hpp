@@ -31,20 +31,26 @@
 
 
 #define DEFINE_ERROR_CLASS(type) \
-        class type : public error::Base {\
-        public:\
-            type(const std::experimental::source_location &l, const char *p, const char *f, ...):\
-            error::Base(l, p, f)\
-            {}\
+    class type : public error::Base { \
+        public: \
+            type(const std::experimental::source_location &l, const char *p, const char *f, ...): \
+            error::Base() { \
+                va_list a; \
+                va_start(a, f); \
+                this->init(l, p, f, a); \
+                va_end(a); \
+            } \
     };
 
 namespace error {
 
     class Base : std::exception {
-        public:
+        public:            
 
-            Base(const std::experimental::source_location &loc, const char *prettyFunction, const char *format, ...);
+            Base(void);
             virtual ~Base();
+
+            void init(const std::experimental::source_location &loc, const char *prettyFunction, const char *format, va_list args);
 
             // Re declaration
             virtual void log(void) const;

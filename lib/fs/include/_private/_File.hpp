@@ -34,26 +34,33 @@ namespace fs {
         class _File {
             public:
                 Status open(const bool &clear = false) {
+                    if ( !this->_registered_path.exists() ) return Status::E_PATH_NO_TARGET;
+                    if (this->_registered_path.getType() == fs::Entry::Type::DIRECTORY) return Status::E_PATH_IS_DIR;
                     if (this->_stream_opened == false) {
                         this->_stream = clear ? _StreamType(this->_registered_path.toStr(), std::ios::trunc) : _StreamType(this->_registered_path.toStr());
-
                         if (!this->_stream) {
-                            return Status::OPEN_FILE_ERR;
+                            return Status::E_FILE_OPEN;
                         }
                         this->_stream_opened = true;
                     }
                     return Status::OK;
                 }
 
+                /**
+                 * Return OK even if not opened
+                 * 
+                 * @return Status 
+                 */
                 Status close(void) {
                     if (this->_stream_opened == true) {
                         this->_stream.close();
                         if (this->_stream.is_open()) {
-                            return Status::CLOSE_FILE_ERR;
+                            return Status::E_CANNOT_CLOSE_FILE;
                         }
                         this->_stream_opened = false;
+                        return Status::OK;
                     }
-                    return Status::OK;
+                    return Status::E_CLOSE_FILE_NOT_OPEN;
                 }
 
                 std::optional<std::string> getExtension(void) const {
@@ -66,14 +73,14 @@ namespace fs {
                 _File(const Path &path) :
                 _name{this->__loadName(path)},
                 _registered_path{path},
-                _absolute_path{path.getAbsolute()},
+                _absolute_path{__loadAbsolute(path)},
                 _extension{path.getExtension()},
                 _stream_opened{false}
                 {
                 }
 
                 ~_File() = default;
-                const std::string _name;
+                const std::optional<std::string> _name;
                 const Path _registered_path;
                 const Path _absolute_path;
                 const std::optional<std::string> _extension;
@@ -90,13 +97,14 @@ namespace fs {
                  * @throw 
                  * @return const std::string& 
                  */
-                const std::string __loadName(const Path &path) {
-                    std::optional<std::string> res = path.getEntry();
+                const std::optional<std::string> __loadName(const Path &path) {
+                    return path.getEntry(); // FIXME : if path is relative and sent "./" or "../../" for example, _name will be empety when in reality it is not (should be taken from absolute path instead of path)
+                }
 
-                    if ( !res.has_value() ) {
-                        throw std::runtime_error("Failed to get file name");
-                    }
-                    return res.value();
+                const fs::Path __loadAbsolute(const Path &path) {
+                    fs::Path cpy = path;
+                    if (cpy.toAbsolute() != fs::Status::OK) {} // FIXME : do this and handle error if not possible
+                    return fs::Path{cpy};
                 }
         };
     }

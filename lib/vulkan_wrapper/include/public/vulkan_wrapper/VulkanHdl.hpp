@@ -66,7 +66,7 @@ namespace vulkan_wrapper {
             void drawFrame(void);
             void waitIdle(void) const;
 
-            windowing::WindowWrapper window; ///< The window related to the vulkan instace. This will be taken out later in a separate lib
+            windowing::WindowWrapper window; ///< The window related to the vulkan instance. This will be taken out later in a separate lib
 
         private:
             _private::_extension::_Extensions_t _extensions; ///< Vulkan compatible required extensions for the app to work

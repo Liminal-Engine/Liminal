@@ -26,7 +26,7 @@ namespace error {
 
         public:
 
-            _BaseImpl(const std::experimental::source_location &loc, const char *prettyFunction, const std::string &msg) :
+            _BaseImpl(const std::experimental::source_location &loc, const char* prettyFunction, const std::string &msg) :
             _msg{msg.empty() ? DEFAULT_ERR_MSG : msg},
             _debugInfo{__loadDebugInfo(loc, prettyFunction)}
             {
@@ -46,27 +46,12 @@ namespace error {
 
     };
 
+    Base::Base(void) = default;
 
-    Base::Base(const std::experimental::source_location &loc, const char *prettyFunction, const char *format, ...) { // Cannot use initializer list here because of va args
-        constexpr int initialBufferSize = DEFAULT_ERR_BUFF_SIZE; // Initial buffer size
-        std::vector<char> buffer(initialBufferSize);
-
-        va_list args;
-        va_start(args, format);
-        std::size_t length = vsnprintf(buffer.data(), buffer.size(), format, args);
-        va_end(args);
-
-        if (length >= buffer.size()) {
-            // Resize the buffer and try again
-            buffer.resize(length + 1); // +1 for null terminator
-            va_list args;
-            va_start(args, format);
-            vsnprintf(buffer.data(), buffer.size(), format, args);
-            va_end(args);
-        }
-
-        std::cout << std::string(buffer.data()) << std::endl;
-        this->_impl = std::make_unique<_BaseImpl>(loc, prettyFunction, buffer.data()); // assign impl here
+    void Base::init(const std::experimental::source_location &loc, const char *prettyFunction, const char *format, va_list args) {
+        std::vector<char> buffer(DEFAULT_ERR_BUFF_SIZE, 0);
+        vsnprintf(buffer.data(), buffer.size(), format, args);
+        this->_impl = std::make_unique<Base::_BaseImpl>(loc, prettyFunction,  std::string{buffer.data()});
     }
 
     Base::~Base() = default;

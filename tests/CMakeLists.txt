@@ -30,7 +30,7 @@ include(GoogleTest)
 gtest_discover_tests(${PROJECT_NAME})
 # gtest_add_tests(TARGET ${PROJECT_NAME})
 # add_test(Liminal_tests, ${CMAKE_CURRENT_SOURCE_DIR}/build/tests/LiminalUnitTests)
-# add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src/json_io)
+# add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src/jsonio)
 
 # 4. Add project include dirs and libs
 file(GLOB FULL_LIB_DIRS LIST_DIRECTORIES true "../lib/*")

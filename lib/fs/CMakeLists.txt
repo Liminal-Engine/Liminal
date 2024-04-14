@@ -1,2 +1,2 @@
 discover_lib()
-link_internal_libs(PUBLIC parser logger)
+link_internal_libs(PUBLIC sysop parseop logger error)
