@@ -9,11 +9,11 @@
  * 
 */
 
-// #include "json_io/InJson.hpp"
-// #include "json_io/Json.hpp"
-// #include "json_io/OutJson.hpp"
-// #include "json_io/types.hpp"
-// #include "json_io/Status.hpp"
+// #include "jsonio/InJson.hpp"
+// #include "jsonio/Json.hpp"
+// #include "jsonio/OutJson.hpp"
+// #include "jsonio/types.hpp"
+// #include "jsonio/Status.hpp"
 
 // #include "windowing/WindowWrapper.hpp"
 
@@ -25,13 +25,14 @@
 // #include "fs/Status.hpp"
 // #include "fs/path/path.hpp"
 
-// #include "parser/string.hpp"
+// #include <parseop/parseop.hpp>
 
 #include "logger/logger.hpp"
-#include "json_io/InJson.hpp"
+#include "jsonio/InJson.hpp"
 #include "fs/Path.hpp"
-#include <parser/string.hpp>
-
+#include <parseop/parseop.hpp>
+#include <error/error.hpp>
+#include <filesystem>
 #include <iostream>
 #include <typeinfo>
 #include <cxxabi.h>
@@ -40,7 +41,20 @@
 #include <any>
 #include <vector>
 
+
 int main() {
+    // fs::Path p{"/path/to/non_empty_file.txt"};
+    // p.insert("/", 0);
+    // p.toRelative();
+
+    // std::string tmp = std::filesystem::relative("/home/matteo/Projects/Liminal/lib/error").string();
+    // std::cout << std::endl;
+    // fs::Path p{"/home/matteo/Projects/Liminal/lib/error"};
+    // p.toRelative();
+    // logger::info << p.toStr() << std::endl;
+    // p2.toRelative();
+    // logger::info << p2.toStr() << std::endl;
+    // std::cout << p.getType() << std::endl;
 /*     logger::setLevel(logger::Level::FATAL);
     logger::setLevel(logger::Level::ERROR);
     logger::info << "te fousp as de ma gueuel" << std::endl; */
@@ -71,12 +85,12 @@ int main() {
     // logger::info << path2.getExtension().value() << std::endl; //<< " 4=" + path.getEntry(4).has_value() << " 5=" + path.getEntry(5).has_value() << std::endl;
     // logger::info << fs::Path{"./"}.getAbsolute().toStr() << std::endl;
 
-    // std::cout << parser::string::toBool("1", true) << std::endl;
+    // std::cout << parseop::toBool("1", true) << std::endl;
 
-    // logger::info << parser::string::trimBegin("abcabcabc", std::vector<std::string>{"ab", "bc"}) << std::endl;
+    // logger::info << parseop::trimBegin("abcabcabc", std::vector<std::string>{"ab", "bc"}) << std::endl;
 
 
-    // json_io::InJson inJson;
+    // jsonio::InJson inJson;
     // inJson.parse(fs::Path{"/home/matteo/Projects/Liminal/tests/assets/json/valid/basic.json"});
 
 
@@ -89,21 +103,21 @@ int main() {
     // file.close();
     // std::cout << file.get_content() << std::endl;
     
-    // json_io::InJson json;
+    // jsonio::InJson json;
 
     // json.parse(fs::Path("./tests/assets/bitNestedNoErrors.json"));
     // json.parse(fs::Path("/home/matteo/Projects/Liminal/tests/assets/json/invalid/bool/incomplete.json"));
     // json.parse(fs::Path("keirhjioehjiot.json"));
 
-    // json_io::types::Object_t object{json.get<json_io::types::Object_t>("address").value()};
+    // jsonio::types::Object_t object{json.get<jsonio::types::Object_t>("address").value()};
     
     
-    // std::cout << json.get<json_io::types::Object_t>("address").value().get<json_io::types::FloatNum_t>("anotherData").value() << std::endl;
-    // std::cout << json.get<json_io::types::Array_t>("hobbies").value().get<json_io::types::String_t>(1).value() << std::endl;
-    // std::cout << json.get<json_io::types::FloatNum_t>("address.anotherData").value() << std::endl;
-    // std::cout << json.get<json_io::types::IntNum_t>("address.story.left").value() << std::endl;
-    // std::cout << json.get<json_io::types::String_t>("hobbies[4].secondNestedHobbies[1]").value() << std::endl;
-    // json_io::types::Object_t mainObject = json.get<json_io::types::Object_t>().value();
+    // std::cout << json.get<jsonio::types::Object_t>("address").value().get<jsonio::types::FloatNum_t>("anotherData").value() << std::endl;
+    // std::cout << json.get<jsonio::types::Array_t>("hobbies").value().get<jsonio::types::String_t>(1).value() << std::endl;
+    // std::cout << json.get<jsonio::types::FloatNum_t>("address.anotherData").value() << std::endl;
+    // std::cout << json.get<jsonio::types::IntNum_t>("address.story.left").value() << std::endl;
+    // std::cout << json.get<jsonio::types::String_t>("hobbies[4].secondNestedHobbies[1]").value() << std::endl;
+    // jsonio::types::Object_t mainObject = json.get<jsonio::types::Object_t>().value();
 
     // // std::cout << json.getType() << std::endl;
     // // std::cout << json.getType("address") << std::endl;

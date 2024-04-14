@@ -37,7 +37,7 @@ namespace fs {
                     this->_stream.seekg(0, std::ios::beg);
                     return Status::OK;
                 }
-                return Status::CANNOT_READ_FILE_IS_CLOSED;
+                return Status::E_READ_FILE_NOT_OPENED;
         }
 
         std::string get_content(void) const {

@@ -32,7 +32,7 @@
           "stopAtEntry": false,
           "internalConsoleOptions": "neverOpen",
           "externalConsole": false,
-            "cwd": "${workspaceFolder}",
+            "cwd": "${workspaceFolder}/build",
             "program": "${workspaceFolder}/build/Liminal",
             "MIMode": "gdb",
             "miDebuggerPath": "gdb",
@@ -50,9 +50,9 @@
         "request": "launch",
         "args": [
           "-R",
-          "\"Logger\"",
+          "\"FSOutFileOpenMethod\"",
           "--output-on-failure"
-          // "WhenGivenPathOfObjectNotContainingComplexValues/JsonIoObjectHasComplexValueMethod.ReturnGivenBool",
+          // "WhenGivenPathOfObjectNotContainingComplexValues/JsonIOObjectHasComplexValueMethod.ReturnGivenBool",
         ],
         "stopAtEntry": false,
         "internalConsoleOptions": "neverOpen",
@@ -79,9 +79,9 @@
         "request": "launch",
         "args": [
           // "-R",
-          // "WhenGivenPathOfArraysInValidJsonFiles/JsonIoArrayGetLenMethod.ReturnGivenLength",
+          // "WhenGivenPathOfArraysInValidJsonFiles/JsonIOArrayGetLenMethod.ReturnGivenLength",
           "--output-on-failure"
-          // "WhenGivenPathOfObjectNotContainingComplexValues/JsonIoObjectHasComplexValueMethod.ReturnGivenBool",
+          // "WhenGivenPathOfObjectNotContainingComplexValues/JsonIOObjectHasComplexValueMethod.ReturnGivenBool",
         ],
         "stopAtEntry": false,
         "internalConsoleOptions": "neverOpen",

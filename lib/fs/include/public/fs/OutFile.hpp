@@ -32,11 +32,8 @@ namespace fs {
             std::optional<std::string> getExtension(void) const;
             bool isOpen(void) const;
 
-            Status write(const std::stringstream &data);
-            Status write(const std::string &data);
             Status clear(void);
-
-            static Status create(const Path &path); // TODO : implement full path type and logic first then implement it
+            Status write(const std::string &data);
 
         private:
             class _OutFileImpl;

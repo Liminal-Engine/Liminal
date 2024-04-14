@@ -12,13 +12,14 @@
 #ifndef LIMINAL_LIB_FS__PRIVATE__SYNTAX_HPP_
 #define LIMINAL_LIB_FS__PRIVATE__SYNTAX_HPP_
 
+#include <array>
+
 namespace fs {
     namespace _private {
 
         namespace _syntax {
             constexpr char      PATH_SEPARATOR  = '/';
-            constexpr char      FORBIDEN_CHARS[]  = "/\\<>:\"|*&~"; //TODO : check exactly forbidden cars of both OS and update tests
-            
+            constexpr std::array<char, 10> FORBIDEN_CHARS = {'/', '\\', '<', '>', ':', '\"', '|', '*', '&', '~'}; //TODO : check exactly forbidden cars of both OS and update tests
         } // namespace _syntax
         
     } // namespace _private

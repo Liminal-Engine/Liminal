@@ -161,7 +161,7 @@ namespace vulkan_wrapper {
                 VkPipelineInputAssemblyStateCreateInfo inputAssemblyStateCreateInfo = __getInputAssemblyStateCreateInfo();
                 VkViewport viewport = __getViewport(swap_chain_extent);
                 VkRect2D scissor = __getScissor(swap_chain_extent); // Describes in which region pixels will actually be stored
-                VkPipelineViewportStateCreateInfo viewport_state_create_info = __getViewportStateCreateInfo(&viewport, &scissor); // Contains viewport and scissor
+                VkPipelineViewportStateCreateInfo viewport_state_create_info = __getViewportStateCreateInfo(&viewport, &scissor); // includes viewport and scissor
                 VkPipelineRasterizationStateCreateInfo rasterization_state_create_info = __getRasterizationStateCreateInfo(); //takes geometry by vertices and turns it into fragment to be colored by the fragment shader
                 VkPipelineMultisampleStateCreateInfo multisample_state_create_info = __getMultisampleStateCreateInfo();
                 VkPipelineColorBlendAttachmentState color_blend_attachment_state = __getColorBlendAttachmentState();

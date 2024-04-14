@@ -21,27 +21,23 @@ namespace fs {
             _File{path}
             {}
 
-            Status write(const std::stringstream &data) {
-                return this->write(data.str());
-            }
-            
             Status write(const std::string &data) {
                 if (this->_stream_opened) {
                     this->_stream << data;
                     return Status::OK;
                 }
-                return Status::CANNOT_WRITE_FILE_IS_CLOSED;
-            }
+                return Status::E_WRITE_FILE_CLOSED;
+            };
 
             Status clear(void) {
                 Status tmpStatus;
 
                 if (this->_stream_opened)
-                    if ( (tmpStatus = this->close()) != Status::OK ) return tmpStatus;                
+                    if ( (tmpStatus = this->close()) != Status::OK ) return tmpStatus;          
                 return this->open(true);
-            }
-    };
+            };
 
+    };
 
     // exposed OutFile class :
     OutFile::OutFile(const Path &path) :
@@ -57,7 +53,6 @@ namespace fs {
     bool OutFile::isOpen(void) const { return this->_pImpl->isOpen(); }
 
     // Actual OutFile class methods :
-    Status OutFile::write(const std::stringstream &data) { return this->_pImpl->write(data); }
     Status OutFile::write(const std::string &data) { return this->_pImpl->write(data); }
     Status OutFile::clear(void) { return this->_pImpl->clear(); }
 
