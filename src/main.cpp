@@ -30,6 +30,8 @@
 #include "logger/logger.hpp"
 #include "jsonio/InJson.hpp"
 #include "fs/Path.hpp"
+#include <time/Date.hpp>
+
 #include <parseop/parseop.hpp>
 #include <error/error.hpp>
 #include <filesystem>
@@ -40,12 +42,29 @@
 #include <regex>
 #include <any>
 #include <vector>
-
+#include <climits>
+#include <limits>
 
 int main() {
     // fs::Path p{"/path/to/non_empty_file.txt"};
     // p.insert("/", 0);
     // p.toRelative();
+    logger::info << "hello Maximum value of long long int:" << std::numeric_limits<long long int>::max() << std::endl;
+    // std::cout << time_::Date{1713557763499153664, time_::Unit::NANO_SECOND}.toStr("%2Y-%m-%dT%H:%M:%S.%E.%f.%i") << std::endl; 
+    std::cout << time_::convert(8, time_::Unit::MICRO_SECOND, time_::Unit::MICRO_SECOND);
+    // std::cout << time_::convert(1414922587498, time_::Unit::MILLI_SECOND, time_::Unit::NANO_SECOND);
+    // std::cout << date.toFormat("%Y-%m-%dT%H:%M:%SZ") << std::endl;
+    // std::cout << std::chrono::duration_cast<std::chrono::nanoseconds>(
+    //                 std::chrono::high_resolution_clock::now().time_since_epoch()
+    //             ).count()
+    // << std::endl;
+    // std::cout << static_cast<time_::Stamp_t>(
+    //             std::chrono::duration_cast<std::chrono::nanoseconds>(
+    //                 std::chrono::high_resolution_clock::now().time_since_epoch()
+    //             ).count())
+    // << std::endl;
+    // logger::info << date.toFormat("%Y-%m-%dT%H:%M:%SZ");
+    // logger::info << "hello Maximum value of unsigned long long int:" << std::numeric_limits<unsigned long long int>::max() << std::endl;
 
     // std::string tmp = std::filesystem::relative("/home/matteo/Projects/Liminal/lib/error").string();
     // std::cout << std::endl;
