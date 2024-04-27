@@ -104,7 +104,7 @@ namespace jsonio {
                 case _lexing::_types::_TokenTypes_e_c::STRING:
                     return token.getValueAsStr();
                 case _lexing::_types::_TokenTypes_e_c::INT_NUM:
-                    return parseop::toIntMax(token.getValueAsStr());
+                    return parseop::toLongInt(token.getValueAsStr());
                 case _lexing::_types::_TokenTypes_e_c::FLOAT_NUM:
                     return parseop::toLongDouble(token.getValueAsStr());
                 case _lexing::_types::_TokenTypes_e_c::BOOL:
