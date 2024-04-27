@@ -1,5 +1,5 @@
 /**
- * @file toLongInt.cpp
+ * @file toIntMax.cpp
  * @author DE VITA Matteo (matteo.devita7@gmail.com)
  * @brief 
  * @version 0.1
@@ -15,9 +15,9 @@
 #include <cstdint>
 
 namespace parseop {
-    long int toLongInt(const std::string &str) {
-        if (isOnlyChar(str, '0')) return (long int)0;
-        return (long int)std::stol(str);
+    intmax_t toIntMax(const std::string &str) {
+        if (isOnlyChar(str, '0')) return (intmax_t)0;
+        return (intmax_t)std::stol(str);
     }
 } // namespace parseop
 

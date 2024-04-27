@@ -234,21 +234,21 @@ INSTANTIATE_TEST_SUITE_P(
     )
 );
 
-using ParseOPStringtoLongIntParam = std::tuple<
+using ParseOPStringToIntMaxParam = std::tuple<
     std::string, // input str
-    long int // expected result
+    intmax_t // expected result
 >;
-class ParseOPStringtoLongIntFunc : public ::testing::TestWithParam<ParseOPStringtoLongIntParam> {
+class ParseOPStringToIntMaxFunc : public ::testing::TestWithParam<ParseOPStringToIntMaxParam> {
 
 };
 
-TEST_P(ParseOPStringtoLongIntFunc, ReturnsExpectedValue) {
-    EXPECT_EQ(parseop::toLongInt(std::get<0>(GetParam())), std::get<1>(GetParam()));
+TEST_P(ParseOPStringToIntMaxFunc, ReturnsExpectedValue) {
+    EXPECT_EQ(parseop::toIntMax(std::get<0>(GetParam())), std::get<1>(GetParam()));
 }
 
 INSTANTIATE_TEST_SUITE_P(
     WhenGivenVariousParams,
-    ParseOPStringtoLongIntFunc,
+    ParseOPStringToIntMaxFunc,
     ::testing::Values(
         std::make_tuple("0", 0),
         std::make_tuple("00000000000000000000", 0),
@@ -318,8 +318,8 @@ INSTANTIATE_TEST_SUITE_P(
         std::make_tuple("00000000000000000000", 0, 0),
         std::make_tuple("0000000000000000000000000", 0, 0),
         std::make_tuple("00000000000000000000000001", 0, 1),
-        std::make_tuple("123456789", 0, 123456789), 
-        std::make_tuple("-123456789", 0, -123456789), // FIXME : shoulToSize_t return negative numbers ?
+        std::make_tuple("123456789", 0, 123456789),
+        std::make_tuple("-123456789", 0, -123456789),
         std::make_tuple("9223372036854775807", 0, 9223372036854775807),
         std::make_tuple("-9223372036854775808", 0, -9223372036854775807 - 1)
     )

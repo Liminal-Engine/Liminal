@@ -12,22 +12,15 @@
 #ifndef LIMINAL_LIB_FS_ENTRY_HPP_
 #define LIMINAL_LIB_FS_ENTRY_HPP_
 
-#include "User.hpp"
-#include "Permission.hpp"
-
-// #include <time/Date.hpp>
-
 #include <string>
 #include <cstddef>
-#include <optional>
 
 namespace fs {
 
     class Entry {
         public:
 
-
-            enum class Type {
+        enum class Type {
                 REGULAR_FILE,
                 DIRECTORY,
                 SYM_LINK,
@@ -38,24 +31,20 @@ namespace fs {
                 UNKNOWN
             };
 
-            class Size {
-                // To, Go, etc ??? o plutôt struct ?
-            };
-
         private:
 
-            Type _type;
             std::string _name;
             std::size_t _size; // in bytes
             bool _isHidden;
-            // time::Date _creationDate;
-            // time::Date _lastModifDate;
-            // time::Date _lastAccessDate;
-            User _owner;
-            Permission _userPermission;
-            Permission _groupPermission;
-            Permission _worldPermission;
-            std::optional<std::string> _extension;
+            int _creationDate; // TODO : before, I need to wonder how to handle dates in a general matter
+            int _lastModifDate;
+            //UNKNOWN_TYPE//; _owner:
+
+            //UNKNOWN_TYPE// userPermissions
+            //UNKNOWN_TYPE// groupPermissions
+            //UNKNOWN_TYPE// worldPermissions
+
+
     };
     
 } // namespace fs

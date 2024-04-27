@@ -34,9 +34,7 @@ namespace parseop {
 
     bool isOnlyChar(const std::string &str, const char &c);
     bool isPositiveInteger(const std::string &str);
-    long int toLongInt(const std::string &str);
-    long long int toLongLongInt(const std::string &str);
-
+    intmax_t toIntMax(const std::string &str);
     long double toLongDouble(const std::string &str);
     std::size_t toSize_t(const std::string &str);
 
@@ -83,9 +81,6 @@ namespace parseop {
 
     bool startsWith(const std::string &input, const std::string &target);
     bool endsWith(const std::string &input, const std::string &target);
-
-    std::string replace(const std::string &input, const std::string &target, const std::string &replacement, const std::size_t &nOccurence = 0);
-    std::string replace(const std::string &input, const std::vector<std::string> &targets, const std::string &replacement, const std::size_t &nOccurence = 0);
 
 } // namespace parseop
 

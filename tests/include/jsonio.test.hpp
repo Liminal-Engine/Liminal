@@ -9,8 +9,8 @@
  * 
 */
 
-#ifndef LIMINAL_TESTS_JSONIO_TEST_HPP_
-#define LIMINAL_TESTS_JSONIO_TEST_HPP_
+#ifndef LIMINAL_TESTS_jsonio_TEST_HPP_
+#define LIMINAL_TESTS_jsonio_TEST_HPP_
 
 #include "fs/Path.hpp"
 
@@ -60,4 +60,4 @@ namespace jsonio_test {
 } // namespace jsonio_test
 
 
-#endif // LIMINAL_TESTS_JSONIO_TEST_HPP_
+#endif // LIMINAL_TESTS_jsonio_HPP_

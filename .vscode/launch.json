@@ -50,7 +50,7 @@
         "request": "launch",
         "args": [
           "-R",
-          "\"LoggerTest.StringType_using_logger_warn\"",
+          "\"FSOutFileOpenMethod\"",
           "--output-on-failure"
           // "WhenGivenPathOfObjectNotContainingComplexValues/JsonIOObjectHasComplexValueMethod.ReturnGivenBool",
         ],

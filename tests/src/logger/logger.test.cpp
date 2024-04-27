@@ -27,10 +27,6 @@
 #include <gmock/gmock.h>
 
 
-
-
-#include <iostream>
-#include <iomanip>
 class LoggerTest : public ::testing::Test {
     protected:
         std::vector<logger::Level> _levels;
@@ -89,6 +85,7 @@ class LoggerTest : public ::testing::Test {
     TEST_F(LoggerTest, name ## _using_logger_ ## instance) { \
         logger::setLevel(logLevel); \
         _PERFORM_LOG(instance, actions); \
+        std::cout << "STR=" << buffer.str() << std::endl; \
         EXPECT_TRUE(_shouldLog(logLevel, #instance) ? std::string{#expected} == "\"\"" ? buffer.str() == "" : std::regex_search(buffer.str(), logger_test::getMessageRegex(levelDisplay, expected)) : buffer.str().empty()); \
     };
 
