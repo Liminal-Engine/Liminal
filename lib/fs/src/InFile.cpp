@@ -40,7 +40,7 @@ namespace fs {
                 return Status::E_READ_FILE_NOT_OPENED;
         }
 
-        std::string get_content(void) const {
+        std::string getContent(void) const {
             return this->_buffer;
         }
 
@@ -60,11 +60,11 @@ namespace fs {
     // Redifinition of template class methods:
     Status InFile::open(void) { return this->_pImpl->open(); }
     Status InFile::close(void) { return this->_pImpl->close(); }
-    std::optional<std::string> InFile::getExtension(void) const { return this->_pImpl->getExtension(); }
+    // std::optional<std::string> InFile::getExtension(void) const { return this->_pImpl->getExtension(); }
     bool InFile::isOpen(void) const { return this->_pImpl->isOpen(); }
 
     //Current class methods definition
     Status InFile::read(void) { return this->_pImpl->read(); }
-    std::string InFile::get_content(void) const { return this->_pImpl->get_content(); }
+    std::string InFile::getContent(void) const { return this->_pImpl->getContent(); }
 
 }

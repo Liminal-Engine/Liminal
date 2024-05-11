@@ -30,6 +30,7 @@
 #include "logger/logger.hpp"
 #include "jsonio/InJson.hpp"
 #include "fs/Path.hpp"
+#include <fs/Permission.hpp>
 #include <time/Date.hpp>
 
 #include <parseop/parseop.hpp>
@@ -46,12 +47,43 @@
 #include <limits>
 
 int main() {
+    std::cout << ::time_::convert(4, time_::Unit::YEAR, time_::Unit::NANO_SECOND) << std::endl;
+    fs::Path p("/");
+    std::cout << p.getEntry().getName() << std::endl;
+    
+    time_::Date d((int)1974, 1);
+    std::cout << "d:\n--------------\nstamp = " << d.getStamp() << std::endl;
+    std::cout << d.toStr() << std::endl;
+    std::cout << d.extract(time_::Unit::YEAR) << std::endl;
+    std::cout << d.extract(time_::Unit::MONTH) << std::endl;
+    std::cout << d.extract(time_::Unit::MONTH_DAY) << std::endl;
+    std::cout << d.extract(time_::Unit::HOUR) << std::endl;
+    std::cout << d.extract(time_::Unit::MINUTE) << std::endl;
+    std::cout << d.extract(time_::Unit::SECOND) << std::endl;
+    std::cout << d.extract(time_::Unit::MILLI_SECOND) << std::endl;
+    std::cout << d.extract(time_::Unit::MICRO_SECOND) << std::endl;
+    std::cout << d.extract(time_::Unit::NANO_SECOND) << std::endl;
+
+    time_::Date d2(static_cast<time_::Stamp_t>(2145913200 + (3600 * 400)), ::time_::Unit::SECOND);
+    std::cout << "d2:\n--------------\nstamp = " << d2.getStamp() << std::endl;
+    std::cout << d2.toStr() << std::endl;
+    std::cout << d2.extract(time_::Unit::YEAR) << std::endl;
+    std::cout << d2.extract(time_::Unit::MONTH) << std::endl;
+    std::cout << d2.extract(time_::Unit::MONTH_DAY) << std::endl;
+    std::cout << d2.extract(time_::Unit::HOUR) << std::endl;
+    std::cout << d2.extract(time_::Unit::MINUTE) << std::endl;
+    std::cout << d2.extract(time_::Unit::SECOND) << std::endl;
+    std::cout << d2.extract(time_::Unit::MILLI_SECOND) << std::endl;
+    std::cout << d2.extract(time_::Unit::MICRO_SECOND) << std::endl;
+    std::cout << d2.extract(time_::Unit::NANO_SECOND) << std::endl;
+    // std::cout << p2.toStr() << std::endl;
     // fs::Path p{"/path/to/non_empty_file.txt"};
     // p.insert("/", 0);
     // p.toRelative();
-    logger::info << "hello Maximum value of long long int:" << std::numeric_limits<long long int>::max() << std::endl;
-    // std::cout << time_::Date{1713557763499153664, time_::Unit::NANO_SECOND}.toStr("%2Y-%m-%dT%H:%M:%S.%E.%f.%i") << std::endl; 
-    std::cout << time_::convert(8, time_::Unit::MICRO_SECOND, time_::Unit::MICRO_SECOND);
+    // fs::Permission(fs::Permission::Type::EXEC | fs::Permission::Type::READ, fs::Permission::Type::NONE, fs::Permission::Type::NONE);
+    // logger::info << "hello Maximum value of long long int:" << std::numeric_limits<long long int>::max() << std::endl;
+    // // std::cout << time_::Date{1713557763499153664, time_::Unit::NANO_SECOND}.toStr("%2Y-%m-%dT%H:%M:%S.%E.%f.%i") << std::endl; 
+    // std::cout << time_::convert(8, time_::Unit::MICRO_SECOND, time_::Unit::MICRO_SECOND);
     // std::cout << time_::convert(1414922587498, time_::Unit::MILLI_SECOND, time_::Unit::NANO_SECOND);
     // std::cout << date.toFormat("%Y-%m-%dT%H:%M:%SZ") << std::endl;
     // std::cout << std::chrono::duration_cast<std::chrono::nanoseconds>(
@@ -120,7 +152,7 @@ int main() {
     // file.open();
     // file.read();
     // file.close();
-    // std::cout << file.get_content() << std::endl;
+    // std::cout << file.getContent() << std::endl;
     
     // jsonio::InJson json;
 

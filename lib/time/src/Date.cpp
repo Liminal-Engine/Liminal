@@ -76,8 +76,44 @@ namespace time_ {
             }
             {}
 
+            _DateImpl(const time_t &stamp, const Unit &unit):
+            _DateImpl(static_cast<Stamp_t>(stamp), unit)
+            // _stamp(static_cast<Stamp_t>( convert(static_cast<time_t>(stamp), unit, Unit::NANO_SECOND) + convert(static_cast<time_t>(1), Unit::MONTH, Unit::NANO_SECOND) + convert(static_cast<time_t>(1), Unit::MONTH_DAY, Unit::NANO_SECOND) ))
+            {}
+
             _DateImpl(const Stamp_t &stamp, const Unit &unit):
-            _stamp{ static_cast<Stamp_t>(convert(stamp, unit, Unit::NANO_SECOND)) } // TODO : here, convert stamp with correct unit
+            _DateImpl(
+                (unit == Unit::YEAR ? DEFAULT_YEAR + stamp : DEFAULT_YEAR),
+                unit == Unit::MONTH ? DEFAULT_MONTH_DAY + stamp : DEFAULT_MONTH,
+                unit == Unit::DAY || unit == Unit::MONTH_DAY ? DEFAULT_MONTH_DAY + stamp : DEFAULT_MONTH_DAY,
+                unit == Unit::HOUR ? stamp : DEFAULT_HOUR,
+                unit == Unit::MINUTE ? stamp : DEFAULT_MINUTE,
+                unit == Unit::SECOND ? stamp : DEFAULT_SECOND,
+                unit == Unit::MILLI_SECOND ? stamp : DEFAULT_MILLI_SECOND,
+                unit == Unit::MICRO_SECOND ? stamp : DEFAULT_MICRO_SECOND,
+                unit == Unit::NANO_SECOND ? stamp : DEFAULT_NANO_SECOND
+            )
+            // _stamp{
+            //     [&]() -> Stamp_t {
+            //         char *oldTZ = getenv("TZ");
+            //         setenv("TZ", "GMT", 1);
+
+            //         std::tm timeInfo{};
+            //         timeInfo.tm_year = (unit == Unit::YEAR ? stamp : 0) + 70;
+            //         timeInfo.tm_mon = unit == Unit::MONTH ? stamp : 0;
+            //         timeInfo.tm_mday = (unit == Unit::MONTH_DAY || unit == Unit::DAY ? stamp : 0) + 1;
+            //         timeInfo.tm_hour = unit == Unit::HOUR ? stamp : 0;
+            //         timeInfo.tm_min = unit == Unit::MINUTE ? stamp : 0;
+            //         timeInfo.tm_sec = unit == Unit::SECOND ? stamp : 0;
+            //         timeInfo.tm_isdst = -1;
+
+            //         Stamp_t res = convert(static_cast<Stamp_t>(std::mktime(&timeInfo)), Unit::SECOND, Unit::NANO_SECOND);
+
+            //         if (oldTZ) setenv("TZ", oldTZ, 1);
+            //         else unsetenv("TZ");
+            //         return res;
+            //     }()
+            // }
             {}
 
             _DateImpl(const Date &date):
@@ -85,6 +121,10 @@ namespace time_ {
             {}
 
             ~_DateImpl() = default;
+
+            bool operator==(const _DateImpl &other) const noexcept {
+                return this->_stamp == other._stamp;
+            }
 
             Stamp_t getStamp(const Unit &unit) const { return static_cast<Stamp_t>(convert(this->_stamp, Unit::NANO_SECOND, unit)); }
 
@@ -139,11 +179,13 @@ namespace time_ {
                 strBuffer = parseop::replace(strBuffer, "%{ms}", _subSecondToStr(Unit::MILLI_SECOND));
                 strBuffer = parseop::replace(strBuffer, "%{us}", _subSecondToStr(Unit::MICRO_SECOND));
                 strBuffer = parseop::replace(strBuffer, "%{ns}", _subSecondToStr(Unit::NANO_SECOND));
-
                 return strBuffer;
             }
     };
 
+    Date::Date(const time_t &stamp, const Unit &unit):
+    _impl(std::make_unique<Date::_DateImpl>(stamp, unit))
+    {}
 
     Date::Date(const Stamp_t &stamp, const Unit &unit):
     _impl{std::make_unique<Date::_DateImpl>(stamp, unit)}
@@ -169,7 +211,9 @@ namespace time_ {
 
     Date::~Date() = default;
 
-    Stamp_t Date::getStamp(const Unit &unit) const { return this->_impl->extract(unit); }
+    bool Date::operator==(const Date &other) const noexcept { return this->_impl->operator==(*other._impl); }
+
+    Stamp_t Date::getStamp(const Unit &unit) const { return this->_impl->getStamp(unit); }
   
     Stamp_t Date::extract(const Unit &unit) const { return this->_impl->extract(unit); }
 

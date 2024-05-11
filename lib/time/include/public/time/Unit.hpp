@@ -14,6 +14,10 @@
 
 namespace time_ {
 
+    // Forward declarations :
+    //*****************
+    using Stamp_t = long long int;
+    //*****************
 
     enum class Unit {
         NANO_SECOND,
@@ -29,7 +33,16 @@ namespace time_ {
         YEAR
     };
 
-    constexpr Unit DEFAULT_UNIT = Unit::SECOND;
+    constexpr Unit DEFAULT_TIME_UNIT        = Unit::SECOND;
+    constexpr Stamp_t DEFAULT_YEAR          = 1970;
+    constexpr Stamp_t DEFAULT_MONTH         = 1;
+    constexpr Stamp_t DEFAULT_MONTH_DAY     = 1;
+    constexpr Stamp_t DEFAULT_HOUR          = 0;
+    constexpr Stamp_t DEFAULT_MINUTE        = 0;
+    constexpr Stamp_t DEFAULT_SECOND        = 0;
+    constexpr Stamp_t DEFAULT_MILLI_SECOND  = 0;
+    constexpr Stamp_t DEFAULT_MICRO_SECOND  = 0;
+    constexpr Stamp_t DEFAULT_NANO_SECOND   = 0;
 
 } // namespace time_
 

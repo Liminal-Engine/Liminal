@@ -202,12 +202,12 @@ namespace logger {
         
     fs::OutFile Logger::_LoggerImpl::_file = fs::OutFile{fs::Path{_private::_getFormatedDate() + ".log"}};
 
-    Logger trace{std::cerr, Level::TRACE, _private::_Color::GREEN};
-    Logger debug{std::cerr, Level::DEBUG, _private::_Color::BLUE};
-    Logger info{std::cout, Level::INFO, _private::_Color::WHITE};
-    Logger warn{std::cout, Level::WARNING, _private::_Color::YELLOW};
-    Logger error{std::cout, Level::ERROR, _private::_Color::ORANGE};
-    Logger fatal{std::cout, Level::FATAL, _private::_Color::RED};
+    Logger trace(std::cerr, Level::TRACE, _private::_Color::GREEN);
+    Logger debug(std::cerr, Level::DEBUG, _private::_Color::BLUE);
+    Logger info(std::cout, Level::INFO, _private::_Color::WHITE);
+    Logger warn(std::cout, Level::WARNING, _private::_Color::YELLOW);
+    Logger error(std::cout, Level::ERROR, _private::_Color::ORANGE);
+    Logger fatal(std::cout, Level::FATAL, _private::_Color::RED);
 
     #undef MAX_BUFFER_SIZE
 

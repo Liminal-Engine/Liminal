@@ -142,7 +142,7 @@ namespace jsonio {
                         THROW(_private::_error::_File, "Failed to read JSON file : %s", path.toStr().c_str());
                     if (jsonFile.close() != fs::Status::OK)
                         THROW(_private::_error::_File, "Failed to close JSON file : %s", path.toStr().c_str());
-                    stringFileContent = jsonFile.get_content();
+                    stringFileContent = jsonFile.getContent();
                     for (const char &c : stringFileContent) {
                         tmpLineOffset++;
                         if (c == '\n') {

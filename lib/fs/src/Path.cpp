@@ -10,31 +10,38 @@
 */
 
 #include "Path.hpp"
+#include "User.hpp"
+#include "Permission.hpp"
 #include "_private/_syntax.hpp"
 #include "_private/_error/_Errors.hpp"
 
 #include <sysop/sysop.hpp>
 #include <parseop/parseop.hpp>
 #include <logger/logger.hpp>
+#include <time/Date.hpp>
 
 #include <vector>
 #include <filesystem>
 #include <string.h>
 #include <fstream>
 
-namespace fs {
+#include <sys/stat.h>
+#include <pwd.h>
 
+#include <iostream>
+
+namespace fs {
     class Path::_PathImpl {
 
         private:         
-            std::vector<Entry_t> _data;
+            std::vector<std::string> _data;
             Resolution _resolution;
 
-            static std::vector<Entry_t> _loadData(const std::string &inputStr) { // TODO : hanlde what to do if given empty string and test it
-                if (inputStr.empty()) return std::vector<Entry_t>{};
-                if ( parseop::isOnlyChar(inputStr, '/') ) return std::vector<Entry_t>{"/"}; // TODO: test this
+            static std::vector<std::string> _loadData(const std::string &inputStr) { // TODO : hanlde what to do if given empty string and test it
+                if (inputStr.empty()) return std::vector<std::string>{};
+                if ( parseop::isOnlyChar(inputStr, '/') ) return std::vector<std::string>{"/"}; // TODO: test this
                 
-                std::vector<Entry_t> res{parseop::tokenize(inputStr, _private::_syntax::PATH_SEPARATOR)};
+                std::vector<std::string> res{parseop::tokenize(inputStr, _private::_syntax::PATH_SEPARATOR)};
                 // FIXME: always make sure it is not empty ?
                 // FIXME: this is wrong, a dir can have spaces at the end
                 res[res.size() - 1] = parseop::trimEnd(res.at(res.size() - 1), ' ');
@@ -43,7 +50,7 @@ namespace fs {
 
         public:
             _PathImpl(void) :
-            _data{std::vector<Entry_t>{}},
+            _data{std::vector<std::string>{}},
             _resolution{Resolution::RELATIVE}
             {}
 
@@ -59,7 +66,7 @@ namespace fs {
 
             // Setters
 
-            Status insert(const Entry_t &entry) {
+            Status insert(const std::string &entry) {
                 return this->insert(entry, this->_data.size());
             }
 
@@ -73,80 +80,64 @@ namespace fs {
              * @return Status 
              */
 
-            Status insert(const Entry_t &entry, const std::size_t &index) {
-                if (entry == "") return Status::E_PATH_INVALID_ENTRY_NAME;
-                if (index > this->_data.size()) return Status::E_PATH_INVALID_INDEX;
-
-                const Resolution nextResolution = index == 0 && !entry.empty() && entry.at(0) == '/' ? Resolution::ABSOLUTE : this->_resolution;
-                const Entry_t newEntry = !entry.empty() && entry.at(0) == '/' ? entry.substr(1) : entry; // remove '/' from new entry
-
-                if ( parseop::includes(newEntry, std::vector<char>{_private::_syntax::FORBIDEN_CHARS.begin(), _private::_syntax::FORBIDEN_CHARS.end()} )) {
-                        logger::error << "Wrong char in given entry. Entry is:  \'" << newEntry << '\'' << std::endl;
+            Status insert(const std::string &entryName, const std::size_t &index) {
+                if (
+                    entryName == "" ||
+                    parseop::includes(entryName, std::vector<char>{_private::_syntax::FORBIDEN_CHARS.begin(), _private::_syntax::FORBIDEN_CHARS.end()})
+                )  {
+                        logger::error << "Wrong char in given entry. Entry is:  \'" << entryName << '\'' << std::endl;
                         return Status::E_PATH_INVALID_ENTRY_NAME;
                 }
-                if ( !newEntry.empty() ) this->_data.insert(this->_data.begin() + index, newEntry);
+                if (index > this->_data.size()) return Status::E_PATH_INVALID_INDEX;
+                const Resolution nextResolution = index == 0 && !entryName.empty() && entryName.at(0) == '/' ? Resolution::ABSOLUTE : this->_resolution;
+
+                if ( !entryName.empty() ) this->_data.insert(this->_data.begin() + index, entryName);
                 this->_resolution = nextResolution;
                 return Status::OK;
             }
 
+            Status insert(const Entry &entry) { return this->insert(entry.getName()); }
+
+            Status insert(const Entry &entry, const std::size_t &pos) { return this->insert(entry.getName(), pos); }
+
             Status clean(void) {
+
                 if ( !(this->_data.empty() || this->_data.size() == 1 || this->_data.at(0) == "/") ) {
                     this->_data = parseop::tokenize(
                         std::filesystem::path{this->toStr()}.lexically_normal(),
-                        _private::_syntax::PATH_SEPARATOR
+                        _private::_syntax::PATH_SEPARATOR                        
                     );
+                    if (this->_data.empty()) this->_data = std::vector<std::string>{"/"};
                 }
                 return Status::OK;
             }
 
             // Getters
-            std::optional<Entry_t> getEntry(void) const {
-                return this->_data.empty() ? std::nullopt : std::optional<Entry_t>(this->_data.back());
+            Entry getEntry(void) const {
+                return Entry(Path(this->toStr()));
             };
 
-            std::optional<Entry_t> getEntry(const std::size_t &pos) const {
-                return this->_data.empty() || pos >= this->_data.size() ? std::nullopt : std::optional<Entry_t>(this->_data.at(pos));
+            Entry getEntry(const std::size_t &pos) const {
+                if (pos >= this->_data.size()) return Entry();
+
+                Path::_PathImpl thisCpy = *this;
+                thisCpy._data.resize(pos + 1);
+                return thisCpy.getEntry();
             };
 
             std::size_t getNEntry(void) const { return this->_data.size(); }
 
             std::optional<std::string> getExtension(void) const { // FIXME : value is returned even if "        "
                 if (this->_data.empty()) return std::optional<std::string>();
-                fs::Entry_t lastEntry{this->getEntry().value()};
-                std::size_t dotPos{lastEntry.find(".")};
+                std::string lastEntryName{this->getEntry().getName()};
+                std::size_t dotPos{lastEntryName.find(".")};
                 
-                if (dotPos == std::string::npos || dotPos + 1 >= lastEntry.size()) 
+                if (dotPos == std::string::npos || dotPos + 1 >= lastEntryName.size()) 
                     return std::optional<std::string>(std::nullopt);
-                return lastEntry.substr(dotPos + 1, lastEntry.size());
+                return lastEntryName.substr(dotPos + 1, lastEntryName.size());
             };
 
-            Entry::Type getType(void) const {
-                try {
-                    std::filesystem::file_type stdFsType = std::filesystem::symlink_status(this->toStr()).type();
-
-                    switch (stdFsType) {
-                        case std::filesystem::file_type::regular:
-                            return Entry::Type::REGULAR_FILE;
-                        case std::filesystem::file_type::directory:
-                            return Entry::Type::DIRECTORY;
-                        case std::filesystem::file_type::symlink:
-                            return Entry::Type::SYM_LINK;
-                        case std::filesystem::file_type::block:
-                            return Entry::Type::BLOCK_DEVICE;
-                        case std::filesystem::file_type::character:
-                            return Entry::Type::CHARACTER_DEVICE;
-                        case std::filesystem::file_type::fifo:
-                            return Entry::Type::FIFO;
-                        case std::filesystem::file_type::socket:
-                            return Entry::Type::SOCKET;
-                        default:
-                            return Entry::Type::UNKNOWN;
-                    }
-                }
-                catch(...) {
-                    return Entry::Type::UNKNOWN;
-                }
-            }
+            
 
             bool isEmpty(void) const { return this->_data.empty(); }
 
@@ -156,7 +147,7 @@ namespace fs {
             std::optional<Path> getParent(void) const {
                 if (this->_data.empty() || this->_data.size() <= 1) return std::nullopt;
 
-                std::vector<Entry_t> cpy = this->_data;
+                std::vector<std::string> cpy = this->_data;
                 if (this->_resolution == Resolution::ABSOLUTE && !cpy.at(0).empty()) cpy[0] = "/" + cpy[0];
                 cpy.pop_back();
                 fs::Path res{parseop::join(cpy, _private::_syntax::PATH_SEPARATOR)};
@@ -183,6 +174,13 @@ namespace fs {
                 return targetCpy == thisCpy;
             }
 
+            bool isRoot(void) const noexcept {
+                Path::_PathImpl thisCpy = *this;
+                thisCpy.clean();
+
+                return thisCpy._data == std::vector<std::string>{ "/" };
+            };
+
             Status toAbsolute(void) {
                 if (this->_data.empty()) return Status::E_PATH_EMPTY;
                 if ( this->_resolution == Resolution::RELATIVE ) {
@@ -196,10 +194,10 @@ namespace fs {
                 if (this->_data.empty()) return Status::E_PATH_EMPTY;
                 if (this->_resolution == Resolution::ABSOLUTE) {
                     fs::Path cwd{sysop::getCWD()};
-                    if (cwd == *this) this->_data = std::vector<Entry_t>{"."};
+                    if (cwd == *this) this->_data = std::vector<std::string>{"."};
                     else {
-                        std::vector<Entry_t> cwdEntries = cwd._pImpl->_data;
-                        std::vector<Entry_t> thisEntries = this->_data;
+                        std::vector<std::string> cwdEntries = cwd._pImpl->_data;
+                        std::vector<std::string> thisEntries = this->_data;
                         while ( !cwdEntries.empty() && !thisEntries.empty() && cwdEntries.at(0) == thisEntries.at(0) ) {
                             cwdEntries.erase(cwdEntries.begin());
                             thisEntries.erase(thisEntries.begin());
@@ -215,7 +213,11 @@ namespace fs {
             bool exists(void) const { return std::filesystem::exists(std::filesystem::path(this->toStr())); }
 
             std::string toStr(void) const {
-                return std::string{this->_resolution == Resolution::ABSOLUTE ? "/" : ""} + parseop::join(this->_data, _private::_syntax::PATH_SEPARATOR);
+                std::string prefix("");
+
+                if (this->_resolution == Resolution::ABSOLUTE && this->_data.at(0) != "/" && this->_data.size() >= 1)
+                    prefix = "/";
+                return prefix + parseop::join(this->_data, _private::_syntax::PATH_SEPARATOR);
             };
 
             Status create(const Entry::Type &type, const bool &createParents) const {
@@ -307,6 +309,8 @@ namespace fs {
     };
 
 
+
+
     Path::Path(void):
     _pImpl{std::make_unique<Path::_PathImpl>()}
     {}
@@ -323,23 +327,24 @@ namespace fs {
 
     // Redeclaration because pImpl
     // Setters
-    Status Path::insert(const Entry_t &entry) { return this->_pImpl->insert(entry); }
+    Status Path::insert(const std::string &entryName) { return this->_pImpl->insert(entryName); }
     Status Path::insert(const std::string &entry, const std::size_t &pos) { return this->_pImpl->insert(entry, pos); }
+    Status Path::insert(const Entry &entry) { return this->_pImpl->insert(entry); }
+    Status Path::insert(const Entry &entry, const std::size_t &pos) { return this->_pImpl->insert(entry, pos); }
     Status Path::clean(void) { return this->_pImpl->clean(); }
     Status Path::toAbsolute(void) { return this->_pImpl->toAbsolute(); }
     Status Path::toRelative(void) { return this->_pImpl->toRelative(); }
 
     // Getters
-    std::optional<Entry_t> Path::getEntry(void) const { return this->_pImpl->getEntry(); }
-    std::optional<Entry_t> Path::getEntry(const std::size_t &pos) const { return this->_pImpl->getEntry(pos); }
+    Entry Path::getEntry(void) const { return this->_pImpl->getEntry(); }
+    Entry Path::getEntry(const std::size_t &pos) const { return this->_pImpl->getEntry(pos); }
     std::size_t Path::getNEntry(void) const { return this->_pImpl->getNEntry(); }
     std::optional<std::string> Path::getExtension(void) const { return this->_pImpl->getExtension(); }
-    Entry::Type Path::getType(void) const { return this->_pImpl->getType(); }
     bool Path::isEmpty(void) const { return this->_pImpl->isEmpty(); }
     Path::Resolution Path::getResolution(void) const { return this->_pImpl->getResolution(); }
-    std::optional<Path> Path::getParent(void) const { return this->_pImpl->getParent(); }
+    // std::optional<Path> Path::getParent(void) const { return this->_pImpl->getParent(); }
     bool Path::pointsTo(const fs::Path &path) const { return this->_pImpl->pointsTo(path); }
-    
+    bool Path::isRoot(void) const noexcept { return this->_pImpl->isRoot(); }
     
     Status Path::create(const Entry::Type &type, const bool &createParents) const { return this->_pImpl->create(type, createParents); }
     bool Path::exists(void) const { return this->_pImpl->exists(); }

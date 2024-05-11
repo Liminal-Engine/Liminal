@@ -19,7 +19,9 @@ namespace fs {
         public:
             _OutFileImpl(const Path &path) :
             _File{path}
-            {}
+            {
+
+            }
 
             Status write(const std::string &data) {
                 if (this->_stream_opened) {
@@ -42,14 +44,16 @@ namespace fs {
     // exposed OutFile class :
     OutFile::OutFile(const Path &path) :
     _pImpl{std::make_unique<_OutFileImpl>(path)}
-    {}
+    {
+
+    }
 
     OutFile::~OutFile() = default;
 
     // Redefinition of base class methods
     Status OutFile::open(const bool &clear) { return this->_pImpl->open(clear); }
     Status OutFile::close(void) { return this->_pImpl->close(); }
-    std::optional<std::string> OutFile::getExtension(void) const { return this->_pImpl->getExtension(); }
+    // std::optional<std::string> OutFile::getExtension(void) const { return this->_pImpl->getExtension(); }
     bool OutFile::isOpen(void) const { return this->_pImpl->isOpen(); }
 
     // Actual OutFile class methods :

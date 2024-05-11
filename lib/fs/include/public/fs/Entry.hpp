@@ -1,9 +1,9 @@
 /**
  * @file Entry.hpp
  * @author DE VITA Matteo (matteo.devita7@gmail.com)
- * @brief An entry represents any kind of file (or directory)
+ * @brief 
  * @version 0.1
- * @date 2024-04-14
+ * @date 2024-05-04
  * 
  * @copyright Copyright (c) 2024
  * 
@@ -12,20 +12,17 @@
 #ifndef LIMINAL_LIB_FS_ENTRY_HPP_
 #define LIMINAL_LIB_FS_ENTRY_HPP_
 
-#include "User.hpp"
-#include "Permission.hpp"
-
-// #include <time/Date.hpp>
+#include <time/Date.hpp>
 
 #include <string>
-#include <cstddef>
+#include <vector>
 #include <optional>
 
 namespace fs {
 
+    class Path;
     class Entry {
         public:
-
 
             enum class Type {
                 REGULAR_FILE,
@@ -38,26 +35,30 @@ namespace fs {
                 UNKNOWN
             };
 
-            class Size {
-                // To, Go, etc ??? o plutôt struct ?
-            };
+            Entry(const Path &path) noexcept;
+            Entry(const Entry &other) noexcept;
+            Entry(void) noexcept;
+            Entry(Entry &&other) noexcept; // move constructor
+            ~Entry();
+
+            Entry operator=(const Path &other) noexcept; // TODO : implement and test this
+            bool operator==(const Entry &other) const noexcept;
+
+            Type getType(void) const noexcept;
+            std::string getName(void) const noexcept;
+            std::optional<std::string> getExtension(void) const noexcept;
+            Entry getParent(void) const noexcept;
+            std::vector<Entry> getChildren(void) const noexcept;
+            time_::Date getLastModif(void) const noexcept; // FIXME : may be only linux
+            time_::Date getLastAccess(void) const noexcept; // FIXME : may be only linux
+            time_::Date getLastStatusChange(void) const noexcept; // FIXME : may be only linux
+            
 
         private:
-
-            Type _type;
-            std::string _name;
-            std::size_t _size; // in bytes
-            bool _isHidden;
-            // time::Date _creationDate;
-            // time::Date _lastModifDate;
-            // time::Date _lastAccessDate;
-            User _owner;
-            Permission _userPermission;
-            Permission _groupPermission;
-            Permission _worldPermission;
-            std::optional<std::string> _extension;
+            class _EntryImpl;
+            std::unique_ptr<_EntryImpl> _impl;
+            friend class Path;
     };
-    
 } // namespace fs
 
 

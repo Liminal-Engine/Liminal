@@ -19,7 +19,7 @@ namespace fs {
 
         namespace _syntax {
             constexpr char      PATH_SEPARATOR  = '/';
-            constexpr std::array<char, 10> FORBIDEN_CHARS = {'/', '\\', '<', '>', ':', '\"', '|', '*', '&', '~'}; //TODO : check exactly forbidden cars of both OS and update tests
+            constexpr std::array<char, 10> FORBIDEN_CHARS = {'/'}; //TODO : check exactly forbidden cars of both OS and update tests and improve tests. For example, '*' and may be forbidden only fgor first or last char
         } // namespace _syntax
         
     } // namespace _private

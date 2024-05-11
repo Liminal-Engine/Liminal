@@ -39,7 +39,7 @@ namespace jsonio {
         public:
             InJson(void);
             ~InJson();
-
+            // TODO : constructor with parse as well ?
             // Re declaration of _JsonBase methods :
             Status parse(const fs::Path &path);
 

@@ -30,12 +30,14 @@ namespace fs {
             //Common methods for each template class (redefined because template class is hidden)
             Status open(void);
             Status close(void);
-            std::optional<std::string> getExtension(void) const;
+
+            // FIXME : replace with getPath
+            // std::optional<std::string> getExtension(void) const;
             bool isOpen(void) const;
 
             Status read(void);
             // Getters :
-            std::string get_content(void) const;
+            std::string getContent(void) const;
 
         private:
             class _InFileImpl; // forward declaration

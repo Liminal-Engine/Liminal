@@ -29,15 +29,19 @@ namespace fs {
          * This class must be defined and declared in a header file since it is a template class
          * 
          */
+        // FIXME : code this in a cpp file ?
         using _StreamType = std::variant<std::ofstream, std::ifstream>;
         template <typename _StreamType>
         class _File {
             public:
                 Status open(const bool &clear = false) {
                     if ( !this->_registered_path.exists() ) return Status::E_PATH_NO_TARGET;
-                    if (this->_registered_path.getType() == fs::Entry::Type::DIRECTORY) return Status::E_PATH_IS_DIR;
+                    if (this->_registered_path.getEntry().getType() == Entry::Type::DIRECTORY) return Status::E_PATH_IS_DIR;
                     if (this->_stream_opened == false) {
-                        this->_stream = clear ? _StreamType(this->_registered_path.toStr(), std::ios::trunc) : _StreamType(this->_registered_path.toStr());
+                        this->_stream = _StreamType(
+                            this->_registered_path.toStr(), 
+                            clear ? std::ios::trunc : std::ios::app
+                        );
                         if (!this->_stream) {
                             return Status::E_FILE_OPEN;
                         }
@@ -63,9 +67,9 @@ namespace fs {
                     return Status::E_CLOSE_FILE_NOT_OPEN;
                 }
 
-                std::optional<std::string> getExtension(void) const {
-                    return this->_extension;
-                }
+                // std::optional<std::string> getExtension(void) const {
+                //     return this->_extension;
+                // }
 
                 bool isOpen(void) const { return this->_stream_opened; }
 
@@ -76,8 +80,7 @@ namespace fs {
                 _absolute_path{__loadAbsolute(path)},
                 _extension{path.getExtension()},
                 _stream_opened{false}
-                {
-                }
+                {}
 
                 ~_File() = default;
                 const std::optional<std::string> _name;
@@ -98,12 +101,15 @@ namespace fs {
                  * @return const std::string& 
                  */
                 const std::optional<std::string> __loadName(const Path &path) {
-                    return path.getEntry(); // FIXME : if path is relative and sent "./" or "../../" for example, _name will be empety when in reality it is not (should be taken from absolute path instead of path)
+                    std::optional<fs::Entry> optionalEntry = path.getEntry();
+                    if (optionalEntry.has_value()) return optionalEntry.value().getName(); // FIXME : if path is relative and sent "./" or "../../" for example, _name will be empety when in reality it is not (should be taken from absolute path instead of path)
+                    return std::optional<std::string>(std::nullopt);
                 }
 
                 const fs::Path __loadAbsolute(const Path &path) {
                     fs::Path cpy = path;
                     if (cpy.toAbsolute() != fs::Status::OK) {} // FIXME : do this and handle error if not possible
+
                     return fs::Path{cpy};
                 }
         };

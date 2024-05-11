@@ -16,7 +16,7 @@
 
 namespace time_ {
     
-    using Stamp_t = long long int;
+    using Stamp_t = long long int; // FIXME : should this be a class ?
 
     /**
      * @brief Convert in UNIX stamp
@@ -26,7 +26,7 @@ namespace time_ {
      * @param outputUnit 
      * @return long double 
     */
-    long double convert(const Stamp_t &stamp, const Unit &inputUnit, const Unit &outputUnit);
+    Stamp_t convert(const Stamp_t &stamp, const Unit &inputUnit, const Unit &outputUnit);
 
 } // namespace time_
 

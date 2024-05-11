@@ -25,7 +25,8 @@ namespace time_ {
 
     class Date {
         public:
-            Date(const Stamp_t &stamp, const Unit &unit = DEFAULT_UNIT);
+            Date(const time_t &stamp, const Unit &unit = DEFAULT_TIME_UNIT);
+            Date(const Stamp_t &stamp, const Unit &unit = DEFAULT_TIME_UNIT);
             /**
              * @brief Construct a new Date object
              * 
@@ -42,19 +43,22 @@ namespace time_ {
              * @param nanoSecond 
              */
             Date(
-                const Stamp_t &year = 0,
-                const Stamp_t &month = 0,
-                const Stamp_t &monthDay = 0,
-                const Stamp_t &hour = 0,
-                const Stamp_t &minute = 0,
-                const Stamp_t &second = 0,
-                const Stamp_t &milliSecond = 0,
-                const Stamp_t &microSecond = 0,
-                const Stamp_t &nanoSecond = 0
+                const Stamp_t &year = DEFAULT_YEAR,
+                const Stamp_t &month = DEFAULT_MONTH,
+                const Stamp_t &monthDay = DEFAULT_MONTH_DAY,
+                const Stamp_t &hour = DEFAULT_HOUR,
+                const Stamp_t &minute = DEFAULT_MINUTE,
+                const Stamp_t &second = DEFAULT_SECOND,
+                const Stamp_t &milliSecond = DEFAULT_MILLI_SECOND,
+                const Stamp_t &microSecond = DEFAULT_MICRO_SECOND,
+                const Stamp_t &nanoSecond = DEFAULT_NANO_SECOND
             ); // equivalent to Date(void)
             Date(const Date &other);
             ~Date();
-            Stamp_t getStamp(const Unit &unit = DEFAULT_UNIT) const;
+
+            bool operator==(const Date &other) const noexcept;
+
+            Stamp_t getStamp(const Unit &unit = DEFAULT_TIME_UNIT) const;
             Stamp_t extract(const Unit &unit) const;
 
             /**

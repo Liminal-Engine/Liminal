@@ -19,7 +19,7 @@
 
 namespace time_ {
 
-    long double convert(const Stamp_t &stamp, const Unit &inputUnit, const Unit &outputUnit) {
+    Stamp_t convert(const Stamp_t &stamp, const Unit &inputUnit, const Unit &outputUnit) {
         // FIXME with new unis + 
         /**
          * use this ? :
@@ -32,27 +32,27 @@ namespace time_ {
 from : https://www.epochconverter.com/
          * 
          */
-        if (inputUnit == outputUnit) return static_cast<long double>(stamp); // avoid lossing precision if possible
-        constexpr double factors[] = {
-            1e-9, // NANO_SECOND
-            1e-6, // MICRO_SECOND
-            1e-3, // MILLIS_ECOND
-            1, // SECOND
-            60, // MINUTE
-            60*60, // HOUR
-            60*60*24, // DAY,
-            60*60*24, // MONTH_DAY,
-            60*60*24*7, // WEEK
-            60*60*24*30, // MONTH
-            3600*24*365 // YEAR
+        if (inputUnit == outputUnit) return static_cast<Stamp_t>(stamp); // avoid lossing precision if possible
+        constexpr Stamp_t factors[] = {
+            1LL, // NANO_SECOND
+            1000LL, // MICRO_SECOND
+            1000000LL, // MILLI_SECOND
+            1000000000LL, // SECOND
+            60LL * 1000000000LL, // MINUTE
+            60LL * 60LL * 1000000000LL, // HOUR
+            24LL * 60LL * 60LL * 1000000000LL, // DAY
+            24LL * 60LL * 60LL * 1000000000LL, // MONTH_DAY
+            7LL * 24LL * 60LL * 60LL * 1000000000LL, // WEEK
+            30LL * 24LL * 60LL * 60LL * 1000000000LL, // MONTH
+            365LL * 24LL * 60LL * 60LL * 1000000000LL // YEAR
         };
-        if (inputUnit < Unit::SECOND && outputUnit < Unit::SECOND && outputUnit < inputUnit) { // If both Unit are sub second, handle precision lost with ss
-            std::stringstream ss;
-            ss << stamp << std::string((static_cast<int>(inputUnit) - static_cast<int>(outputUnit)) * 3, '0');
-            return std::stold(ss.str());
-        }
-        long double seconds = static_cast<long double>( (stamp) * factors[static_cast<int>(inputUnit)] );
-        return static_cast<long double>( std::round(seconds / factors[static_cast<int>(outputUnit)]) );
+        Stamp_t inputFactor = factors[static_cast<int>(inputUnit)];
+        Stamp_t outputFactor = factors[static_cast<int>(outputUnit)];
+        Stamp_t result = static_cast<Stamp_t>(stamp) * inputFactor / outputFactor;
+        return result;
+
+        Stamp_t seconds = static_cast<Stamp_t>( (stamp) * factors[static_cast<int>(inputUnit)] );
+        return static_cast<Stamp_t>( std::round(seconds / factors[static_cast<int>(outputUnit)]) );
     };
 
 } // namespace time_

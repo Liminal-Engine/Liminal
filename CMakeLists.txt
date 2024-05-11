@@ -29,4 +29,4 @@ foreach(FULL_DIR ${FULL_LIB_DIRS})
 endforeach()
 
 enable_testing()
-add_subdirectory(tests)
+add_subdirectory(test)

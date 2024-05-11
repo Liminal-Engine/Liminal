@@ -12,30 +12,50 @@
 #ifndef LIMINAL_FS_INCLUDE_PUBLIC_FS_PERMISION_HPP_
 #define LIMINAL_FS_INCLUDE_PUBLIC_FS_PERMISION_HPP_
 
+#include <sys/stat.h>
+#include <memory>
+
 namespace fs {
 
     class Permission {
 
-        enum class Type {
-            NONE,
-            READ,
-            WRITE,
-            EXEC
-        };
 
         public:
-            bool canRead(void) const;
-            bool canWrite(void) const;
-            bool canExec(void) const;
+            enum class Type {
+                NONE = 0,
+                READ = 1 << 0,
+                WRITE = 1 << 1,
+                EXEC = 1 << 2
+            };
+
+            Permission(const Type &ownerTypes, const Type &groupTypes, const Type &otherTypes) noexcept;
+            Permission(const Permission &other) noexcept;
+            Permission(const mode_t &c_mode) noexcept;
+            Permission(void) noexcept;
+            ~Permission() noexcept;
+
+            bool operator==(const Permission &other) const noexcept;
+
+            bool canOwnerRead(void) const noexcept;
+            bool canOwnerWrite(void) const noexcept;
+            bool canOwnerExec(void) const noexcept;
+            bool canGroupRead(void) const noexcept;
+            bool canGroupWrite(void) const noexcept;
+            bool canGroupExec(void) const noexcept;
+            bool canOtherRead(void) const noexcept;
+            bool canOtherWrite(void) const noexcept;
+            bool canOtherExec(void) const noexcept;
 
         private:
-            bool _canRead;
-            bool _canWrite;
-            bool _canExec;
+            class _PImpl;
+            std::unique_ptr<_PImpl> _impl;
 
     };
-    
+
 } // namespace fs
+
+fs::Permission::Type operator|(const fs::Permission::Type &a, const fs::Permission::Type &b);
+fs::Permission::Type operator&(const fs::Permission::Type &a, const fs::Permission::Type &b);
 
 
 #endif // LIMINAL_FS_INCLUDE_PUBLIC_FS_PERMISION_HPP_

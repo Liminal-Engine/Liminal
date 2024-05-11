@@ -1,3 +1,4 @@
+
 /**
  * @file OutFile.hpp
  * @author DE VITA Matteo (matteo.devita7@gmail.com)
@@ -29,11 +30,11 @@ namespace fs {
             // From base class :
             Status open(const bool &clear = false);
             Status close(void);
-            std::optional<std::string> getExtension(void) const;
+            // FIXME : replace with getPath();
             bool isOpen(void) const;
 
             Status clear(void);
-            Status write(const std::string &data);
+            Status write(const std::string &data); //TODO : test that file has indeed been reset after write
 
         private:
             class _OutFileImpl;

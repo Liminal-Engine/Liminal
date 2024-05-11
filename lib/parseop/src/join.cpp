@@ -13,6 +13,8 @@
 #include <vector>
 #include <iterator>
 
+#include <iostream>
+
 namespace parseop {
     std::string join(const std::vector<std::string> &input, const std::string &separator) {
         if (input.empty()) return "";
