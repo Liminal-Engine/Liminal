@@ -63,7 +63,7 @@ namespace test {
                 for (const ::jsonio::types::Object_t &instance : _instances)
                     EXPECT_EQ(instance.hasNestedComplexValues(), expectedResult);
             }
-            
+
             INSTANTIATE_TEST_SUITE_P(
                 WhenGivenPathOfObjectContainingComplexValues,
                 JsonIOObjectHasNestedComplexValuesMethod,
