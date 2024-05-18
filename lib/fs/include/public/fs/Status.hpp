@@ -22,7 +22,10 @@ namespace fs {
         E_ALREADY_EXISTS,
         E_UNKNOWN_TYPE,
         E_PARENT_NO_EXISTS,
-        E_CREATE_PARENTS
+        E_CREATE_PARENTS,
+        E_CREATE_FORBIDDEN_TYPE,
+        E_SET_PERMS,
+        E_CREATE_DIR
    };
 
    // TODO: find a way to convert in str (I think there is a native method instead of creating a function)

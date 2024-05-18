@@ -47,7 +47,6 @@ namespace fs {
             ~Path();
 
             // Setters
-
             Status insert(const std::string &entryName);
             Status insert(const std::string &entryName, const std::size_t &pos);
             Status insert(const Entry &entry);
@@ -75,6 +74,7 @@ namespace fs {
                 const Permission &perms = ::sysop::getDefaultPerms(),
                 const Path &symLinkTarget = Path()
             ) const noexcept; // TODO : test this method and add param to send permissions (default must be the same that touch or mkdir would do, test this)
+            Status updatePermissions(const Permission &newPerms) const noexcept;
             Status remove(void) const;
             bool exists(void) const;
             Path operator=(const Path &other) const;
@@ -83,9 +83,6 @@ namespace fs {
             Path operator+(const Path &other) const;
 
             static bool isPath(const std::string &str) noexcept; // TODO : move this in parseop ?
-            // TODO : implement chmod, and add chmod in create method
-            // TODO : implement remove
-            // TODO : implement isHidden, return isHidden of the last entry
 
         private:
             class _PathImpl;

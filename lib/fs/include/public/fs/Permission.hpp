@@ -16,9 +16,7 @@
 #include <memory>
 
 namespace fs {
-
     class Permission {
-
 
         public:
             enum class Type {
@@ -44,22 +42,22 @@ namespace fs {
             bool canOtherRead(void) const noexcept;
             bool canOtherWrite(void) const noexcept;
             bool canOtherExec(void) const noexcept;
-            int getUnixFormat(void) const noexcept;
+            int asUnixFormat(void) const noexcept;
+            mode_t asModeT(void) const noexcept; // TODO : only Linux ?
 
             Permission operator=(const Permission &other) noexcept;
             bool operator==(const Permission &other) const noexcept;
             Permission operator+(const Permission &other) const noexcept;
             Permission operator-(const Permission &other) const noexcept;
+
         private:
             class _PImpl;
             std::unique_ptr<_PImpl> _impl;
 
     };
-
 } // namespace fs
 
 fs::Permission::Type operator|(const fs::Permission::Type &a, const fs::Permission::Type &b);
 fs::Permission::Type operator&(const fs::Permission::Type &a, const fs::Permission::Type &b);
-
 
 #endif // LIMINAL_FS_INCLUDE_PUBLIC_FS_PERMISION_HPP_

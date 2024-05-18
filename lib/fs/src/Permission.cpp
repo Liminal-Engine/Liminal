@@ -91,7 +91,7 @@ namespace fs {
         bool canOtherWrite(void) const noexcept { return this->_otherCanWrite; }
         bool canOtherExec(void) const noexcept { return this->_otherCanExec; }
 
-        int getUnixFormat(void) const noexcept {
+        int asUnixFormat(void) const noexcept {
             int res = 00;
 
             if (this->_ownerCanRead) res += 0400;
@@ -104,6 +104,10 @@ namespace fs {
             if (this->_otherCanWrite) res += 02;
             if (this->_otherCanExec) res += 01;
             return res;
+        }
+
+        mode_t asModeT(void) const noexcept {
+            return static_cast<mode_t>(this->asUnixFormat());
         }
 
         bool operator==(const _PImpl &other) const noexcept {
@@ -121,11 +125,11 @@ namespace fs {
         }
 
         Permission operator+(const Permission &other) const noexcept {
-            return Permission(this->getUnixFormat() | other.getUnixFormat());
+            return Permission(this->asUnixFormat() | other.asUnixFormat());
         }
 
         Permission operator-(const Permission &other) const noexcept {
-            return Permission(this->getUnixFormat() & (~other.getUnixFormat()));
+            return Permission(this->asUnixFormat() & (~other.asUnixFormat()));
         }
     };
 
@@ -160,21 +164,12 @@ namespace fs {
     bool Permission::canOtherRead(void) const noexcept { return this->_impl->canOtherRead(); }
     bool Permission::canOtherWrite(void) const noexcept { return this->_impl->canOtherWrite(); }
     bool Permission::canOtherExec(void) const noexcept { return this->_impl->canOtherExec(); }
-    int Permission::getUnixFormat(void) const noexcept { return this->_impl->getUnixFormat(); }
+    int Permission::asUnixFormat(void) const noexcept { return this->_impl->asUnixFormat(); }
+    mode_t Permission::asModeT(void) const noexcept { return this->_impl->asModeT(); }
     
+    // FIXME : this won't work, I must modify "this"
     Permission Permission::operator=(const Permission &other) noexcept {
         return Permission(other);
-            // this->_impl->_ownerCanRead = other.canOwnerRead();
-            // this->_impl->_ownerCanWrite = other.canOwnerWrite();
-            // this->_impl->_ownerCanExec = other.canOwnerExec();
-            // this->_impl->_groupCanRead = other.canGroupRead();
-            // this->_impl->_groupCanWrite = other.canGroupWrite();
-            // this->_impl->_groupCanExec = other.canGroupExec();
-            // this->_impl->_otherCanRead = other.canOtherRead();
-            // this->_impl->_otherCanWrite = other.canOtherWrite();
-            // this->_impl->_otherCanExec = other.canOtherExec();
-
-            // return *this;
     }
 
     bool Permission::operator==(const Permission &other) const noexcept { return this->_impl->operator==(*other._impl); }
