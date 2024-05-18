@@ -33,33 +33,33 @@ namespace test {
     namespace time_ {
         namespace Date {
             
-            using TimeDateToStrParams = std::tuple<
+            using TimeDateAsStrParams = std::tuple<
                 ::time_::Stamp_t, // stamp
                 ::time_::Unit,
                 std::optional<std::string>, // string format param
                 std::string // expected result
             >;
 
-            class TimeDateToStrMethod : public ::testing::TestWithParam<TimeDateToStrParams> {
+            class TimeDateAsStrMethod : public ::testing::TestWithParam<TimeDateAsStrParams> {
 
                 protected:
                     std::vector<::time_::Date> _instances;
 
-                    TimeDateToStrMethod(void):
+                    TimeDateAsStrMethod(void):
                     _instances{::test::time_::Date::Helper::create(std::get<0>(GetParam()), std::get<1>(GetParam()))}
                     {}
 
             };
 
-            TEST_P(TimeDateToStrMethod, ReturnsGivenString) {
+            TEST_P(TimeDateAsStrMethod, ReturnsGivenString) {
                 if (std::get<2>(GetParam()).has_value())
-                    for (const ::time_::Date &date : _instances) EXPECT_EQ(date.toStr(std::get<2>(GetParam()).value()), std::get<3>(GetParam()));
-                else for (const ::time_::Date &date : _instances) EXPECT_EQ(date.toStr(), std::get<3>(GetParam()));
+                    for (const ::time_::Date &date : _instances) EXPECT_EQ(date.asStr(std::get<2>(GetParam()).value()), std::get<3>(GetParam()));
+                else for (const ::time_::Date &date : _instances) EXPECT_EQ(date.asStr(), std::get<3>(GetParam()));
             };
 
             INSTANTIATE_TEST_SUITE_P(
                 WhenGivenVariousValues,
-                TimeDateToStrMethod,
+                TimeDateAsStrMethod,
                 testing::Values(
                     std::make_tuple(1713643782, ::time_::Unit::SECOND, std::nullopt, "2024-04-20 20:09:42"),
                     std::make_tuple(1675929224, ::time_::Unit::SECOND, std::nullopt,"2023-02-09 07:53:44"),

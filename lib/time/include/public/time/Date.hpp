@@ -70,7 +70,7 @@ namespace time_ {
              * %{ns} for nanosecond
              * @return std::string 
              */
-            std::string toStr(const std::string &format = "%Y-%m-%d %H:%M:%S") const;
+            std::string asStr(const std::string &format = "%Y-%m-%d %H:%M:%S") const;
             /**
              * TODO s :
              * 

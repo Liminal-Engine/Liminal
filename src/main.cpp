@@ -50,10 +50,10 @@ int main() {
     std::cout << ::time_::convert(4, time_::Unit::YEAR, time_::Unit::NANO_SECOND) << std::endl;
     fs::Path p("/");
     std::cout << p.getEntry().getName() << std::endl;
-    
+
     time_::Date d((int)1974, 1);
     std::cout << "d:\n--------------\nstamp = " << d.getStamp() << std::endl;
-    std::cout << d.toStr() << std::endl;
+    std::cout << d.asStr() << std::endl;
     std::cout << d.extract(time_::Unit::YEAR) << std::endl;
     std::cout << d.extract(time_::Unit::MONTH) << std::endl;
     std::cout << d.extract(time_::Unit::MONTH_DAY) << std::endl;
@@ -66,7 +66,7 @@ int main() {
 
     time_::Date d2(static_cast<time_::Stamp_t>(2145913200 + (3600 * 400)), ::time_::Unit::SECOND);
     std::cout << "d2:\n--------------\nstamp = " << d2.getStamp() << std::endl;
-    std::cout << d2.toStr() << std::endl;
+    std::cout << d2.asStr() << std::endl;
     std::cout << d2.extract(time_::Unit::YEAR) << std::endl;
     std::cout << d2.extract(time_::Unit::MONTH) << std::endl;
     std::cout << d2.extract(time_::Unit::MONTH_DAY) << std::endl;
@@ -76,13 +76,14 @@ int main() {
     std::cout << d2.extract(time_::Unit::MILLI_SECOND) << std::endl;
     std::cout << d2.extract(time_::Unit::MICRO_SECOND) << std::endl;
     std::cout << d2.extract(time_::Unit::NANO_SECOND) << std::endl;
-    // std::cout << p2.toStr() << std::endl;
+
+    // std::cout << p2.asStr() << std::endl;
     // fs::Path p{"/path/to/non_empty_file.txt"};
     // p.insert("/", 0);
     // p.toRelative();
     // fs::Permission(fs::Permission::Type::EXEC | fs::Permission::Type::READ, fs::Permission::Type::NONE, fs::Permission::Type::NONE);
     // logger::info << "hello Maximum value of long long int:" << std::numeric_limits<long long int>::max() << std::endl;
-    // // std::cout << time_::Date{1713557763499153664, time_::Unit::NANO_SECOND}.toStr("%2Y-%m-%dT%H:%M:%S.%E.%f.%i") << std::endl; 
+    // // std::cout << time_::Date{1713557763499153664, time_::Unit::NANO_SECOND}.asStr("%2Y-%m-%dT%H:%M:%S.%E.%f.%i") << std::endl; 
     // std::cout << time_::convert(8, time_::Unit::MICRO_SECOND, time_::Unit::MICRO_SECOND);
     // std::cout << time_::convert(1414922587498, time_::Unit::MILLI_SECOND, time_::Unit::NANO_SECOND);
     // std::cout << date.toFormat("%Y-%m-%dT%H:%M:%SZ") << std::endl;
@@ -102,9 +103,9 @@ int main() {
     // std::cout << std::endl;
     // fs::Path p{"/home/matteo/Projects/Liminal/lib/error"};
     // p.toRelative();
-    // logger::info << p.toStr() << std::endl;
+    // logger::info << p.asStr() << std::endl;
     // p2.toRelative();
-    // logger::info << p2.toStr() << std::endl;
+    // logger::info << p2.asStr() << std::endl;
     // std::cout << p.getType() << std::endl;
 /*     logger::setLevel(logger::Level::FATAL);
     logger::setLevel(logger::Level::ERROR);
@@ -127,14 +128,14 @@ int main() {
     // path.insert("aaa", 2);
     // path.insert("bbb", 2);
     // path.insert("index.ftp--zeraaa");
-    // logger::debug << path.toStr() << std::endl;
+    // logger::debug << path.asStr() << std::endl;
     // path.clean();
-    // logger::debug << path.toStr() << std::endl;
+    // logger::debug << path.asStr() << std::endl;
     // logger::fatal << "3=" + path.getEntry().has_value() << std::endl; //<< " 4=" + path.getEntry(4).has_value() << " 5=" + path.getEntry(5).has_value() << std::endl;
     // logger::info << path.getExtension().value() << std::endl; //<< " 4=" + path.getEntry(4).has_value() << " 5=" + path.getEntry(5).has_value() << std::endl;
     // fs::Path path2{"ggg/hhh/jjj/lll.old.d"};
     // logger::info << path2.getExtension().value() << std::endl; //<< " 4=" + path.getEntry(4).has_value() << " 5=" + path.getEntry(5).has_value() << std::endl;
-    // logger::info << fs::Path{"./"}.getAbsolute().toStr() << std::endl;
+    // logger::info << fs::Path{"./"}.getAbsolute().asStr() << std::endl;
 
     // std::cout << parseop::toBool("1", true) << std::endl;
 

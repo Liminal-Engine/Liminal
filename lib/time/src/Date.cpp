@@ -164,7 +164,7 @@ namespace time_ {
                 return 0;
             }
 
-            std::string toStr(const std::string &format) const {
+            std::string asStr(const std::string &format) const {
                 std::string strBuffer = format;
                 auto _subSecondToStr = [this](const Unit &unit) -> std::string { // Must always be a sub second unit
                     if (unit >= Unit::SECOND) return "#ERROR";
@@ -217,7 +217,7 @@ namespace time_ {
   
     Stamp_t Date::extract(const Unit &unit) const { return this->_impl->extract(unit); }
 
-    std::string Date::toStr(const std::string &format) const { return this->_impl->toStr(format); }
+    std::string Date::asStr(const std::string &format) const { return this->_impl->asStr(format); }
 
     Date Date::now(void) {
         return Date{ 

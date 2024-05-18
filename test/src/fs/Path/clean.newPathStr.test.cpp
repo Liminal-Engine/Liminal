@@ -43,7 +43,7 @@ namespace test {
             TEST_P(FSPathCleanNewPathStrMethod, EqualGivenStringPath) {
                 for (::fs::Path &_instance : _instances) {
                     _instance.clean();
-                    EXPECT_EQ(_instance.toStr(), std::get<1>(GetParam()));
+                    EXPECT_EQ(_instance.asStr(), std::get<1>(GetParam()));
                 }
             }
 

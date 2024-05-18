@@ -60,7 +60,7 @@ namespace test {
                 ::fs::Path res(strPath);
 
                 res.clean();
-                return res.toStr();
+                return res.asStr();
             }
 
         } // namespace Path

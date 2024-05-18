@@ -31,10 +31,9 @@ namespace fs {
             Permission(const Type &ownerTypes, const Type &groupTypes, const Type &otherTypes) noexcept;
             Permission(const Permission &other) noexcept;
             Permission(const mode_t &c_mode) noexcept;
+            Permission(const int &unixFormat) noexcept;
             Permission(void) noexcept;
             ~Permission() noexcept;
-
-            bool operator==(const Permission &other) const noexcept;
 
             bool canOwnerRead(void) const noexcept;
             bool canOwnerWrite(void) const noexcept;
@@ -45,7 +44,12 @@ namespace fs {
             bool canOtherRead(void) const noexcept;
             bool canOtherWrite(void) const noexcept;
             bool canOtherExec(void) const noexcept;
+            int getUnixFormat(void) const noexcept;
 
+            Permission operator=(const Permission &other) noexcept;
+            bool operator==(const Permission &other) const noexcept;
+            Permission operator+(const Permission &other) const noexcept;
+            Permission operator-(const Permission &other) const noexcept;
         private:
             class _PImpl;
             std::unique_ptr<_PImpl> _impl;

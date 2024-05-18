@@ -137,11 +137,11 @@ namespace jsonio {
                     std::string stringFileContent{};
                     fs::InFile jsonFile(path);
                     if (jsonFile.open() != fs::Status::OK)
-                        THROW(_private::_error::_File, "Failed to open JSON file : %s", path.toStr().c_str());
+                        THROW(_private::_error::_File, "Failed to open JSON file : %s", path.asStr().c_str());
                     if (jsonFile.read() != fs::Status::OK)
-                        THROW(_private::_error::_File, "Failed to read JSON file : %s", path.toStr().c_str());
+                        THROW(_private::_error::_File, "Failed to read JSON file : %s", path.asStr().c_str());
                     if (jsonFile.close() != fs::Status::OK)
-                        THROW(_private::_error::_File, "Failed to close JSON file : %s", path.toStr().c_str());
+                        THROW(_private::_error::_File, "Failed to close JSON file : %s", path.asStr().c_str());
                     stringFileContent = jsonFile.getContent();
                     for (const char &c : stringFileContent) {
                         tmpLineOffset++;

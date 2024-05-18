@@ -18,7 +18,7 @@ namespace test {
         namespace InFile {
             std::string Helper::getCPPStyledContent(const ::fs::Path &path) {
                 try {
-                    std::ifstream file(path.toStr());
+                    std::ifstream file(path.asStr());
                     if (!file.is_open()) return "";
                     return std::string((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
                 }

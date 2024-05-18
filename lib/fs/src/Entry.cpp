@@ -81,7 +81,7 @@ namespace fs {
                 Path _pathCpy(path);
                 if (_pathCpy.isEmpty()) return _EntryImpl();
                 _pathCpy.clean();
-                std::string strPath = _pathCpy.toStr();
+                std::string strPath = _pathCpy.asStr();
                 struct stat pathStat;
                 std::vector<std::string> pathVec(
                     _pathCpy.isRoot() ?
@@ -93,7 +93,7 @@ namespace fs {
                 Type type = __loadType(strPath);
 
                 return (
-                    !path.exists() || stat(strPath.c_str(), &pathStat) != 0 ?
+                    !path.exists() || stat(strPath.c_str(), &pathStat) != 0 ? // FIXME : handle stat() call errors here
                     _EntryImpl(name) :
                     _EntryImpl(name, type, pathStat)
                 );
@@ -186,6 +186,14 @@ namespace fs {
 
             std::string getName(void) const noexcept { return this->_name; }
             Entry::Type getType(void) const noexcept { return this->_type; }
+            std::optional<std::string> getExtension(void) const noexcept { // FIXME : value is returned even if "        "
+                if (this->_name.empty()) return std::optional<std::string>();
+                std::size_t dotPos{this->_name.find(".")};
+                
+                if (dotPos == std::string::npos || dotPos + 1 >= this->_name.size()) 
+                    return std::optional<std::string>(std::nullopt);
+                return this->_name.substr(dotPos + 1, this->_name.size());
+            }
 
             ~_EntryImpl() = default;
 
@@ -201,4 +209,6 @@ namespace fs {
 
     Entry::Type Entry::getType(void) const noexcept { return this->_impl->getType(); }
     std::string Entry::getName(void) const noexcept { return this->_impl->getName(); }
+    std::optional<std::string> Entry::getExtension(void) const noexcept { return this->_impl->getExtension(); }
+
 } // namespace fs

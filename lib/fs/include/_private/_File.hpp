@@ -39,7 +39,7 @@ namespace fs {
                     if (this->_registered_path.getEntry().getType() == Entry::Type::DIRECTORY) return Status::E_PATH_IS_DIR;
                     if (this->_stream_opened == false) {
                         this->_stream = _StreamType(
-                            this->_registered_path.toStr(), 
+                            this->_registered_path.asStr(), 
                             clear ? std::ios::trunc : std::ios::app
                         );
                         if (!this->_stream) {
@@ -78,7 +78,7 @@ namespace fs {
                 _name{this->__loadName(path)},
                 _registered_path{path},
                 _absolute_path{__loadAbsolute(path)},
-                _extension{path.getExtension()},
+                _extension{path.getEntry().getExtension()},
                 _stream_opened{false}
                 {}
 

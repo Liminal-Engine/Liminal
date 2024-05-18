@@ -14,12 +14,14 @@
 
 
 #include <fs/Path.hpp>
+#include <fs/Permission.hpp>
 
 #define SYSOP_BUF_SIZE 2048
 
 namespace sysop {
     fs::Path getBinPath(void);  // FIXME : precise throw type here
     fs::Path getCWD(void);
+    fs::Permission getDefaultPerms(void) noexcept;
 } // namespace sysop
 
 

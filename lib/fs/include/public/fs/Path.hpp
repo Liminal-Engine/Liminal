@@ -14,8 +14,8 @@
 
 #include "Status.hpp"
 #include "Entry.hpp"
+#include "Permission.hpp"
 
-#include <time/Date.hpp>
 
 #include <string>
 #include <memory>
@@ -24,7 +24,12 @@
 #include <vector>
 
 
-// FIXME : mettre entry, et size en dehors, au niveau de namesapce fs
+//************ FORWARD DECLARATIONS
+namespace sysop {
+    fs::Permission getDefaultPerms(void) noexcept;
+} // namespace sysop
+
+//************
 
 namespace fs {
 
@@ -36,12 +41,13 @@ namespace fs {
                 RELATIVE
             };
 
-            Path(void);
             Path(const std::string &path);
             Path(const Path &path);
+            Path(void);
             ~Path();
 
             // Setters
+
             Status insert(const std::string &entryName);
             Status insert(const std::string &entryName, const std::size_t &pos);
             Status insert(const Entry &entry);
@@ -51,30 +57,32 @@ namespace fs {
             Status toRelative(void);
 
             // Getters
+            std::string asStr(void) const;
             Entry getEntry(void) const;
             Entry getEntry(const std::size_t &pos) const;
             std::size_t getNEntry(void) const;
-            std::optional<std::string> getExtension(void) const; // ->
-            bool isEmpty(void) const;
             Resolution getResolution(void) const;
-            std::optional<Path> getParentPath(void) const;
-            std::optional<Entry> getParentEntry(void) const;
+            bool isEmpty(void) const;
             bool pointsTo(const Path &target) const;
             bool isRoot(void) const noexcept;
-            std::string getDirName(void) const; // TODO : implement this ands test -->
-            std::vector<Path> getChildrenPath(void) const; // TODO implement this ands test ->
-            std::vector<Entry> getChildrenEntry(void) const;
+            std::optional<Path> getParent(void) const noexcept;
+            std::vector<Path> getChildren(void) const noexcept;
 
-            // FIXME: create a struct create_otps containing all options ? (createParents, symlink_target, perms, ...) and change createParent default value to false then
-            Status create(const Entry::Type &type, const bool &createParents = true) const; // TODO : test this method and add param to send permissions (default must be the same that touch or mkdir would do, test this)
+            // TODO : check for path vaiability and wrong chars
+            Status create(
+                const Entry::Type &type = Entry::Type::REGULAR_FILE,
+                const bool &createParents = false,
+                const Permission &perms = ::sysop::getDefaultPerms(),
+                const Path &symLinkTarget = Path()
+            ) const noexcept; // TODO : test this method and add param to send permissions (default must be the same that touch or mkdir would do, test this)
             Status remove(void) const;
             bool exists(void) const;
-            std::string toStr(void) const;
             Path operator=(const Path &other) const;
             bool operator==(const Path &other) const;
+            // TODO : operator + with string ?
             Path operator+(const Path &other) const;
 
-            static bool isPath(const std::string &str); // TODO : move this in parseop ?
+            static bool isPath(const std::string &str) noexcept; // TODO : move this in parseop ?
             // TODO : implement chmod, and add chmod in create method
             // TODO : implement remove
             // TODO : implement isHidden, return isHidden of the last entry

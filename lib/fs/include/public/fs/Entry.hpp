@@ -52,7 +52,6 @@ namespace fs {
             time_::Date getLastModif(void) const noexcept; // FIXME : may be only linux
             time_::Date getLastAccess(void) const noexcept; // FIXME : may be only linux
             time_::Date getLastStatusChange(void) const noexcept; // FIXME : may be only linux
-            
 
         private:
             class _EntryImpl;

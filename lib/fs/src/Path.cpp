@@ -26,6 +26,8 @@
 #include <fstream>
 
 #include <sys/stat.h>
+#include <sys/types.h>
+#include <dirent.h>
 #include <pwd.h>
 
 #include <iostream>
@@ -46,6 +48,12 @@ namespace fs {
                 // FIXME: this is wrong, a dir can have spaces at the end
                 res[res.size() - 1] = parseop::trimEnd(res.at(res.size() - 1), ' ');
                 return res;
+            };
+
+            Status __createRegularFile(const bool &createParents, const Permission &perms) const noexcept {
+                (void)createParents;
+                (void)perms;
+                return Status::OK; // TODO : implement this
             };
 
         public:
@@ -104,7 +112,7 @@ namespace fs {
 
                 if ( !(this->_data.empty() || this->_data.size() == 1 || this->_data.at(0) == "/") ) {
                     this->_data = parseop::tokenize(
-                        std::filesystem::path{this->toStr()}.lexically_normal(),
+                        std::filesystem::path{this->asStr()}.lexically_normal(),
                         _private::_syntax::PATH_SEPARATOR                        
                     );
                     if (this->_data.empty()) this->_data = std::vector<std::string>{"/"};
@@ -112,79 +120,10 @@ namespace fs {
                 return Status::OK;
             }
 
-            // Getters
-            Entry getEntry(void) const {
-                return Entry(Path(this->toStr()));
-            };
-
-            Entry getEntry(const std::size_t &pos) const {
-                if (pos >= this->_data.size()) return Entry();
-
-                Path::_PathImpl thisCpy = *this;
-                thisCpy._data.resize(pos + 1);
-                return thisCpy.getEntry();
-            };
-
-            std::size_t getNEntry(void) const { return this->_data.size(); }
-
-            std::optional<std::string> getExtension(void) const { // FIXME : value is returned even if "        "
-                if (this->_data.empty()) return std::optional<std::string>();
-                std::string lastEntryName{this->getEntry().getName()};
-                std::size_t dotPos{lastEntryName.find(".")};
-                
-                if (dotPos == std::string::npos || dotPos + 1 >= lastEntryName.size()) 
-                    return std::optional<std::string>(std::nullopt);
-                return lastEntryName.substr(dotPos + 1, lastEntryName.size());
-            };
-
-            
-
-            bool isEmpty(void) const { return this->_data.empty(); }
-
-
-            Resolution getResolution(void) const { return this->_resolution; }
-
-            std::optional<Path> getParent(void) const {
-                if (this->_data.empty() || this->_data.size() <= 1) return std::nullopt;
-
-                std::vector<std::string> cpy = this->_data;
-                if (this->_resolution == Resolution::ABSOLUTE && !cpy.at(0).empty()) cpy[0] = "/" + cpy[0];
-                cpy.pop_back();
-                fs::Path res{parseop::join(cpy, _private::_syntax::PATH_SEPARATOR)};
-                return Path{parseop::join(cpy, _private::_syntax::PATH_SEPARATOR)};
-            }
-
-            bool operator==(const _PathImpl &other) {
-                if (this->getResolution() != other.getResolution() || this->_data.size() != other._data.size()) return false;
-                for (std::size_t i = 0; i < this->_data.size(); i++)
-                    if (this->_data[i] != other._data[i]) return false;
-                return true;
-            }
-
-            bool pointsTo(const Path &target) const {
-                if (this->isEmpty() && target.isEmpty()) return true;
-                fs::Path::_PathImpl targetCpy = *target._pImpl;
-                fs::Path::_PathImpl thisCpy = *this;
-
-                if (targetCpy.getResolution() != Resolution::ABSOLUTE)
-                    if (targetCpy.toAbsolute() != Status::OK) return false;
-                if (thisCpy.getResolution() != Resolution::ABSOLUTE)
-                    if (thisCpy.toAbsolute() != Status::OK) return false;
-                if (targetCpy.clean() != Status::OK || thisCpy.clean() != Status::OK) return false;
-                return targetCpy == thisCpy;
-            }
-
-            bool isRoot(void) const noexcept {
-                Path::_PathImpl thisCpy = *this;
-                thisCpy.clean();
-
-                return thisCpy._data == std::vector<std::string>{ "/" };
-            };
-
             Status toAbsolute(void) {
                 if (this->_data.empty()) return Status::E_PATH_EMPTY;
                 if ( this->_resolution == Resolution::RELATIVE ) {
-                    *this = _PathImpl{ std::string{ sysop::getCWD().toStr() + "/" + this->toStr() } };
+                    *this = _PathImpl{ std::string{ sysop::getCWD().asStr() + "/" + this->asStr() } };
                     this->_resolution = Resolution::ABSOLUTE;
                 }
                 return Status::OK;
@@ -210,9 +149,8 @@ namespace fs {
                 return Status::OK;
             }
 
-            bool exists(void) const { return std::filesystem::exists(std::filesystem::path(this->toStr())); }
-
-            std::string toStr(void) const {
+            // Getters
+            std::string asStr(void) const {
                 std::string prefix("");
 
                 if (this->_resolution == Resolution::ABSOLUTE && this->_data.at(0) != "/" && this->_data.size() >= 1)
@@ -220,7 +158,82 @@ namespace fs {
                 return prefix + parseop::join(this->_data, _private::_syntax::PATH_SEPARATOR);
             };
 
-            Status create(const Entry::Type &type, const bool &createParents) const {
+            Entry getEntry(void) const {
+                return Entry(Path(this->asStr()));
+            };
+
+            Entry getEntry(const std::size_t &pos) const {
+                if (pos >= this->_data.size()) return Entry();
+
+                Path::_PathImpl thisCpy = *this;
+                thisCpy._data.resize(pos + 1);
+                return thisCpy.getEntry();
+            };
+
+            std::size_t getNEntry(void) const { return this->_data.size(); }
+
+            Resolution getResolution(void) const { return this->_resolution; }
+
+            bool isEmpty(void) const { return this->_data.empty(); }
+
+            bool pointsTo(const Path &target) const {
+                if (this->isEmpty() && target.isEmpty()) return true;
+                fs::Path::_PathImpl targetCpy = *target._pImpl;
+                fs::Path::_PathImpl thisCpy = *this;
+
+                if (targetCpy.getResolution() != Resolution::ABSOLUTE)
+                    if (targetCpy.toAbsolute() != Status::OK) return false;
+                if (thisCpy.getResolution() != Resolution::ABSOLUTE)
+                    if (thisCpy.toAbsolute() != Status::OK) return false;
+                if (targetCpy.clean() != Status::OK || thisCpy.clean() != Status::OK) return false;
+                return targetCpy == thisCpy;
+            }
+
+            bool isRoot(void) const noexcept {
+                Path::_PathImpl thisCpy = *this;
+                thisCpy.clean();
+
+                return thisCpy._data == std::vector<std::string>{ "/" };
+            };
+
+
+            // FIXME : instead of optional is path is empty, return cwd, wouldn't it be simpler ?
+            std::optional<Path> getParent(void) const noexcept {
+                if (this->_data.empty() || this->_data.size() <= 1) return std::nullopt;
+
+                std::vector<std::string> cpy = this->_data;
+                if (this->_resolution == Resolution::ABSOLUTE && !cpy.at(0).empty()) cpy[0] = "/" + cpy[0];
+                cpy.pop_back();
+                return Path{parseop::join(cpy, _private::_syntax::PATH_SEPARATOR)};
+            }
+
+            std::vector<Path> getChildren(void) const noexcept {
+                DIR *c_dir;
+                struct dirent *c_entry;
+                std::vector<Path> res{};
+                std::string thisStr(this->asStr());
+
+                if ( (c_dir = opendir(thisStr.c_str())) == NULL) return res; // FIXME : log returned error with errno () (and strerr ?) error here
+                while ( (c_entry = readdir(c_dir)) ) res.push_back(Path(thisStr + std::string(c_entry->d_name)));
+                closedir(c_dir);
+                return res;
+            }
+
+            bool operator==(const _PathImpl &other) {
+                if (this->getResolution() != other.getResolution() || this->_data.size() != other._data.size()) return false;
+                for (std::size_t i = 0; i < this->_data.size(); i++)
+                    if (this->_data[i] != other._data[i]) return false;
+                return true;
+            }
+
+            bool exists(void) const { return std::filesystem::exists(std::filesystem::path(this->asStr())); }
+
+            Status create(
+                const Entry::Type &type,
+                const bool &createParents,
+                const Permission &perms,
+                const Path &symLinkTarget
+            ) const noexcept {
                 // 1. Setup: create vars
                 if (this->exists()) return Status::E_ALREADY_EXISTS;
                 fs::Path::_PathImpl tmpImpl = *this;
@@ -230,33 +243,35 @@ namespace fs {
                 std::optional<fs::Path> parent{tmpImpl.getParent()};
                 if (parent.has_value() && !parent.value().exists() && !createParents) return Status::E_PARENT_NO_EXISTS;
                 auto createParentDirs = [&]() -> void {
-                    if (parent.has_value() && !parent.value().exists() && !std::filesystem::create_directories(parent.value().toStr()))
-                        THROW(_private::_error::_CreateParentDirs, "Failed to create parent dirs: ", parent.value().toStr(), " for fullpath = ", this->toStr());
+                    if (parent.has_value() && !parent.value().exists() && !std::filesystem::create_directories(parent.value().asStr()))
+                        THROW(_private::_error::_CreateParentDirs, "Failed to create parent dirs: ", parent.value().asStr(), " for fullpath = ", this->asStr());
                 };
                 // TODO : recurive call to create on parent ?-
                 // 2. Create target depending on the wanted type
                 try {
                     switch (type) {
-                        case Entry::Type::REGULAR_FILE: {
-                            createParentDirs();
-                            std::ofstream tmp(tmpImpl.toStr());
-                            if ( !tmp.is_open() ) return Status::E_CREATE_FILE;
-                            tmp.close();
-                            break;
-                        }
+                        case Entry::Type::REGULAR_FILE: return this->__createRegularFile(createParents, perms);
+                        // {
+                        //     createParentDirs();
+                        //     std::ofstream tmp(tmpImpl.asStr());
+                        //     if ( !tmp.is_open() ) return Status::E_CREATE_FILE;
+                        //     tmp.close();
+                        //     break;
+                        // }
                         case Entry::Type::DIRECTORY: {
                             createParentDirs();
-                            if ( !std::filesystem::create_directory(tmpImpl.toStr()) ) return Status::E_CREATE_FILE;
+                            if ( !std::filesystem::create_directory(tmpImpl.asStr()) ) return Status::E_CREATE_FILE;
                             break;
                         }
                         case Entry::Type::SYM_LINK: {
+                            (void)symLinkTarget;
                             logger::fatal << "I NEED TO IMPLEMENT THIS" << std::endl;
                             break;
                         }
                         default:
                             return Status::E_UNKNOWN_TYPE; // TODO : avoid creating the dirs before if we go here at the end
                     }
-                    logger::debug << "Path: " << this->toStr() << " was created (" << tmpImpl.toStr() << ')' << std::endl;
+                    logger::debug << "Path: " << this->asStr() << " was created (" << tmpImpl.asStr() << ')' << std::endl;
                     return Status::OK;
                 } catch (const error::Base &e) {
                     e.log();
@@ -295,10 +310,11 @@ namespace fs {
             }
 
             Path operator+(const Path &other) const {
-                return Path{std::string(this->toStr() + "/" + other.toStr())};
+                // FIXME : add "/" only if the first one does not end with "/" ?
+                return Path{std::string(this->asStr() + "/" + other.asStr())};
             }
 
-            static bool isPath(const std::string &str) {
+            static bool isPath(const std::string &str) noexcept {
                 try {
                     std::filesystem::path instance{str};
                     return !instance.empty() && instance.has_root_name();
@@ -336,23 +352,28 @@ namespace fs {
     Status Path::toRelative(void) { return this->_pImpl->toRelative(); }
 
     // Getters
+    std::string Path::asStr(void) const { return this->_pImpl->asStr(); }
     Entry Path::getEntry(void) const { return this->_pImpl->getEntry(); }
     Entry Path::getEntry(const std::size_t &pos) const { return this->_pImpl->getEntry(pos); }
     std::size_t Path::getNEntry(void) const { return this->_pImpl->getNEntry(); }
-    std::optional<std::string> Path::getExtension(void) const { return this->_pImpl->getExtension(); }
-    bool Path::isEmpty(void) const { return this->_pImpl->isEmpty(); }
     Path::Resolution Path::getResolution(void) const { return this->_pImpl->getResolution(); }
-    // std::optional<Path> Path::getParent(void) const { return this->_pImpl->getParent(); }
+    bool Path::isEmpty(void) const { return this->_pImpl->isEmpty(); }
     bool Path::pointsTo(const fs::Path &path) const { return this->_pImpl->pointsTo(path); }
     bool Path::isRoot(void) const noexcept { return this->_pImpl->isRoot(); }
+    std::optional<Path> Path::getParent(void) const noexcept { return this->_pImpl->getParent(); }
+    std::vector<Path> Path::getChildren(void) const noexcept { return this->_pImpl->getChildren(); }
     
-    Status Path::create(const Entry::Type &type, const bool &createParents) const { return this->_pImpl->create(type, createParents); }
+    Status Path::create(
+        const Entry::Type &type,
+        const bool &createParents,
+        const Permission &perms,
+        const Path &symLinkTarget
+    ) const noexcept { return this->_pImpl->create(type, createParents, perms, symLinkTarget); }
     bool Path::exists(void) const { return this->_pImpl->exists(); }
-    std::string Path::toStr(void) const { return this->_pImpl->toStr(); }
     Path Path::operator=(const Path &other) const { return this->_pImpl->operator=(other); }
     bool Path::operator==(const Path &other) const { return this->_pImpl->operator==(other); }
     Path Path::operator+(const Path &other) const { return this->_pImpl->operator+(other); }
 
-    bool Path::isPath(const std::string &str) { return Path::_PathImpl::isPath(str); }
+    bool Path::isPath(const std::string &str) noexcept { return Path::_PathImpl::isPath(str); }
 
 }

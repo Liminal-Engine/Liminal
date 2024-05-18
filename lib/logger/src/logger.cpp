@@ -54,7 +54,7 @@ namespace logger {
         };
 
         std::string _getFormatedDate(void) {
-            return time_::Date::now().toStr("%Y-%m-%dT%H:%M:%SZ.%{ms}");
+            return time_::Date::now().asStr("%Y-%m-%dT%H:%M:%SZ.%{ms}");
             // auto now = std::chrono::system_clock::now();
             // std::time_t now_time_t = std::chrono::system_clock::to_time_t(now);
             // std::stringstream date;
@@ -65,7 +65,7 @@ namespace logger {
             // return date.str();
             // return time_::Date{}.toFormat("%Y-%m-%dT%H:%M:%SZ");
 
-            // return time_::Date::now().toStr("%Y-%m-%dT%H:%M:%SZ"); // FIXME : find a waya to keep milliseconds
+            // return time_::Date::now().asStr("%Y-%m-%dT%H:%M:%SZ"); // FIXME : find a waya to keep milliseconds
         };
 
     } // namespace private
