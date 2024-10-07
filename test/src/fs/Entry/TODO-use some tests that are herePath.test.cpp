@@ -25,6 +25,7 @@
 // // TODO : implement tests for Path::getAbsolute but first :
 // // - have a system to know the installation path, from which we'll deduce de cwd
 // // - make sure to compile on windows to have specfifc absolute path (from root) on windows and linux
+// // TODO : create a test that creates a path with given perms and check perms of the entry
 
 // // TODO : test getType()
 // // TODO : finish to test all methods

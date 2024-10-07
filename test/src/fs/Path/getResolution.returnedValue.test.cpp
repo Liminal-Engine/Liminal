@@ -51,10 +51,10 @@ namespace test {
                 testing::Values(
                     std::make_tuple("../../tests/assets", ::fs::Path::Resolution::RELATIVE),
                     std::make_tuple(std::nullopt, ::fs::Path::Resolution::RELATIVE),
-                    std::make_tuple("/tmp", ::fs::Path::Resolution::ABSOLUTE),
+                    std::make_tuple("/tmp_fs", ::fs::Path::Resolution::ABSOLUTE),
                     std::make_tuple("/aaa/bbb", ::fs::Path::Resolution::ABSOLUTE),
-                    std::make_tuple("/tmp_oojopjop99---/bbb", ::fs::Path::Resolution::ABSOLUTE),
-                    std::make_tuple("/tmp/complex-dir-name", ::fs::Path::Resolution::ABSOLUTE),
+                    std::make_tuple("/tmp_fs_oojopjop99---/bbb", ::fs::Path::Resolution::ABSOLUTE),
+                    std::make_tuple("/tmp_fs/complex-dir-name", ::fs::Path::Resolution::ABSOLUTE),
                     std::make_tuple("/path/to/directory", ::fs::Path::Resolution::ABSOLUTE),
                     std::make_tuple("/p/a/t/h/to/d/i/r/e/ctory", ::fs::Path::Resolution::ABSOLUTE),
                     std::make_tuple("/path/to/directory", ::fs::Path::Resolution::ABSOLUTE),

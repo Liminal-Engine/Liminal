@@ -54,7 +54,8 @@ namespace test {
             TEST_P(TimeDateAsStrMethod, ReturnsGivenString) {
                 if (std::get<2>(GetParam()).has_value())
                     for (const ::time_::Date &date : _instances) EXPECT_EQ(date.asStr(std::get<2>(GetParam()).value()), std::get<3>(GetParam()));
-                else for (const ::time_::Date &date : _instances) EXPECT_EQ(date.asStr(), std::get<3>(GetParam()));
+                else
+                    for (const ::time_::Date &date : _instances) EXPECT_EQ(date.asStr(), std::get<3>(GetParam()));
             };
 
             INSTANTIATE_TEST_SUITE_P(

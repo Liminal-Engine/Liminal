@@ -38,6 +38,12 @@ namespace test {
                     static ::fs::Entry getEntryFromPath(const std::string &strPath, const std::size_t &pos);
 
                     static std::string createCleanedStrPath(const std::string &strPath);
+
+                    static void createTestFiles(const std::string &rootPath);
+
+                    static void deleteTestFiles(const std::string &rootPath);
+
+                    static std::string generateUID();
             };         
         } // namespace Path
     }

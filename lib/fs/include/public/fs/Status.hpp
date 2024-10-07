@@ -25,7 +25,8 @@ namespace fs {
         E_CREATE_PARENTS,
         E_CREATE_FORBIDDEN_TYPE,
         E_SET_PERMS,
-        E_CREATE_DIR
+        E_CREATE_DIR,
+        E_REMOVE
    };
 
    // TODO: find a way to convert in str (I think there is a native method instead of creating a function)

@@ -51,8 +51,9 @@ namespace test {
                 WhenInstanciatingVariousTypeOfPath,
                 FSPathCleanReturnedStatusMethod,
                 testing::Values(
-                    std::make_tuple("/tmp/../usr", ::fs::Status::OK),
-                    std::make_tuple("/tmp/../././usr", ::fs::Status::OK),
+                    std::make_tuple("../../tests/../../tests/.///.//assets/fs/sym_link", ::fs::Status::OK),
+                    std::make_tuple("/tmp_fs/../usr", ::fs::Status::OK),
+                    std::make_tuple("/tmp_fs/../././usr", ::fs::Status::OK),
                     std::make_tuple("../././usr", ::fs::Status::OK),
                     std::make_tuple("/usr/aaa/bbb/.././ccc/../../ddd", ::fs::Status::OK),
                     std::make_tuple("../usr/aaa/bbb/.././../.././ccc", ::fs::Status::OK),

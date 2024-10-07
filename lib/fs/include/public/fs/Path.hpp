@@ -64,20 +64,25 @@ namespace fs {
             bool isEmpty(void) const;
             bool pointsTo(const Path &target) const;
             bool isRoot(void) const noexcept;
-            std::optional<Path> getParent(void) const noexcept;
+            Path getParent(void) const noexcept;
             std::vector<Path> getChildren(void) const noexcept;
 
             // TODO : check for path vaiability and wrong chars
+            // TODO : here, mention in the doc that only regular files, dirs, sym link and fifo are avaialable to create
+            
+            // Real filesystem interactions
             Status create(
                 const Entry::Type &type = Entry::Type::REGULAR_FILE,
                 const bool &createParents = false,
                 const Permission &perms = ::sysop::getDefaultPerms(),
-                const Path &symLinkTarget = Path()
+                const Path &symLinkTarget = Path(".")
             ) const noexcept; // TODO : test this method and add param to send permissions (default must be the same that touch or mkdir would do, test this)
-            Status updatePermissions(const Permission &newPerms) const noexcept;
-            Status remove(void) const;
+            Status updatePermissions(const Permission &newPerms, const bool &recursive = false) const noexcept;
+            Status remove(const bool &recursive = false) const noexcept; // TOOO : test to call it on a dir with recursive = false
             bool exists(void) const;
-            Path operator=(const Path &other) const;
+
+
+            Path &operator=(const Path &other);
             bool operator==(const Path &other) const;
             // TODO : operator + with string ?
             Path operator+(const Path &other) const;

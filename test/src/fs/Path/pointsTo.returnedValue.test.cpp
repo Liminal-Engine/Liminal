@@ -85,10 +85,10 @@ namespace test {
     }
 }
 
-// /**
-//  *  TODO
-//  * test this PATHS on wndows : I thinkg those are special paths on windows
-//     std::make_tuple("CON", std::string("/CON")), fs::Status::OK),
-//     std::make_tuple("PRN", std::string("/PRN")), fs::Status::OK),
-//  * 
-//  */
+/**
+ *  TODO
+ * test this PATHS on wndows : I thinkg those are special paths on windows
+    std::make_tuple("CON", std::string("/CON")), fs::Status::OK),
+    std::make_tuple("PRN", std::string("/PRN")), fs::Status::OK),
+ * 
+ */

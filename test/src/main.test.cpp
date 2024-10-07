@@ -12,7 +12,16 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
+#include <filesystem>
+#include <string>
+#include <iostream>
+#include <errno.h>
+#include <string.h>
+#include <time.h>
+#include <stdlib.h>
+
 int main(int argc, char **argv) {
+    srand(time(NULL));
     testing::InitGoogleTest(&argc, argv);
 
     return RUN_ALL_TESTS();

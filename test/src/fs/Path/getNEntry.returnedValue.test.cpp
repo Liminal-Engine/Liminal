@@ -51,10 +51,10 @@ namespace test {
                 testing::Values(
                     std::make_tuple("../../tests/assets", 4),
                     std::make_tuple(std::nullopt, 0),
-                    std::make_tuple("/tmp", 1),
+                    std::make_tuple("/tmp_fs", 1),
                     std::make_tuple("/aaa/bbb", 2),
-                    std::make_tuple("/tmp_oojopjop99---/bbb", 2),
-                    std::make_tuple("/tmp/complex-dir-name", 2),
+                    std::make_tuple("/tmp_fs_oojopjop99---/bbb", 2),
+                    std::make_tuple("/tmp_fs/complex-dir-name", 2),
                     std::make_tuple("/path/to/directory", 3),
                     std::make_tuple("/p/a/t/h/to/d/i/r/e/ctory", 10),
                     std::make_tuple("/path/to/directory", 3),

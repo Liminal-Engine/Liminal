@@ -46,36 +46,41 @@
 #include <climits>
 #include <limits>
 
+
 int main() {
-    std::cout << ::time_::convert(4, time_::Unit::YEAR, time_::Unit::NANO_SECOND) << std::endl;
-    fs::Path p("/");
-    std::cout << p.getEntry().getName() << std::endl;
+    // ::fs::Status tmpFSStatus = ::fs::Path("../../test/assets/tmp/../../assets/tmp../tmp/create/character_device_attempt").create(
+    //     ::fs::Entry::Type::CHARACTER_DEVICE, false, ::fs::Permission(0666)
+    // );
 
-    time_::Date d((int)1974, 1);
-    std::cout << "d:\n--------------\nstamp = " << d.getStamp() << std::endl;
-    std::cout << d.asStr() << std::endl;
-    std::cout << d.extract(time_::Unit::YEAR) << std::endl;
-    std::cout << d.extract(time_::Unit::MONTH) << std::endl;
-    std::cout << d.extract(time_::Unit::MONTH_DAY) << std::endl;
-    std::cout << d.extract(time_::Unit::HOUR) << std::endl;
-    std::cout << d.extract(time_::Unit::MINUTE) << std::endl;
-    std::cout << d.extract(time_::Unit::SECOND) << std::endl;
-    std::cout << d.extract(time_::Unit::MILLI_SECOND) << std::endl;
-    std::cout << d.extract(time_::Unit::MICRO_SECOND) << std::endl;
-    std::cout << d.extract(time_::Unit::NANO_SECOND) << std::endl;
+    // std::cout << ::time_::convert(4, time_::Unit::YEAR, time_::Unit::NANO_SECOND) << std::endl;
+    // fs::Path p("/");
+    // std::cout << p.getEntry().getName() << std::endl;
 
-    time_::Date d2(static_cast<time_::Stamp_t>(2145913200 + (3600 * 400)), ::time_::Unit::SECOND);
-    std::cout << "d2:\n--------------\nstamp = " << d2.getStamp() << std::endl;
-    std::cout << d2.asStr() << std::endl;
-    std::cout << d2.extract(time_::Unit::YEAR) << std::endl;
-    std::cout << d2.extract(time_::Unit::MONTH) << std::endl;
-    std::cout << d2.extract(time_::Unit::MONTH_DAY) << std::endl;
-    std::cout << d2.extract(time_::Unit::HOUR) << std::endl;
-    std::cout << d2.extract(time_::Unit::MINUTE) << std::endl;
-    std::cout << d2.extract(time_::Unit::SECOND) << std::endl;
-    std::cout << d2.extract(time_::Unit::MILLI_SECOND) << std::endl;
-    std::cout << d2.extract(time_::Unit::MICRO_SECOND) << std::endl;
-    std::cout << d2.extract(time_::Unit::NANO_SECOND) << std::endl;
+    // time_::Date d((int)1974, 1);
+    // std::cout << "d:\n--------------\nstamp = " << d.getStamp() << std::endl;
+    // std::cout << d.asStr() << std::endl;
+    // std::cout << d.extract(time_::Unit::YEAR) << std::endl;
+    // std::cout << d.extract(time_::Unit::MONTH) << std::endl;
+    // std::cout << d.extract(time_::Unit::MONTH_DAY) << std::endl;
+    // std::cout << d.extract(time_::Unit::HOUR) << std::endl;
+    // std::cout << d.extract(time_::Unit::MINUTE) << std::endl;
+    // std::cout << d.extract(time_::Unit::SECOND) << std::endl;
+    // std::cout << d.extract(time_::Unit::MILLI_SECOND) << std::endl;
+    // std::cout << d.extract(time_::Unit::MICRO_SECOND) << std::endl;
+    // std::cout << d.extract(time_::Unit::NANO_SECOND) << std::endl;
+
+    // time_::Date d2(static_cast<time_::Stamp_t>(2145913200 + (3600 * 400)), ::time_::Unit::SECOND);
+    // std::cout << "d2:\n--------------\nstamp = " << d2.getStamp() << std::endl;
+    // std::cout << d2.asStr() << std::endl;
+    // std::cout << d2.extract(time_::Unit::YEAR) << std::endl;
+    // std::cout << d2.extract(time_::Unit::MONTH) << std::endl;
+    // std::cout << d2.extract(time_::Unit::MONTH_DAY) << std::endl;
+    // std::cout << d2.extract(time_::Unit::HOUR) << std::endl;
+    // std::cout << d2.extract(time_::Unit::MINUTE) << std::endl;
+    // std::cout << d2.extract(time_::Unit::SECOND) << std::endl;
+    // std::cout << d2.extract(time_::Unit::MILLI_SECOND) << std::endl;
+    // std::cout << d2.extract(time_::Unit::MICRO_SECOND) << std::endl;
+    // std::cout << d2.extract(time_::Unit::NANO_SECOND) << std::endl;
 
     // std::cout << p2.asStr() << std::endl;
     // fs::Path p{"/path/to/non_empty_file.txt"};
@@ -107,9 +112,6 @@ int main() {
     // p2.toRelative();
     // logger::info << p2.asStr() << std::endl;
     // std::cout << p.getType() << std::endl;
-/*     logger::setLevel(logger::Level::FATAL);
-    logger::setLevel(logger::Level::ERROR);
-    logger::info << "te fousp as de ma gueuel" << std::endl; */
     // std::regex pattern(R"(\d{4}-\d{2}-\d{2}T.*)");
     // std::stringstream buffer;
     // std::streambuf *sbuf = std::cout.rdbuf();
@@ -141,12 +143,8 @@ int main() {
 
     // logger::info << parseop::trimBegin("abcabcabc", std::vector<std::string>{"ab", "bc"}) << std::endl;
 
-
     // jsonio::InJson inJson;
     // inJson.parse(fs::Path{"/home/matteo/Projects/Liminal/tests/assets/json/valid/basic.json"});
-
-
-
 
     // vulkan_wrapper::VulkanHdl handler;
     // fs::InFile file("./README.md");

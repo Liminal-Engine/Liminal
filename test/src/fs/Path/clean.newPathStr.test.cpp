@@ -51,8 +51,8 @@ namespace test {
                 WhenInstanciatingVariousTypeOfPath,
                 FSPathCleanNewPathStrMethod,
                 testing::Values(
-                    std::make_tuple("/tmp/../usr", "/usr"),
-                    std::make_tuple("/tmp/../././usr", "/usr"),
+                    std::make_tuple("/tmp_fs/../usr", "/usr"),
+                    std::make_tuple("/tmp_fs/../././usr", "/usr"),
                     std::make_tuple("../././usr", "../usr"),
                     std::make_tuple("/usr/aaa/bbb/.././ccc/../../ddd", "/usr/ddd"),
                     std::make_tuple("../usr/aaa/bbb/.././../.././ccc", "../ccc"),

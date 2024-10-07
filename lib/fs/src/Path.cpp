@@ -25,14 +25,21 @@
 #include <string.h>
 #include <fstream>
 
+#include <iostream>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <dirent.h>
 #include <pwd.h>
 #include <unistd.h>
+#include <stdio.h>
 
+#include <cstdlib> // #TODO: remove me
+
+#include <cstdio>
 #include <iostream>
+#include <fstream>
+
 
 namespace fs {
     class Path::_PathImpl {
@@ -137,6 +144,7 @@ namespace fs {
             return Status::OK;
         }
 
+
         Status toAbsolute(void) {
             if (this->_data.empty()) return Status::E_PATH_EMPTY;
             if ( this->_resolution == Resolution::RELATIVE ) {
@@ -210,12 +218,22 @@ namespace fs {
             Path::_PathImpl thisCpy = *this;
             thisCpy.clean();
 
-            return thisCpy._data == std::vector<std::string>{ "/" };
+            return (
+                thisCpy._data == std::vector<std::string>{ "/" } ||
+                (
+                    (
+                        thisCpy._data == std::vector<std::string>{ "." } || 
+                        thisCpy._data == std::vector<std::string>{ ".." }
+                    ) &&
+                    thisCpy._resolution == Resolution::ABSOLUTE
+                )
+            );
         };
 
-        // FIXME : instead of optional is path is empty, return cwd, wouldn't it be simpler ?
-        std::optional<Path> getParent(void) const noexcept {
-            if (this->_data.empty() || this->_data.size() <= 1) return std::nullopt;
+        Path getParent(void) const noexcept {
+            if (this->_data.size() == 1) return this->_resolution == Resolution::ABSOLUTE ? Path("/") : ::sysop::getCWD().getParent();
+            if (this->_data.empty()) return ::sysop::getCWD().getParent();
+            if (this->isRoot()) return Path("/");
 
             std::vector<std::string> cpy = this->_data;
             if (this->_resolution == Resolution::ABSOLUTE && !cpy.at(0).empty()) cpy[0] = "/" + cpy[0];
@@ -228,9 +246,16 @@ namespace fs {
             struct dirent *c_entry;
             std::vector<Path> res{};
             std::string thisStr(this->asStr());
+            std::string buf("");
 
-            if ( (c_dir = opendir(thisStr.c_str())) == NULL) return res; // FIXME : log returned error with errno () (and strerr ?) error here
-            while ( (c_entry = readdir(c_dir)) ) res.push_back(Path(thisStr + std::string(c_entry->d_name)));
+            if ( (c_dir = opendir(thisStr.c_str())) == NULL) {
+                logger::error << "ERROR: " << std::string(strerror(errno)) << std::endl;
+                return res; // FIXME : log returned error with errno () (and strerr ?) error here
+            }
+            while ( (c_entry = readdir(c_dir)) ) {
+                buf = c_entry->d_name;
+                if (buf != "." && buf != "..") res.push_back(Path(thisStr + "/" + std::string(c_entry->d_name)));
+            }
             closedir(c_dir);
             return res;
         }
@@ -256,9 +281,9 @@ namespace fs {
             Status tmpStatus = Status::NOK;
             if ( (tmpImpl.getResolution() != Resolution::ABSOLUTE) && (tmpStatus = tmpImpl.toAbsolute()) != Status::OK) return tmpStatus;
             if ( (tmpStatus = tmpImpl.clean()) != Status::OK ) return tmpStatus;
-            std::optional<fs::Path> parent{tmpImpl.getParent()};
-            if (parent.has_value() && !parent.value().exists() && !createParents) return Status::E_PARENT_NO_EXISTS;
-            if (parent.has_value() && !parent.value().exists() && !std::filesystem::create_directories(parent.value().asStr())) return Status::E_CREATE_PARENTS;
+            fs::Path parent(tmpImpl.getParent());
+            if (!parent.exists() && !createParents) return Status::E_PARENT_NO_EXISTS;
+            if (!parent.exists() && !std::filesystem::create_directories(parent.asStr())) return Status::E_CREATE_PARENTS;
 
             // 2. Create target depending on the wanted type
             try {
@@ -274,9 +299,6 @@ namespace fs {
                         return Status::E_UNKNOWN_TYPE; // TODO : avoid creating the dirs before if we go here at the end
                 }
                 return Status::OK;
-            } catch (const error::Base &e) {
-                e.log();
-                if (dynamic_cast<const _private::_error::_CreateParentDirs *>(&e)) return Status::E_CREATE_PARENTS;
             } catch (const std::filesystem::filesystem_error &e) {
                 logger::error << "An error occured : " << e.what() << std::endl;
                 return Status::NOK;
@@ -287,29 +309,49 @@ namespace fs {
             return Status::NOK;
         }
 
-        Status updatePermissions(const Permission &newPerms) const noexcept {
+        Status updatePermissions(const Permission &newPerms, const bool &recursive = false) const noexcept {
             Status tmpStatus = Status::NOK;
             _PathImpl _tmpImpl(*this);
-
+        
             if ( !_tmpImpl.exists() ) return Status::E_PATH_NO_TARGET;
             if (_tmpImpl.getResolution() == Resolution::RELATIVE && (tmpStatus = _tmpImpl.toAbsolute()) != Status::OK) return tmpStatus;
-            if (chmod(_tmpImpl.asStr().c_str(), newPerms.asModeT()) == -1) {
-                logger::error << "Error setting permissions of " << _tmpImpl.asStr();
-                logger::error << ": " << std::string(strerror(errno)) << std::endl;
-                return Status::E_SET_PERMS;
+            if (recursive) {
+                std::vector<Path> children(_tmpImpl.getChildren());
+                for (const Path &child : children) {
+                    if (child.getEntry().getType() == Entry::Type::DIRECTORY) 
+                        if ( (tmpStatus = child.updatePermissions(newPerms, recursive)) != Status::OK) return tmpStatus;
+                }
+            } else {
+                if (chmod(_tmpImpl.asStr().c_str(), newPerms.asModeT()) == -1) {
+                    logger::error << "Error when setting permissions of " << _tmpImpl.asStr();
+                    logger::error << ": " << std::string(strerror(errno)) << std::endl;
+                    return Status::E_SET_PERMS;
+                }
             }
             return Status::OK;
         }
 
-        // FIXME : this won't work, I must modify "this"
-        _PathImpl operator=(const _PathImpl &other) {
+        Status remove(const bool &recursive) const noexcept {
+            if ( !this->exists() ) return Status::E_PATH_NO_TARGET;
+            if (recursive) {
+                std::error_code ec;
+                if ( !std::filesystem::remove_all(this->asStr(), ec) ) {
+                    logger::error << "Error when deleting path: " << this->asStr();
+                    logger::error << ": " << ec.message() << std::endl;
+                    return Status::E_REMOVE;
+                }
+            } else if (::remove(this->asStr().c_str()) == -1) {
+                logger::error << "Error when deleting path: " << this->asStr();
+                logger::error << ": " << std::string(strerror(errno)) << std::endl;
+                return Status::E_REMOVE;
+            }
+            return Status::OK;
+        }
+
+        _PathImpl &operator=(const _PathImpl &other) {
             this->_data = other._data;
             this->_resolution = other._resolution;
             return *this;
-        }
-        // FIXME : this won't work, I must modify "this"
-        Path operator=(const Path &other) const {
-            return Path{other};
         }
 
         bool operator==(const Path &other) const {
@@ -333,7 +375,7 @@ namespace fs {
         static bool isPath(const std::string &str) noexcept {
             try {
                 std::filesystem::path instance{str};
-                return !instance.empty() && instance.has_root_name();
+                return !instance.empty();
             } catch (...) {
                 return false;
             }
@@ -373,18 +415,22 @@ namespace fs {
     bool Path::isEmpty(void) const { return this->_pImpl->isEmpty(); }
     bool Path::pointsTo(const fs::Path &path) const { return this->_pImpl->pointsTo(path); }
     bool Path::isRoot(void) const noexcept { return this->_pImpl->isRoot(); }
-    std::optional<Path> Path::getParent(void) const noexcept { return this->_pImpl->getParent(); }
+    Path Path::getParent(void) const noexcept { return this->_pImpl->getParent(); }
     std::vector<Path> Path::getChildren(void) const noexcept { return this->_pImpl->getChildren(); }
 
     Status Path::create(
         const Entry::Type &type,
-        const bool &createParents,
+        const bool &createParents, // FIXME : replace with recursive ?
         const Permission &perms,
         const Path &symLinkTarget
     ) const noexcept { return this->_pImpl->create(type, createParents, perms, symLinkTarget); }
-    Status Path::updatePermissions(const Permission &newPerms) const noexcept { return this->_pImpl->updatePermissions(newPerms); }
+    Status Path::updatePermissions(const Permission &newPerms, const bool &recursive) const noexcept { return this->_pImpl->updatePermissions(newPerms, recursive); }
+    Status Path::remove(const bool &recursive) const noexcept { return this->_pImpl->remove(recursive); }
     bool Path::exists(void) const { return this->_pImpl->exists(); }
-    Path Path::operator=(const Path &other) const { return this->_pImpl->operator=(other); }
+    Path &Path::operator=(const Path &other) { 
+        *(this->_pImpl) = *(other._pImpl);
+        return *this;
+    }
     bool Path::operator==(const Path &other) const { return this->_pImpl->operator==(other); }
     Path Path::operator+(const Path &other) const { return this->_pImpl->operator+(other); }
 

@@ -12,6 +12,10 @@
 #ifndef LIMINAL_LIB_FS_ENTRY_HPP_
 #define LIMINAL_LIB_FS_ENTRY_HPP_
 
+#include "fs/Size.hpp"
+#include "fs/User.hpp"
+#include "fs/Permission.hpp"
+
 #include <time/Date.hpp>
 
 #include <string>
@@ -44,14 +48,17 @@ namespace fs {
             Entry operator=(const Path &other) noexcept; // TODO : implement and test this
             bool operator==(const Entry &other) const noexcept;
 
-            Type getType(void) const noexcept;
             std::string getName(void) const noexcept;
-            std::optional<std::string> getExtension(void) const noexcept;
-            Entry getParent(void) const noexcept;
-            std::vector<Entry> getChildren(void) const noexcept;
+            Type getType(void) const noexcept;
+            Size getSize(void) const noexcept;
+            bool isHidden(void) const noexcept;
             time_::Date getLastModif(void) const noexcept; // FIXME : may be only linux
             time_::Date getLastAccess(void) const noexcept; // FIXME : may be only linux
             time_::Date getLastStatusChange(void) const noexcept; // FIXME : may be only linux
+            Permission getPermissions(void) const noexcept;
+            std::optional<std::string> getExtension(void) const noexcept;
+            Entry getParent(void) const noexcept; // TODO : move this to Path and test
+            std::vector<Entry> getChildren(void) const noexcept; // TODO : move this to Path and test
 
         private:
             class _EntryImpl;

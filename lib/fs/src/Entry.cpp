@@ -186,6 +186,8 @@ namespace fs {
 
             std::string getName(void) const noexcept { return this->_name; }
             Entry::Type getType(void) const noexcept { return this->_type; }
+            Permission getPermissions(void) const noexcept { return this->_perms; }
+        
             std::optional<std::string> getExtension(void) const noexcept { // FIXME : value is returned even if "        "
                 if (this->_name.empty()) return std::optional<std::string>();
                 std::size_t dotPos{this->_name.find(".")};
@@ -209,6 +211,7 @@ namespace fs {
 
     Entry::Type Entry::getType(void) const noexcept { return this->_impl->getType(); }
     std::string Entry::getName(void) const noexcept { return this->_impl->getName(); }
+    Permission Entry::getPermissions(void) const noexcept { return this->_impl->getPermissions(); }
     std::optional<std::string> Entry::getExtension(void) const noexcept { return this->_impl->getExtension(); }
 
 } // namespace fs
