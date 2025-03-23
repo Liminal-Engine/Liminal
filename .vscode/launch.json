@@ -50,9 +50,8 @@
         "request": "launch",
         "args": [
           "-R",
-          "\"FSPathIsPathReturnedValueMethod\"",
+          "WhenGivenOpenablePaths/FSInFileGetContentMethod.ReturnGivenStatus/",
           "--output-on-failure"
-          // "WhenGivenPathOfObjectNotContainingComplexValues/JsonIOObjectHasComplexValueMethod.ReturnGivenBool",
         ],
         "stopAtEntry": false,
         "internalConsoleOptions": "neverOpen",

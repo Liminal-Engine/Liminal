@@ -38,7 +38,7 @@ namespace test {
                     void create(
                         const fs::Path &filePath,
                         const std::string &jsonPath = "",
-                        const std::vector<std::string> &separators = JSON_DEFAULT_SEPARATORS
+                        const std::array<std::string, 3> &separators = JSON_DEFAULT_SEPARATORS
                     ) {
                         this->_instances = ::test::jsonio::Object::Helper::create(filePath, jsonPath, separators);
                     }
@@ -98,12 +98,12 @@ namespace test {
             };
 
             TEST_F(JsonIOObjectGetMethod, ShouldMatchExpectedValuesWithEdgeCasesJsonFile2) {
-                create(::test::jsonio::Helper::VALID__EDGE_CASES, "78/an.other.[ke.y]<0>", std::vector<std::string>{"/", "<", ">"});
+                create(::test::jsonio::Helper::VALID__EDGE_CASES, "78/an.other.[ke.y]<0>", std::array<std::string, 3>{"/", "<", ">"});
                 test_eq<::jsonio::types::String_t>("no", "yes");
             };
 
             TEST_F(JsonIOObjectGetMethod, ShouldMatchExpectedValuesWithEdgeCasesJsonFile3) {
-                create(::test::jsonio::Helper::VALID__EDGE_CASES, "78/an.other.[ke.y]<1>", std::vector<std::string>{"/", "<", ">"});
+                create(::test::jsonio::Helper::VALID__EDGE_CASES, "78/an.other.[ke.y]<1>", std::array<std::string, 3>{"/", "<", ">"});
                 test_eq<::jsonio::types::Null_t>(nullptr, "no");
             };
 

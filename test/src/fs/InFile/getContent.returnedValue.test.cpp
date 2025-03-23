@@ -59,11 +59,11 @@ namespace test {
                 WhenGivenOpenablePaths,
                 FSInFileGetContentMethod,
                 testing::Values(
-                    std::make_tuple(::fs::Path("../../test/assets/json/invalid/array/wrongFormat.json"), ::test::fs::InFile::Helper::JSON_INVALID_ARRAY_WRONG_FORMAT),
-                    std::make_tuple(::fs::Path("../../test/assets/json/invalid/bool/incomplete.json"), ::test::fs::InFile::Helper::JSON_INVALID_BOOL_INCOMPLETE),
-                    std::make_tuple(::fs::Path("../../test/assets/json/valid/basic.json"), ::test::fs::InFile::Helper::JSON_VALID_BASIC),
-                    std::make_tuple(::fs::Path("../../test/assets/json/valid/edgeCases.json"), ::test::fs::InFile::Helper::JSON_VALID_EDGE_CASES),
-                    std::make_tuple(::fs::Path("../../test/assets/json/valid/nested.json"), ::test::fs::InFile::Helper::JSON_VALID_NESTED),
+                    std::make_tuple(::fs::Path("../../test/assets/jsonio/invalid/array/wrongFormat.json"), ::test::fs::InFile::Helper::JSON_INVALID_ARRAY_WRONG_FORMAT),
+                    std::make_tuple(::fs::Path("../../test/assets/jsonio/invalid/bool/incomplete.json"), ::test::fs::InFile::Helper::JSON_INVALID_BOOL_INCOMPLETE),
+                    std::make_tuple(::fs::Path("../../test/assets/jsonio/valid/basic.json"), ::test::fs::InFile::Helper::JSON_VALID_BASIC),
+                    std::make_tuple(::fs::Path("../../test/assets/jsonio/valid/edgeCases.json"), ::test::fs::InFile::Helper::JSON_VALID_EDGE_CASES),
+                    std::make_tuple(::fs::Path("../../test/assets/jsonio/valid/nested.json"), ::test::fs::InFile::Helper::JSON_VALID_NESTED),
                     std::make_tuple(::fs::Path("../../test/assets/fs/!@#$%^&*().!@#$%^&*()"), ::test::fs::InFile::Helper::SPECIAL_CHARS),
                     std::make_tuple(::fs::Path("../../test/assets/fs/.hidden"), ::test::fs::InFile::Helper::HIDDEN),
                     std::make_tuple(::fs::Path("../../test/assets/fs/|||empty|||"), "")

@@ -12,6 +12,7 @@
 #include <fs/Path.hpp>
 
 #include "test/fs/Path/Helper.hpp"
+#include "test/Helper.hpp"
 
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
@@ -36,7 +37,7 @@ namespace test {
                 protected:
                     std::string _rootPath;
                     void create(void) noexcept {
-                        this->_rootPath = "../../test/assets/fsGetChildren" + ::test::fs::Path::Helper::generateUID() + "/";
+                        this->_rootPath = "../../test/assets/fsGetChildren" + ::test::Helper::generateUID() + "/";
                         ::test::fs::Path::Helper::createTestFiles(this->_rootPath);
                     }
 

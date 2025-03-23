@@ -23,7 +23,8 @@
 #include <tuple>
 #include <filesystem>
 #include <vector>
-
+#include <optional>
+#include <array>
 #include <iostream>
 
 namespace test {
@@ -33,7 +34,7 @@ namespace test {
             using JsonIOArrayGetLenParam = std::tuple<
                 ::fs::Path, //file path,
                 std::string, // json path
-                std::optional<std::vector<std::string>>, // optional separators
+                std::optional<std::array<std::string, 3>>, // optional separators
                 std::size_t
             >;
             class JsonIOArrayGetLenMethod : public ::testing::TestWithParam<JsonIOArrayGetLenParam> {
@@ -76,10 +77,10 @@ namespace test {
                     std::make_tuple(::test::jsonio::Helper::VALID__BASIC, "hobbies", std::nullopt, 5),
                     std::make_tuple(::test::jsonio::Helper::VALID__BASIC, "hobbies[4].secondNestedHobbies", std::nullopt, 4),
 
-                    std::make_tuple(::test::jsonio::Helper::VALID__EDGE_CASES, "78.40014", std::vector<std::string>{"/", "[", "]"}, 0),
+                    std::make_tuple(::test::jsonio::Helper::VALID__EDGE_CASES, "78.40014", std::array<std::string, 3>{"/", "[", "]"}, 0),
                     std::make_tuple(::test::jsonio::Helper::VALID__EDGE_CASES, "78.40014", std::nullopt, 1),
                     std::make_tuple(::test::jsonio::Helper::VALID__EDGE_CASES, "78.40014[0].yes", std::nullopt, 3),
-                    std::make_tuple(::test::jsonio::Helper::VALID__EDGE_CASES, "78/an.other.[ke.y]", std::vector<std::string>{"/", "<", ">"}, 2),
+                    std::make_tuple(::test::jsonio::Helper::VALID__EDGE_CASES, "78/an.other.[ke.y]", std::array<std::string, 3>{"/", "<", ">"}, 2),
 
 
                     std::make_tuple(::test::jsonio::Helper::VALID__LARGE, "[0].tags", std::nullopt, 7),

@@ -11,6 +11,7 @@
 
 #include <string>
 #include <vector>
+#include <algorithm>
 
 namespace parseop {
     std::string eraseAll(const std::string &input, const std::vector<std::string> &subStrs) {

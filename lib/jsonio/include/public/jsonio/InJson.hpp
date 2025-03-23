@@ -15,6 +15,7 @@
 #include "Status.hpp"
 #include "types.hpp"
 #include "is_in_variant_v.hpp"
+#include"separators.hpp"
 
 #include <parseop/parseop.hpp>
 #include "fs/Path.hpp"
@@ -30,7 +31,6 @@
 #include <memory>
 #include <variant>
 
-#define JSON_DEFAULT_SEPARATORS std::vector<std::string>{".", "[", "]"}
 
 namespace jsonio {
 
@@ -39,21 +39,19 @@ namespace jsonio {
         public:
             InJson(void);
             ~InJson();
-            // TODO : constructor with parse as well ?
-            // Re declaration of _JsonBase methods :
+
             Status parse(const fs::Path &path);
 
-            // Own methods declaration :
             types::ValueTypes getType(
                 const std::string &jsonPath = "",
-                const std::vector<std::string> &separators = JSON_DEFAULT_SEPARATORS
+                const std::array<std::string, 3> &separators = JSON_DEFAULT_SEPARATORS
             ) const;
 
             template <typename T>
             requires is_in_variant_v<T, types::Any_t>
             std::optional<T> get(
                 const std::string &jsonPath = "",
-                const std::vector<std::string> &separators = JSON_DEFAULT_SEPARATORS
+                const std::array<std::string, 3> &separators = JSON_DEFAULT_SEPARATORS
             ) const;
        
         private:

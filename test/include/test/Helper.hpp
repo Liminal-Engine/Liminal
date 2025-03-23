@@ -9,8 +9,11 @@
  * 
 */
 
+
 #ifndef LIMINAL_TEST_HELPER_HPP_
 #define LIMINAL_TEST_HELPER_HPP_
+
+#include <string>
 
 namespace test {
     class Helper {
@@ -18,6 +21,8 @@ namespace test {
 
         static constexpr const char*   TMP_FILE_DEFAULT_DIR       =   "./testTmp/";
         static constexpr long double   EXPECT_NEAR_ABSOLUTE_ERROR  =   0.000'000'1;
+
+        static std::string generateUID(void);
     };
 } // namespace test
 

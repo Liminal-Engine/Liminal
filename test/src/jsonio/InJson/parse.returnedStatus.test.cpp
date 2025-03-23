@@ -104,18 +104,6 @@ namespace test {
                 )
             );
 
-            // # FIXME : transform this to status::FILE_NOT_FOUND
-            // # FIXME : test all parse return status
-            // INSTANTIATE_TEST_SUITE_P(
-            //     WhenFilePathDoesNotExist,
-            //     JsonIOInJsonParseMethod,
-            //     testing::Values(
-            //         std::make_pair(::test::jsonio::Helper::INEXISTANT_PATH, ::jsonio::Status::NOK),
-            //         std::make_pair(::test::jsonio::Helper::VALID__BASIC + ::test::jsonio::Helper::INEXISTANT_PATH, ::jsonio::Status::NOK),
-            //         std::make_pair(::test::jsonio::Helper::MISSING_LETTER_IN_FILE_EXT, ::jsonio::Status::NOK)
-            //     )
-            // );
-
         } // namespace InJson
     } // namespace jsonio
 } // namespace test

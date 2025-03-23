@@ -12,6 +12,7 @@
 #include "_private/_swap_chain/_optimal_settings.hpp"
 
 #include <limits>
+#include <algorithm>
 
 namespace vulkan_wrapper {
     namespace _private {

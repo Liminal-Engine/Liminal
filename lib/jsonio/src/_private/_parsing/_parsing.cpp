@@ -47,7 +47,7 @@ namespace jsonio {
                         THROW(_private::_error::_Parsing, "Error. Expected colon after key in JSON. Got : %s", currentToken.getValueAsStr().c_str());
                     currentToken = tokens.at(++index); //Advance to the actual value
                     _JsonValue newJsonValue = _processParsing(currentToken, tokens, index);
-                    object.insert({key, std::make_shared<_JsonValue>(newJsonValue)});
+                    object.push_back({key, std::make_shared<_JsonValue>(newJsonValue)});
                     if (index == tokens.size() - 1)
                         THROW(_private::_error::_Parsing, "Missing closing brace in object around token: %s", tokens.at(index).getValueAsStr().c_str());
                     if ( (currentToken = tokens.at(++index)) == _syntax::_COMMA_C ) {

@@ -10,6 +10,7 @@
 */
 
 #include <string>
+#include <algorithm>
 
 namespace parseop {
     bool isPositiveInteger(const std::string &str) {

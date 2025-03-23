@@ -19,10 +19,17 @@ namespace test {
         class Helper {
             public:
 
+            static const fs::Path JSONIO__ASSETS__DIR;
+
             static const fs::Path VALID__BASIC;
             static const fs::Path VALID__EDGE_CASES;
             static const fs::Path VALID__NESTED ;
             static const fs::Path VALID__LARGE;
+            static const fs::Path VALID__LARGE_WITHOUT_FLOATING_POINT_NUMBERS;
+            static const fs::Path VALID__FLOATING_POINT_NUMBERS;
+            static const fs::Path VALID__BASIC_WITHOUT_FLOATING_POINT_NUMBERS;
+            static const fs::Path VALID__NESTED_WITHOUT_FLOATING_POINT_NUMBERS;
+            static const fs::Path VALID__EMPTY;
 
             static const fs::Path INVALID__ARRAY__WRONG_FORMAT;
 
@@ -47,9 +54,19 @@ namespace test {
             static const fs::Path INVALID__COMMA__MISSING_IN_NUM_ARRAY;
             static const fs::Path INVALID__COMMA__MULTIPLE_MISSING_IN_ARRAY;
             static const fs::Path INVALID__COMMA__TOO_MUCH;
-
+            
+            static const fs::Path INVALID__EMPTY;
+            
             static const fs::Path INEXISTANT_PATH;
             static const fs::Path MISSING_LETTER_IN_FILE_EXT;
+
+            static const fs::Path CORRECTED__BASIC;
+            static const fs::Path CORRECTED__EDGE_CASES;
+            static const fs::Path CORRECTED__LARGE;
+            static const fs::Path CORRECTED__LARGE_WITHOUT_FLOATING_POINT_NUMBERS;
+            static const fs::Path CORRECTED__FLOATING_POINT_NUMBERS;
+            static const fs::Path CORRECTED__BASIC_WITHOUT_FLOATING_POINT_NUMBERS;
+            static const fs::Path CORRECTED__NESTED_WITHOUT_FLOATING_POINT_NUMBERS;
         };     
     } // namespace jsonio
 } // namespace test

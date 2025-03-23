@@ -15,6 +15,7 @@
 
 #include <stdexcept>
 #include <iostream>
+#include <array>
 
 namespace test {
     namespace jsonio {
@@ -23,7 +24,7 @@ namespace test {
             std::vector<::jsonio::types::Object_t> Helper::create(
                 const ::fs::Path &path,
                 const std::string &jsonPath,
-                const std::vector<std::string> &separators
+                const std:: array<std::string, 3> &separators
             ) {
                 ::jsonio::InJson inJson;
                 inJson.parse(path);

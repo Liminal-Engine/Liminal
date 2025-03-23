@@ -38,7 +38,7 @@ namespace test {
                     void create(
                         const fs::Path &filePath,
                         const std::string &jsonPath = "",
-                        const std::vector<std::string> &separators = JSON_DEFAULT_SEPARATORS
+                        const std::array<std::string, 3> &separators = JSON_DEFAULT_SEPARATORS
                     ) {
                         this->_instances = ::test::jsonio::Array::Helper::create(filePath, jsonPath, separators);
                     }
@@ -79,7 +79,7 @@ namespace test {
 
             TEST_F(JsonIOArrayGetMethod, ShoudlMatchExpectedValuesEdgeCasesJsonFile1) {
 
-                create(::test::jsonio::Helper::VALID__EDGE_CASES, "78/40014!0$/yes", std::vector<std::string>{"/", "!", "$"});
+                create(::test::jsonio::Helper::VALID__EDGE_CASES, "78/40014!0$/yes", std::array<std::string, 3>{"/", "!", "$"});
                 test_eq<::jsonio::types::String_t>("no", 0);
                 test_eq<::jsonio::types::String_t>("maybe", 1);
                 test_eq<::jsonio::types::String_t>("this[is]a.[key]", 2);

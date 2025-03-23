@@ -15,9 +15,9 @@
 // #include "jsonio/types.hpp"
 // #include "jsonio/Status.hpp"
 
-// #include "windowing/WindowWrapper.hpp"
+#include "windowing/WindowWrapper.hpp"
 
-// #include "vulkan_wrapper/VulkanHdl.hpp"
+#include "vulkan_wrapper/VulkanHdl.hpp"
 
 // #include "fs/FileType.hpp"
 // #include "fs/InFile.hpp"
@@ -29,6 +29,8 @@
 
 #include "logger/logger.hpp"
 #include "jsonio/InJson.hpp"
+#include "jsonio/OutJson.hpp"
+#include "jsonio/Json.hpp"
 #include "fs/Path.hpp"
 #include <fs/Permission.hpp>
 #include <time/Date.hpp>
@@ -48,6 +50,42 @@
 
 
 int main() {
+    // ::jsonio::OutJson outJson;
+    // outJson.parse(fs::Path("/home/matteo/Projects/Liminal/basic.json"));
+    // outJson.insert();
+
+    std::vector<std::string> tokPath = parseop::tokenize("", '.');
+
+    ::jsonio::OutJson json;
+    json.parse(fs::Path("/home/matteo/Projects/Liminal/basic.json"));
+    json.insert<jsonio::types::FloatNum_t>("NEWKEY", 42.23);
+    // outJson.write(::fs::Path("ioajze"));
+    // json.parse(fs::Path("/home/matteo/Projects/Liminal/basic.json"));
+    // ::jsonio::Status status  = json.insert<::jsonio::types::Object_t>("", ::jsonio::types::Object_t(), true);
+    // status = json.insert<std::string>("toto", "tata");
+    // status = json.insert("titi", jsonio::types::Object_t());
+    // status = json.insert("titi.tutu.toto", jsonio::types::Object_t());
+    ::jsonio::Status status = json.write(fs::Path("/home/matteo/Projects/Liminal/basic.json"), true);
+    // status = json.insert("titi.tutu.tiktok", std::string("tana"));
+    // status = json.write(::fs::Path("/home/matteo/Projects/Liminal/basic.json"));
+    // json.insert("", ::jsonio::types::Object_t(), true);
+    
+    // json.get<::jsonio::types::Array_t>("toto.tata", std::vector<std::string>{"7"});
+    
+    // outJson.insert<jsonio::types::String_t>("address.story.left", "boubou", true);
+    // outJson.insert<jsonio::types::IntNum_t>("address.story.street", 43, true);
+    // outJson.insert<jsonio::types::FloatNum_t>("address.story", 47.42, true);
+    // outJson.insert<jsonio::types::Object_t>("hobbies[1]", jsonio::types::Object_t(), true);
+    // outJson.insert<jsonio::types::String_t>("hobbies[1].bonjour", "au revoir", true);
+    
+    
+    // outJson.insert<jsonio::types::IntNum_t>("hobbies[4].secondNestedHobbies[4]", 42);
+    // json.write(::fs::Path("/home/matteo/Projects/Liminal/basic2.json"));
+
+    // outJson.insert<jsonio::types::String_t>("address.story.center.yes", "no", true);
+    // outJson.insertValue<jsonio::types::String_t>("hobbies[2]", "boubou", true, JSON_DEFAULT_SEPARATORS);
+    // outJson.insertKey("address.story.center", jsonio::types::ValueTypes::STRING, true);
+    // outJson.get<jsonio::types::FloatNum_t>("bonjour.aurevoir");
     // ::fs::Status tmpFSStatus = ::fs::Path("../../test/assets/tmp/../../assets/tmp../tmp/create/character_device_attempt").create(
     //     ::fs::Entry::Type::CHARACTER_DEVICE, false, ::fs::Permission(0666)
     // );

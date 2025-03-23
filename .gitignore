@@ -49,3 +49,4 @@ build
 # External projects
 *-prefix/
 *.log
+test/assets/tmp_json

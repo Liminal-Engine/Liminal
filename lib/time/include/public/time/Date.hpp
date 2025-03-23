@@ -64,7 +64,7 @@ namespace time_ {
             /**
              * @brief 
              * 
-             * @param format Same as format used bu C standard strftime. In addition :
+             * @param format Same as format used by C standard strftime. In addition :
              * %{ms} for millisecond
              * %{us} for microsecond
              * %{ns} for nanosecond

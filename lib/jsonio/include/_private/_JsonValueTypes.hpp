@@ -22,7 +22,8 @@ namespace jsonio {
             _BOOL,
             _JSON_NULL,
             _ARRAY,
-            _OBJECT
+            _OBJECT,
+            _UNKNOWN
         };
 
     } // namespace _private

@@ -34,6 +34,10 @@ namespace jsonio {
                 _internalObject{other._internalObject}
                 {}
 
+                _ObjectImpl(void) :
+                _internalObject()
+                {}
+
                 _ObjectImpl &operator=(const _ObjectImpl &other) {
                     if (this != &other) {
                         this->_internalObject = other._internalObject;
@@ -108,6 +112,10 @@ namespace jsonio {
 
         Object::Object(const Object &other) :
         _objectImpl{std::make_unique<_ObjectImpl>(*other._objectImpl)}
+        {}
+
+        Object::Object(void) :
+        _objectImpl(std::make_unique<_ObjectImpl>())
         {}
 
         Object::~Object() = default;

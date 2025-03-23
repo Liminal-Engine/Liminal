@@ -12,7 +12,8 @@
 #ifndef LIMINAL_LIB_jsonio__PRIVATE__PARSING__TYPES_HPP_
 #define LIMINAL_LIB_jsonio__PRIVATE__PARSING__TYPES_HPP_
 
-#include <unordered_map>
+#include <vector>
+#include <utility>
 #include <memory>
 #include <string>
 #include <cstddef>
@@ -38,7 +39,7 @@ namespace jsonio {
                 using _Key_t        =   _String_t;
                 
                 using _Array_t      =   std::vector<std::shared_ptr<class _JsonValue>>;
-                using _Object_t     =   std::unordered_map<_Key_t, std::shared_ptr<class _JsonValue>>;
+                using _Object_t     =   std::vector<std::pair<_Key_t, std::shared_ptr<class _JsonValue>>>;
 
                 using _Any_t    =   std::variant<
                                             _String_t,

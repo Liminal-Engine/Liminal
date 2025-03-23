@@ -21,7 +21,11 @@ namespace jsonio {
         E_KEY,
         E_INDEX,
         E_FILE,
-        E_NOT_LOADED
+        E_NOT_LOADED,
+        E_JSON_PATH,
+        E_VALUE_EXISTS,
+        E_KEY_EXISTS,
+        E_NO_ROOT_VALUE
     };
 } // namespace jsonio
 

@@ -59,6 +59,7 @@ namespace jsonio {
             public:
                 Object(const _private::_JsonValue &objectAsJsonValue);
                 Object(const Object &other);
+                Object(void);
                 ~Object();
 
                 Object &operator=(const Object &other);
@@ -82,6 +83,7 @@ namespace jsonio {
             public:
                 Array(const _private::_JsonValue &arrayAsJsonValue);
                 Array(const Array &other);
+                Array(void);
                 ~Array();
 
                 Array &operator=(const Array &other);
@@ -132,6 +134,11 @@ namespace jsonio {
             ARRAY,
             OBJECT,
             UNKNOWN
+        };
+
+        enum class ComplexValueTypes {
+            ARRAY,
+            OBJECT
         };
 
     } // namespace types

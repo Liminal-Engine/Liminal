@@ -28,7 +28,7 @@ namespace test {
             using JsonIOObjectHasNestedComplexValuesMethodParamType = std::tuple<
                 fs::Path, // file path
                 std::string, // json path
-                std::optional<std::vector<std::string>>, // optional separators
+                std::optional<std::array<std::string, 3>>, // optional separators
                 bool // expected result
             >;
             
@@ -97,7 +97,7 @@ namespace test {
                     std::make_tuple(::test::jsonio::Helper::VALID__BASIC, "hobbies[3]", std::nullopt, false),
 
                     std::make_tuple(::test::jsonio::Helper::VALID__EDGE_CASES, "-12345", std::nullopt, false),
-                    std::make_tuple(::test::jsonio::Helper::VALID__EDGE_CASES, "78/an.other.[ke.y]<0>", std::vector<std::string>{"/", "<", ">"}, false),
+                    std::make_tuple(::test::jsonio::Helper::VALID__EDGE_CASES, "78/an.other.[ke.y]<0>", std::array<std::string, 3>{"/", "<", ">"}, false),
 
                     std::make_tuple(::test::jsonio::Helper::VALID__NESTED, "address", std::nullopt, false),
                     std::make_tuple(::test::jsonio::Helper::VALID__NESTED, "grades", std::nullopt, false),

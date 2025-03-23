@@ -260,7 +260,7 @@ namespace fs {
             return res;
         }
 
-        bool operator==(const _PathImpl &other) {
+        bool operator==(const _PathImpl &other) const {
             if (this->getResolution() != other.getResolution() || this->_data.size() != other._data.size()) return false;
             for (std::size_t i = 0; i < this->_data.size(); i++)
                 if (this->_data[i] != other._data[i]) return false;

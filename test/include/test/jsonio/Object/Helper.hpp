@@ -18,6 +18,7 @@
 #include <fs/Path.hpp>
 
 #include <vector>
+#include <array>
 #include <string>
 
 
@@ -30,7 +31,7 @@ namespace test {
                 static std::vector<::jsonio::types::Object_t> create(
                     const ::fs::Path &path,
                     const std::string &jsonPath,
-                    const std::vector<std::string> &separators = JSON_DEFAULT_SEPARATORS
+                    const std::array<std::string, 3> &separators = JSON_DEFAULT_SEPARATORS
                 );
 
             };

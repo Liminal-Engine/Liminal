@@ -154,7 +154,9 @@ namespace test {
 
 		,"-12345":
   		      	   {}, "78.40014": []
+										,
 
+							"iamanormalkey[0]": [74]
 
 , 		"78": {
 	"40014": [
@@ -181,8 +183,7 @@ namespace test {
 
 },
 "/////////....//////?!?!?!!!![12e-89]": "{'yes': 'no}"
-				  						        						}
-)json";
+				  						        						})json";
 
             const std::string Helper::JSON_VALID_LARGE = R"json([
     {

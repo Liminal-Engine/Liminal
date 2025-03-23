@@ -19,7 +19,7 @@
 #include <memory>
 
 namespace fs {
-    class InFile::_InFileImpl : public _private::_File<std::ifstream> {
+    class InFile::_InFileImpl : virtual public _private::_File<std::ifstream> {
         public:
             _InFileImpl(const Path &path) :
             _File{path}

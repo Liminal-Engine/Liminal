@@ -35,6 +35,10 @@ namespace jsonio {
                 _internalArray{other._internalArray}
                 {}
 
+                _ArrayImpl(void) :
+                _internalArray()
+                {}
+
                 _ArrayImpl &operator=(const _ArrayImpl &other) {
                     if (this != &other) {
                         this->_internalArray = other._internalArray;
@@ -112,6 +116,10 @@ namespace jsonio {
 
         Array::Array(const Array &other) :
         _arrayImpl{std::make_unique<_ArrayImpl>(*other._arrayImpl)}
+        {}
+
+        Array::Array(void) :
+        _arrayImpl(std::make_unique<_ArrayImpl>())
         {}
 
         Array::~Array() = default;

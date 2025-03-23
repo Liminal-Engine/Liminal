@@ -34,6 +34,7 @@ namespace time_ {
     };
 
     constexpr Unit DEFAULT_TIME_UNIT        = Unit::SECOND;
+
     constexpr Stamp_t DEFAULT_YEAR          = 1970;
     constexpr Stamp_t DEFAULT_MONTH         = 1;
     constexpr Stamp_t DEFAULT_MONTH_DAY     = 1;

@@ -14,7 +14,7 @@
 #include "OutFile.hpp"
 
 namespace fs {
-    class OutFile::_OutFileImpl : public _private::_File<std::ofstream> {
+    class OutFile::_OutFileImpl : virtual public _private::_File<std::ofstream> {
 
         public:
             _OutFileImpl(const Path &path) :
@@ -38,7 +38,6 @@ namespace fs {
                     if ( (tmpStatus = this->close()) != Status::OK ) return tmpStatus;          
                 return this->open(true);
             };
-
     };
 
     // exposed OutFile class :
@@ -57,7 +56,7 @@ namespace fs {
     bool OutFile::isOpen(void) const { return this->_pImpl->isOpen(); }
 
     // Actual OutFile class methods :
+    Status OutFile::clear(void) { return this->_pImpl->clear(); }    
     Status OutFile::write(const std::string &data) { return this->_pImpl->write(data); }
-    Status OutFile::clear(void) { return this->_pImpl->clear(); }
 
 } // namespace fs
