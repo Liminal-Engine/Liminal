@@ -1,5 +1,5 @@
 /**
- * @file hasNestedComplexValues.returnedValue.test.cpp
+ * @file hasNestedContainers.returnedValue.test.cpp
  * @author DE VITA Matteo (matteo.devita7@gmail.com)
  * @brief 
  * @version 0.1
@@ -26,18 +26,18 @@ namespace test {
     namespace jsonio {
         namespace Array {
             
-            using JsonIOArrayHasNestedComplexValuesMethodParamType = std::tuple<
+            using JsonIOArrayHasNestedContainersParamType = std::tuple<
                 fs::Path, // file path
                 std::string, // json path
                 std::optional<std::array<std::string, 3>>, // optional separators
                 bool // expected result
             >;
             
-            class JsonIOArrayHasNestedComplexValuesMethod : public ::testing::TestWithParam<JsonIOArrayHasNestedComplexValuesMethodParamType> {
+            class JsonIOArrayHasNestedContainers : public ::testing::TestWithParam<JsonIOArrayHasNestedContainersParamType> {
                 protected:
                     std::vector<::jsonio::types::Array_t> _instances;
 
-                JsonIOArrayHasNestedComplexValuesMethod(void) : 
+                JsonIOArrayHasNestedContainers(void) : 
                 _instances(
                     std::get<2>(GetParam()).has_value() ?
                     (
@@ -58,16 +58,16 @@ namespace test {
 
             };
 
-            TEST_P(JsonIOArrayHasNestedComplexValuesMethod, ReturnsGivenValue) {
+            TEST_P(JsonIOArrayHasNestedContainers, ReturnsGivenValue) {
                 bool expectedResult = std::get<3>(GetParam());
 
                 for (const ::jsonio::types::Array_t &instance : _instances)
-                    EXPECT_EQ(instance.hasNestedComplexValues(), expectedResult);
+                    EXPECT_EQ(instance.hasNestedContainers(), expectedResult);
             }
             
             INSTANTIATE_TEST_SUITE_P(
                 WhenGivenPathOfArrayContainingComplexValues,
-                JsonIOArrayHasNestedComplexValuesMethod,
+                JsonIOArrayHasNestedContainers,
                 testing::Values(
                     std::make_tuple(::test::jsonio::Helper::VALID__BASIC, "hobbies", std::nullopt, true),
                     std::make_tuple(::test::jsonio::Helper::VALID__EDGE_CASES, "78/40014", std::array<std::string, 3>{"/", "[", "]"}, true),
@@ -81,7 +81,7 @@ namespace test {
 
             INSTANTIATE_TEST_SUITE_P(
                 WhenGivenPathOfArrayNotContainingComplexValues,
-                JsonIOArrayHasNestedComplexValuesMethod,
+                JsonIOArrayHasNestedContainers,
                 testing::Values(
                     std::make_tuple(::test::jsonio::Helper::VALID__BASIC, "hobbies[4].secondNestedHobbies", std::nullopt, false),
                     std::make_tuple(::test::jsonio::Helper::VALID__EDGE_CASES, "78.40014", std::array<std::string, 3>{"/", "[", "]"}, false),

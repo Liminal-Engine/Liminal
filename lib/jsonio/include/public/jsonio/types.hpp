@@ -9,8 +9,8 @@
  * 
  */
 
-#ifndef LIMINAL_LIB_jsonio_TYPES_HPP_
-#define LIMINAL_LIB_jsonio_TYPES_HPP_
+#ifndef LIMINAL_LIB_JSONIO_TYPES_HPP_
+#define LIMINAL_LIB_JSONIO_TYPES_HPP_
 
 
 #include "is_in_variant_v.hpp"
@@ -64,9 +64,9 @@ namespace jsonio {
 
                 Object &operator=(const Object &other);
 
-                // Complex value methods re declaration
-                bool hasNestedComplexValues(void) const;
-                std::vector<types::Key_t> getNestedComplexValuesKeys(void) const;
+                // Container methods re declaration
+                bool hasNestedContainers(void) const;
+                std::vector<types::Key_t> getNestedContainersKeys(void) const;
                 
                 // Own methods :
                 template <typename T>
@@ -88,9 +88,9 @@ namespace jsonio {
 
                 Array &operator=(const Array &other);
 
-                //Complex value methods re declaration
-                bool hasNestedComplexValues(void) const;
-                std::vector<std::size_t> getNestedComplexValuesIndices(void) const;
+                //Container methods re declaration
+                bool hasNestedContainers(void) const;
+                std::vector<std::size_t> getNestedContainersIndices(void) const;
 
                 // Own methods:
                 template <typename T>
@@ -136,7 +136,7 @@ namespace jsonio {
             UNKNOWN
         };
 
-        enum class ComplexValueTypes {
+        enum class ContainerTypes {
             ARRAY,
             OBJECT
         };
@@ -144,4 +144,4 @@ namespace jsonio {
     } // namespace types
 } // namespace jsonio
 
-#endif // LIMINAL_LIB_jsonio_TYPES_HPP_
+#endif // LIMINAL_LIB_JSONIO_TYPES_HPP_

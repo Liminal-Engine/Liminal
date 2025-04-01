@@ -12,7 +12,7 @@
 #include "types.hpp"
 #include "is_in_variant_v.hpp"
 
-#include "_private/_complex_value/_IComplexValue.hpp"
+#include "_private/_container/_IContainer.hpp"
 #include "_private/_JsonValue.hpp"
 #include "_private/_error/_Errors.hpp"
 
@@ -24,7 +24,7 @@ namespace jsonio {
     
     namespace types {
 
-        class Object::_ObjectImpl : public _private::_complex_value::_IComplexValue {
+        class Object::_ObjectImpl : public _private::_container::_IContainer {
             public:
                 _ObjectImpl(const _private::_JsonValue &objectAsJsonValue) :
                 _internalObject{_createInternalObject(objectAsJsonValue)}
@@ -45,20 +45,20 @@ namespace jsonio {
                     return *this;
                 }
 
-                bool hasNestedComplexValues(void) const {
+                bool hasNestedContainers(void) const {
                     for (const auto &[key, value] : this->_internalObject) {
-                        if (value.hasComplexType()) {
+                        if (value.hasContainer()) {
                             return true;
                         }
                     }
                     return false;
                 }
 
-                std::vector<types::Key_t> getNestedComplexValuesKeys(void) const {
+                std::vector<types::Key_t> getNestedContainersKeys(void) const {
                     std::vector<types::Key_t> res{};
 
                     for (const auto &[key, value] : this->_internalObject) {
-                        if (value.hasComplexType()) {
+                        if (value.hasContainer()) {
                             res.push_back(key);
                         }
                     }
@@ -72,8 +72,8 @@ namespace jsonio {
 
                     auto it = this->_internalObject.find(key);
                     if (it != this->_internalObject.end()) {
-                        if (it->second.hasComplexType()) {
-                            std::cerr << "Value is marked as a complex type : " << it->second.getTypeAsStr() << std::endl;
+                        if (it->second.hasContainer()) {
+                            std::cerr << "Value is marked as a container type : " << it->second.getTypeAsStr() << std::endl;
                             return std::optional<T>{};
                         }
                         _private::_parsing::_types::_Any_t tmpAnyValue = it->second.getValue();
@@ -127,9 +127,9 @@ namespace jsonio {
             return *this;
         }
 
-        //Complex value methods re declaration
-        bool Object::hasNestedComplexValues(void) const { return this->_objectImpl->hasNestedComplexValues(); }
-        std::vector<types::Key_t> Object::getNestedComplexValuesKeys(void) const { return this->_objectImpl->getNestedComplexValuesKeys(); }
+        //Container methods re declaration
+        bool Object::hasNestedContainers(void) const { return this->_objectImpl->hasNestedContainers(); }
+        std::vector<types::Key_t> Object::getNestedContainersKeys(void) const { return this->_objectImpl->getNestedContainersKeys(); }
 
         // Own methods :
         template <typename T>

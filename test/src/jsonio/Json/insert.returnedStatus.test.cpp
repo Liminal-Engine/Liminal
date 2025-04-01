@@ -40,7 +40,7 @@
  * 3. tester ajouter clée et value simples erase = false -> returned value
  * retester tout ça mais sans ouvrir un json existant cette fois ci
  * when givven invalid file
- * tester avec jsonPath = "" simple et complex values
+ * tester avec jsonPath = "" simple et containers
  * tester sans création de fichier
  * s'assurer que tous les returns de d'appells de fonctions internes soient bien tester
 */
@@ -285,37 +285,37 @@ namespace test {
             _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithNestedFile42, VALID__NESTED, String_t, OK, "nestedData.level1", "no", true, JSON_DEFAULT_SEPARATORS);
             _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithNestedFile43, VALID__NESTED, FloatNum_t, OK, "nestedData.level1", 158.69789452014, true, JSON_DEFAULT_SEPARATORS);
 
-            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndComplexValue1, VALID__BASIC, Object_t, OK, "address.story.right", ::jsonio::types::Object_t(), true, JSON_DEFAULT_SEPARATORS);
-            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndComplexValue2, VALID__BASIC, Array_t, OK, "hobbies[1]", ::jsonio::types::Array_t(), true, JSON_DEFAULT_SEPARATORS);
-            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndComplexValue3, VALID__BASIC, Object_t, OK, "hobbies[4].secondNestedHobbies[2]", ::jsonio::types::Object_t(), true, JSON_DEFAULT_SEPARATORS);
-            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndComplexValue4, VALID__BASIC, Array_t, OK, "hobbies[4].nothingImportantHere", ::jsonio::types::Array_t(), true, JSON_DEFAULT_SEPARATORS);
-            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndComplexValue5, VALID__BASIC, Object_t, OK, "address.anotherData", ::jsonio::types::Object_t(), true, JSON_DEFAULT_SEPARATORS);
-            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndComplexValue6, VALID__BASIC, Array_t, OK, "hobbies[3].nestedHobby", ::jsonio::types::Array_t(), true, JSON_DEFAULT_SEPARATORS);
-            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndComplexValue7, VALID__BASIC, Object_t, OK, "age", ::jsonio::types::Object_t(), true, JSON_DEFAULT_SEPARATORS);
-            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndComplexValue8, VALID__BASIC, Array_t, OK, "isEmployed", ::jsonio::types::Array_t(), true, JSON_DEFAULT_SEPARATORS);
-            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndComplexValue9, VALID__BASIC, Object_t, OK, "address.story.left", ::jsonio::types::Object_t(), true, JSON_DEFAULT_SEPARATORS);
-            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndComplexValue10, VALID__BASIC, Array_t, OK, "address.city", ::jsonio::types::Array_t(), true, JSON_DEFAULT_SEPARATORS);
-            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndComplexValue11, VALID__BASIC, Object_t, OK, "address.postalCode", ::jsonio::types::Object_t(), true, JSON_DEFAULT_SEPARATORS);
-            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndComplexValue12, VALID__BASIC, Array_t, OK, "happy", ::jsonio::types::Array_t(), true, JSON_DEFAULT_SEPARATORS);
-            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndComplexValue13, VALID__BASIC, Object_t, OK, "address.story.right", ::jsonio::types::Object_t(), true, JSON_DEFAULT_SEPARATORS);
-            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndComplexValue15, VALID__BASIC, Array_t, OK, "name", ::jsonio::types::Array_t(), true, JSON_DEFAULT_SEPARATORS);
-            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndComplexValue16, VALID__BASIC, Object_t, OK, "age", ::jsonio::types::Object_t(), true, JSON_DEFAULT_SEPARATORS);
-            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndComplexValue17, VALID__BASIC, Object_t, OK, "isEmployed", ::jsonio::types::Object_t(), true, JSON_DEFAULT_SEPARATORS);
-            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndComplexValue18, VALID__BASIC, Array_t, OK, "address", ::jsonio::types::Array_t(), true, JSON_DEFAULT_SEPARATORS);
-            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndComplexValue19, VALID__BASIC, Array_t, OK, "address.story", ::jsonio::types::Array_t(), true, JSON_DEFAULT_SEPARATORS);
-            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndComplexValue20, VALID__BASIC, Object_t, OK, "address.story.left", ::jsonio::types::Object_t(), true, JSON_DEFAULT_SEPARATORS);
-            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndComplexValue21, VALID__BASIC, Object_t, OK, "address.story.right", ::jsonio::types::Object_t(), true, JSON_DEFAULT_SEPARATORS);
-            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndComplexValue22, VALID__BASIC, Array_t, OK, "address.street", ::jsonio::types::Array_t(), true, JSON_DEFAULT_SEPARATORS);
-            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndComplexValue23, VALID__BASIC, Object_t, OK, "address.city", ::jsonio::types::Object_t(), true, JSON_DEFAULT_SEPARATORS);
-            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndComplexValue24, VALID__BASIC, Object_t, OK, "address.state", ::jsonio::types::Object_t(), true, JSON_DEFAULT_SEPARATORS);
-            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndComplexValue25, VALID__BASIC, Array_t, OK, "address.postalCode", ::jsonio::types::Array_t(), true, JSON_DEFAULT_SEPARATORS);
+            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndContainersValue1, VALID__BASIC, Object_t, OK, "address.story.right", ::jsonio::types::Object_t(), true, JSON_DEFAULT_SEPARATORS);
+            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndContainersValue2, VALID__BASIC, Array_t, OK, "hobbies[1]", ::jsonio::types::Array_t(), true, JSON_DEFAULT_SEPARATORS);
+            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndContainersValue3, VALID__BASIC, Object_t, OK, "hobbies[4].secondNestedHobbies[2]", ::jsonio::types::Object_t(), true, JSON_DEFAULT_SEPARATORS);
+            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndContainersValue4, VALID__BASIC, Array_t, OK, "hobbies[4].nothingImportantHere", ::jsonio::types::Array_t(), true, JSON_DEFAULT_SEPARATORS);
+            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndContainersValue5, VALID__BASIC, Object_t, OK, "address.anotherData", ::jsonio::types::Object_t(), true, JSON_DEFAULT_SEPARATORS);
+            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndContainersValue6, VALID__BASIC, Array_t, OK, "hobbies[3].nestedHobby", ::jsonio::types::Array_t(), true, JSON_DEFAULT_SEPARATORS);
+            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndContainersValue7, VALID__BASIC, Object_t, OK, "age", ::jsonio::types::Object_t(), true, JSON_DEFAULT_SEPARATORS);
+            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndContainersValue8, VALID__BASIC, Array_t, OK, "isEmployed", ::jsonio::types::Array_t(), true, JSON_DEFAULT_SEPARATORS);
+            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndContainersValue9, VALID__BASIC, Object_t, OK, "address.story.left", ::jsonio::types::Object_t(), true, JSON_DEFAULT_SEPARATORS);
+            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndContainersValue10, VALID__BASIC, Array_t, OK, "address.city", ::jsonio::types::Array_t(), true, JSON_DEFAULT_SEPARATORS);
+            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndContainersValue11, VALID__BASIC, Object_t, OK, "address.postalCode", ::jsonio::types::Object_t(), true, JSON_DEFAULT_SEPARATORS);
+            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndContainersValue12, VALID__BASIC, Array_t, OK, "happy", ::jsonio::types::Array_t(), true, JSON_DEFAULT_SEPARATORS);
+            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndContainersValue13, VALID__BASIC, Object_t, OK, "address.story.right", ::jsonio::types::Object_t(), true, JSON_DEFAULT_SEPARATORS);
+            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndContainersValue15, VALID__BASIC, Array_t, OK, "name", ::jsonio::types::Array_t(), true, JSON_DEFAULT_SEPARATORS);
+            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndContainersValue16, VALID__BASIC, Object_t, OK, "age", ::jsonio::types::Object_t(), true, JSON_DEFAULT_SEPARATORS);
+            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndContainersValue17, VALID__BASIC, Object_t, OK, "isEmployed", ::jsonio::types::Object_t(), true, JSON_DEFAULT_SEPARATORS);
+            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndContainersValue18, VALID__BASIC, Array_t, OK, "address", ::jsonio::types::Array_t(), true, JSON_DEFAULT_SEPARATORS);
+            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndContainersValue19, VALID__BASIC, Array_t, OK, "address.story", ::jsonio::types::Array_t(), true, JSON_DEFAULT_SEPARATORS);
+            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndContainersValue20, VALID__BASIC, Object_t, OK, "address.story.left", ::jsonio::types::Object_t(), true, JSON_DEFAULT_SEPARATORS);
+            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndContainersValue21, VALID__BASIC, Object_t, OK, "address.story.right", ::jsonio::types::Object_t(), true, JSON_DEFAULT_SEPARATORS);
+            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndContainersValue22, VALID__BASIC, Array_t, OK, "address.street", ::jsonio::types::Array_t(), true, JSON_DEFAULT_SEPARATORS);
+            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndContainersValue23, VALID__BASIC, Object_t, OK, "address.city", ::jsonio::types::Object_t(), true, JSON_DEFAULT_SEPARATORS);
+            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndContainersValue24, VALID__BASIC, Object_t, OK, "address.state", ::jsonio::types::Object_t(), true, JSON_DEFAULT_SEPARATORS);
+            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithBasicFileAndContainersValue25, VALID__BASIC, Array_t, OK, "address.postalCode", ::jsonio::types::Array_t(), true, JSON_DEFAULT_SEPARATORS);
             
-            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithLargeFileAndComplexValue1, VALID__LARGE, Array_t, OK, "[0]age", ::jsonio::types::Array_t(), true, JSON_DEFAULT_SEPARATORS);
+            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithLargeFileAndContainersValue1, VALID__LARGE, Array_t, OK, "[0]age", ::jsonio::types::Array_t(), true, JSON_DEFAULT_SEPARATORS);
             
-            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithEdgeCasesFileAndComplexValue1, VALID__EDGE_CASES, Array_t, OK, "iamanormalkey[0]<1>", ::jsonio::types::Array_t(), true, (std::array<std::string, 3>{".", "<", ">"}));
-            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithEdgeCasesFileAndComplexValue2, VALID__EDGE_CASES, Object_t, OK, "iamanormalkey[0]<1>", ::jsonio::types::Object_t(), true, (std::array<std::string, 3>{".", "<", ">"}));
+            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithEdgeCasesFileAndContainersValue1, VALID__EDGE_CASES, Array_t, OK, "iamanormalkey[0]<1>", ::jsonio::types::Array_t(), true, (std::array<std::string, 3>{".", "<", ">"}));
+            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithEdgeCasesFileAndContainersValue2, VALID__EDGE_CASES, Object_t, OK, "iamanormalkey[0]<1>", ::jsonio::types::Object_t(), true, (std::array<std::string, 3>{".", "<", ">"}));
 
-            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithNestedFileAndComplexValue1, VALID__NESTED, Object_t, OK, "nestedData.level1.level2.level3.level4.level5.level6.level7.level8.level9.level10.level11.level12.level13.level14.level15.level16.level17.level18.level19.level20.level21.randomKey2", ::jsonio::types::Object_t(), true, JSON_DEFAULT_SEPARATORS);
+            _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWithNestedFileAndContainersValue1, VALID__NESTED, Object_t, OK, "nestedData.level1.level2.level3.level4.level5.level6.level7.level8.level9.level10.level11.level12.level13.level14.level15.level16.level17.level18.level19.level20.level21.randomKey2", ::jsonio::types::Object_t(), true, JSON_DEFAULT_SEPARATORS);
 
             // Testing when inserting new keys
             _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWhenInsertingNewKeyAndValueWithBasicFile1, VALID__BASIC, FloatNum_t, OK, "newKey", 45.223, false, JSON_DEFAULT_SEPARATORS);
@@ -348,7 +348,7 @@ namespace test {
             
             _CREATE_RETURNED_VALUE_TEST(ShouldReturnEValueExistsWithEdgeCasesFile1, VALID__EDGE_CASES, String_t, E_VALUE_EXISTS, "iamanormalkey[0]<0>", "testing_hard_test_case", false, (std::array<std::string, 3>{".", "<", ">"}));
 
-            _CREATE_RETURNED_VALUE_TEST(ShouldReturnEValueExistsWithEdgeCasesAndComplexValueFile1, VALID__EDGE_CASES, Array_t, E_VALUE_EXISTS, "iamanormalkey[0]<0>", ::jsonio::types::Array_t(), false, (std::array<std::string, 3>{".", "<", ">"}));
+            _CREATE_RETURNED_VALUE_TEST(ShouldReturnEValueExistsWithEdgeCasesAndContainersValueFile1, VALID__EDGE_CASES, Array_t, E_VALUE_EXISTS, "iamanormalkey[0]<0>", ::jsonio::types::Array_t(), false, (std::array<std::string, 3>{".", "<", ">"}));
 
             // Testing on empty file
             _CREATE_RETURNED_VALUE_TEST(ShouldReturnOKWhenInsertingObjectOrArrayOnRootOnEmptyFile1, VALID__EMPTY, Object_t, OK, "", ::jsonio::types::Object_t(), false, JSON_DEFAULT_SEPARATORS);

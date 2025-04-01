@@ -60,8 +60,8 @@ namespace jsonio {
                     const bool &erase = false
                 );
 
-                inline bool hasComplexType(void) const { return this->_type == _JsonValueTypes::_OBJECT or this->_type == _JsonValueTypes::_ARRAY; };
-                inline bool hasSimpleType(void) const { return !this->hasComplexType(); };
+                inline bool hasContainer(void) const { return this->_type == _JsonValueTypes::_OBJECT or this->_type == _JsonValueTypes::_ARRAY; };
+                inline bool hasSimpleType(void) const { return !this->hasContainer(); };
                 
                 static std::optional<std::shared_ptr<class _JsonValue>> getOptionalJsonValueOfObject(
                     const _parsing::_types::_Object_t &object,

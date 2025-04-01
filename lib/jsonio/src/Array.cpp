@@ -11,7 +11,7 @@
 
 #include "types.hpp"
 #include "is_in_variant_v.hpp"
-#include "_private/_complex_value/_IComplexValue.hpp"
+#include "_private/_container/_IContainer.hpp"
 #include "_private/_JsonValue.hpp"
 #include "_private/_error/_Errors.hpp"
 
@@ -25,7 +25,7 @@ namespace jsonio {
     
     namespace types {
 
-        class Array::_ArrayImpl: public _private::_complex_value::_IComplexValue {
+        class Array::_ArrayImpl: public _private::_container::_IContainer {
             public:
                 _ArrayImpl(const _private::_JsonValue &arrayAsJsonValue) :
                 _internalArray{_createInternalArray(arrayAsJsonValue)}
@@ -46,20 +46,20 @@ namespace jsonio {
                     return *this;
                 }
 
-                bool hasNestedComplexValues(void) const {
+                bool hasNestedContainers(void) const {
                     for (const auto &value : this->_internalArray) {
-                    if (value.hasComplexType()) {
+                    if (value.hasContainer()) {
                         return true;
                         }
                     }
                     return false;
                 }
 
-                std::vector<std::size_t> getNestedComplexValuesIndices(void) const {
+                std::vector<std::size_t> getNestedContainersIndices(void) const {
                     std::vector<std::size_t> res{};
 
                     for (size_t i = 0; i < this->_internalArray.size(); i++) {
-                        if (this->_internalArray[i].hasComplexType()) {
+                        if (this->_internalArray[i].hasContainer()) {
                             res.push_back(i);
                         }
                     }
@@ -76,8 +76,8 @@ namespace jsonio {
                         return std::optional<T>{};
                     }
                     _private::_JsonValue tmpJsonValue{this->_internalArray[index]};
-                    if (tmpJsonValue.hasComplexType()) {
-                        std::cerr << "Value is marked as a complex type : " << tmpJsonValue.getTypeAsStr() << std::endl;
+                    if (tmpJsonValue.hasContainer()) {
+                        std::cerr << "Value is marked as a container type : " << tmpJsonValue.getTypeAsStr() << std::endl;
                         return std::optional<T>{};
                     }
                     _private::_parsing::_types::_Any_t tmpAnyValue = tmpJsonValue.getValue();
@@ -131,9 +131,9 @@ namespace jsonio {
             return *this;
         }
 
-        //Complex value methods re declaration
-        bool Array::hasNestedComplexValues(void) const { return this->_arrayImpl->hasNestedComplexValues(); }
-        std::vector<std::size_t> Array::getNestedComplexValuesIndices(void) const { return this->_arrayImpl->getNestedComplexValuesIndices(); }
+        //Container value methods re declaration
+        bool Array::hasNestedContainers(void) const { return this->_arrayImpl->hasNestedContainers(); }
+        std::vector<std::size_t> Array::getNestedContainersIndices(void) const { return this->_arrayImpl->getNestedContainersIndices(); }
 
         // Own methods :
         template <typename T>
