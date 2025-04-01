@@ -113,12 +113,14 @@ namespace logger {
                 const Level &level,
                 const _private::_Color &color
             ) :
-            _stream{stream},
-            _level{level},
-            _strLevel{_private::_levelToStr(this->_level)},
-            _ansiColor{this->_colorToAnsi(color)}
+            _buffer(),
+            _stream(stream),
+            _level(level),
+            _strLevel(_private::_levelToStr(this->_level)),
+            _ansiColor(this->_colorToAnsi(color))
             {
                 if ( !Logger::_LoggerImpl::_file.isOpen() ) Logger::_LoggerImpl::_file.open();
+                this->_buffer << std::boolalpha;
             }
 
             ~_LoggerImpl() {
@@ -140,12 +142,10 @@ namespace logger {
             template<typename T>
             void bufferize(const T &message) {
                 std::ostringstream tmp{this->_buffer.str()};
-                if constexpr (std::is_same<T, bool>::value) tmp << (message ? "true" : "false");
-                else tmp << message;
+                tmp << message;
 
                 if (tmp.str().size() < MAX_BUFFER_SIZE) {
-                    if constexpr (std::is_same<T, bool>::value) this->_buffer << (message ? "true" : "false");
-                    else this->_buffer << message;
+                    this->_buffer << message;
                 } else //should never happen since temlated compile with max 2048
                     std::cerr << _private::_levelToStr(Level::WARNING) << _private::_getFormatedDate() << "[WARNING] > Logger buffer size exceeded, message may not be printed";
             }
