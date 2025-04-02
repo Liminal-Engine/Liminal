@@ -10,8 +10,8 @@
  * 
 */
 
-#ifndef LIMINAL_LIB_FS_OUTFILE_HPP_
-#define LIMINAL_LIB_FS_OUTFILE_HPP_
+#ifndef _LIMINAL_FS_OUTFILE_HPP_
+#define _LIMINAL_FS_OUTFILE_HPP_
 
 #include "Status.hpp"
 #include "Path.hpp"
@@ -43,4 +43,4 @@ namespace fs {
 } // namespace fs
 
 
-#endif // LIMINAL_LIB_FS_OUTFILE_HPP_
+#endif // _LIMINAL_FS_OUTFILE_HPP_

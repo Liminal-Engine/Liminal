@@ -9,8 +9,8 @@
  * 
 */
 
-#ifndef LIMINAL_LIB_JSONIO__PRIVATE__TYPES_CONTAINERS_HPP_
-#define LIMINAL_LIB_JSONIO__PRIVATE__TYPES_CONTAINERS_HPP_
+#ifndef _LIMINAL_LIB_JSONIO__PRIVATE__TYPES_CONTAINERS_HPP_
+#define _LIMINAL_LIB_JSONIO__PRIVATE__TYPES_CONTAINERS_HPP_
 
 #include "_private/_container/_Object.hpp"
 #include "_private/_container/_Array.hpp"
@@ -29,4 +29,4 @@ namespace jsonio {
 } // namespace jsonio
 
 
-#endif // LIMINAL_LIB_JSONIO__PRIVATE__TYPES_CONTAINERS_HPP_
+#endif // _LIMINAL_LIB_JSONIO__PRIVATE__TYPES_CONTAINERS_HPP_

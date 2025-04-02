@@ -1,5 +1,5 @@
-#ifndef LIMINAL_LIB_FS_STATUS_HPP_
-#define LIMINAL_LIB_FS_STATUS_HPP_
+#ifndef _LIMINAL_LIB_STATUS_HPP_
+#define _LIMINAL_LIB_STATUS_HPP_
 
 namespace fs {
     enum class Status {
@@ -32,4 +32,4 @@ namespace fs {
    // TODO: find a way to convert in str (I think there is a native method instead of creating a function)
 }
 
-#endif // LIMINAL_LIB_FS_STATUS_HPP_
+#endif // _LIMINAL_LIB_STATUS_HPP_

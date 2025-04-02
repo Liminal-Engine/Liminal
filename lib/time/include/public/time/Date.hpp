@@ -9,8 +9,8 @@
  * 
 */
 
-#ifndef LIMINAL_LIB_TIME_INCLUDE_PUBLIC_TIME_DATE_HPP_
-#define LIMINAL_LIB_TIME_INCLUDE_PUBLIC_TIME_DATE_HPP_
+#ifndef _LIMINAL_LIB_TIME_DATE_HPP_
+#define _LIMINAL_LIB_TIME_DATE_HPP_
 
 #include "Unit.hpp"
 #include "Stamp_t.hpp"
@@ -93,4 +93,4 @@ namespace time_ {
 } // namespace time_
 
 
-#endif // LIMINAL_LIB_TIME_INCLUDE_PUBLIC_TIME_DATE_HPP_
+#endif // _LIMINAL_LIB_TIME_DATE_HPP_

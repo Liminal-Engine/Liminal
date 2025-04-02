@@ -9,8 +9,8 @@
  * 
 */
 
-#ifndef LIMINAL_LIB_SYSOP_HPP_
-#define LIMINAL_LIB_SYSOP_HPP_
+#ifndef _LIMINAL_LIB_SYSOP_HPP_
+#define _LIMINAL_LIB_SYSOP_HPP_
 
 
 #include <fs/Path.hpp>
@@ -25,5 +25,5 @@ namespace sysop {
 } // namespace sysop
 
 
-#endif // LIMINAL_LIB_SYSOP_HPP_
+#endif // _LIMINAL_LIB_SYSOP_HPP_
 

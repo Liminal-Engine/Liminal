@@ -9,8 +9,8 @@
  * 
 */
 
-#ifndef LIMINAL_LIB_FS_PATH_HPP_
-#define LIMINAL_LIB_FS_PATH_HPP_
+#ifndef _LIMINAL_FS_PATH_HPP_
+#define _LIMINAL_FS_PATH_HPP_
 
 #include "Status.hpp"
 #include "Entry.hpp"
@@ -97,4 +97,4 @@ namespace fs {
 } // namespace fs
 
 
-#endif // LIMINAL_LIB_FS_PATH_HPP_
+#endif // _LIMINAL_FS_PATH_HPP_

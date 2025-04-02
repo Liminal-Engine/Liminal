@@ -9,8 +9,8 @@
  * 
 */
 
-#ifndef LIMINAL_LIB_jsonio__PRIVATE__LEXING__PROCESS_HPP_
-#define LIMINAL_LIB_jsonio__PRIVATE__LEXING__PROCESS_HPP_
+#ifndef _LIMINAL_LIB_JSONIO__PRIVATE__LEXING__PROCESS_HPP_
+#define _LIMINAL_LIB_JSONIO__PRIVATE__LEXING__PROCESS_HPP_
 
 #include "fs/Path.hpp"
 
@@ -40,4 +40,4 @@ namespace jsonio {
     } // namespace _private
 } // namespace jsonio
 
-#endif // LIMINAL_LIB_jsonio__PRIVATE__LEXING__PROCESS_HPP_
+#endif // _LIMINAL_LIB_JSONIO__PRIVATE__LEXING__PROCESS_HPP_

@@ -9,8 +9,8 @@
  * 
 */
 
-#ifndef LIMINAL_LIB_jsonio_STATUS_HPP_
-#define LIMINAL_LIB_jsonio_STATUS_HPP_
+#ifndef _LIMINAL_LIB_JSONIO_STATUS_HPP_
+#define _LIMINAL_LIB_JSONIO_STATUS_HPP_
 
 namespace jsonio {
     enum class Status {
@@ -30,4 +30,4 @@ namespace jsonio {
 } // namespace jsonio
 
 
-#endif // LIMINAL_LIB_jsonio_STATUS_HPP_
+#endif // _LIMINAL_LIB_JSONIO_STATUS_HPP_

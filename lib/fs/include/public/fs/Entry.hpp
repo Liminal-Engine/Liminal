@@ -9,8 +9,8 @@
  * 
 */
 
-#ifndef LIMINAL_LIB_FS_ENTRY_HPP_
-#define LIMINAL_LIB_FS_ENTRY_HPP_
+#ifndef _LIMINAL_FS_ENTRY_HPP_
+#define _LIMINAL_FS_ENTRY_HPP_
 
 #include "fs/Size.hpp"
 #include "fs/User.hpp"
@@ -68,4 +68,4 @@ namespace fs {
 } // namespace fs
 
 
-#endif // LIMINAL_LIB_FS_ENTRY_HPP_
+#endif // _LIMINAL_FS_ENTRY_HPP_

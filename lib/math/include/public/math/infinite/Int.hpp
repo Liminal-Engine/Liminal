@@ -9,8 +9,8 @@
  * 
 */
 
-#ifndef LIMINAL_LIB_MATH_INCLUDE_PUBLIC_MATH_INFINITE_INF_HPP_
-#define LIMINAL_LIB_MATH_INCLUDE_PUBLIC_MATH_INFINITE_INF_HPP_
+#ifndef _LIMINAL_LIB_MATH_INFINITE_INF_HPP_
+#define _LIMINAL_LIB_MATH_INFINITE_INF_HPP_
 
 namespace math {
     namespace infinite {
@@ -23,4 +23,4 @@ namespace math {
 } // namespace math
 
 
-#endif // LIMINAL_LIB_MATH_INCLUDE_PUBLIC_MATH_INFINITE_INF_HPP_
+#endif // _LIMINAL_LIB_MATH_INFINITE_INF_HPP_

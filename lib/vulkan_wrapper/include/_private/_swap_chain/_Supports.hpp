@@ -9,8 +9,8 @@
  * 
 */
 
-#ifndef LIMINAL_LIB_VULKAN_WRAPPER__SWAP_CHAIN__SUPPORTS_HPP_
-#define LIMINAL_LIB_VULKAN_WRAPPER__SWAP_CHAIN__SUPPORTS_HPP_
+#ifndef _LIMINAL_LIB_VULKAN_WRAPPER__SWAP_CHAIN__SUPPORTS_HPP_
+#define _LIMINAL_LIB_VULKAN_WRAPPER__SWAP_CHAIN__SUPPORTS_HPP_
 
 #include <vulkan/vulkan.h>
 #include <vector>
@@ -44,4 +44,4 @@ namespace vulkan_wrapper {
     } // namespace _private
 } // vulkan_wrapper
 
-#endif // LIMINAL_LIB_VULKAN_WRAPPER__SWAP_CHAIN__SUPPORTS_HPP_
+#endif // _LIMINAL_LIB_VULKAN_WRAPPER__SWAP_CHAIN__SUPPORTS_HPP_

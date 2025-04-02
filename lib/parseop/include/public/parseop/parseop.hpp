@@ -9,8 +9,8 @@
  * 
 */
 
-#ifndef LIMINAL_LIB_PARSEOP_HPP_
-#define LIMINAL_LIB_PARSEOP_HPP_
+#ifndef _LIMINAL_LIB_PARSEOP_HPP_
+#define _LIMINAL_LIB_PARSEOP_HPP_
 
 #include <string>
 #include <cstdint>
@@ -90,4 +90,4 @@ namespace parseop {
 } // namespace parseop
 
 
-#endif // LIMINAL_LIB_PARSEOP_HPP_
+#endif // _LIMINAL_LIB_PARSEOP_HPP_

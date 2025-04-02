@@ -9,8 +9,8 @@
  * 
 */
 
-#ifndef LIMINAL_LIB_jsonio__PRIVATE__TYPES_SIMPLETYPES_HPP_
-#define LIMINAL_LIB_jsonio__PRIVATE__TYPES_SIMPLETYPES_HPP_
+#ifndef _LIMINAL_LIB_JSONIO__PRIVATE__TYPES_SIMPLETYPES_HPP_
+#define _LIMINAL_LIB_JSONIO__PRIVATE__TYPES_SIMPLETYPES_HPP_
 
 #include "_private/_parsing/_types.hpp"
 
@@ -29,4 +29,4 @@ namespace jsonio {
 } // namespace jsonio
 
 
-#endif // LIMINAL_LIB_jsonio__PRIVATE__TYPES_SIMPLETYPES_HPP_
+#endif // _LIMINAL_LIB_JSONIO__PRIVATE__TYPES_SIMPLETYPES_HPP_

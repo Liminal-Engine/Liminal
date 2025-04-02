@@ -9,8 +9,8 @@
  * 
  */
 
-#ifndef LIMINAL_LIB_FS__PRIVATE__SYNTAX_HPP_
-#define LIMINAL_LIB_FS__PRIVATE__SYNTAX_HPP_
+#ifndef _LIMINAL_LIB_FS__PRIVATE__SYNTAX_HPP_
+#define _LIMINAL_LIB_FS__PRIVATE__SYNTAX_HPP_
 
 #include <array>
 
@@ -28,4 +28,4 @@ namespace fs {
 } // namespace fs
 
 
-#endif // LIMINAL_LIB_FS__PRIVATE__SYNTAX_HPP_
+#endif // _LIMINAL_LIB_FS__PRIVATE__SYNTAX_HPP_

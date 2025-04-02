@@ -1,5 +1,5 @@
-#ifndef VULKAN_HDL_LIB_VULKANHDL_HPP_
-#define VULKAN_HDL_LIB_VULKANHDL_HPP_
+#ifndef _VULKAN_HDL_LIB_VULKAN_WRAPPER_VULKANHDL_HPP_
+#define _VULKAN_HDL_LIB_VULKAN_WRAPPER_VULKANHDL_HPP_
 
 /**
  * @file VulkanHdl.hpp
@@ -96,4 +96,4 @@ namespace vulkan_wrapper {
     };
 }
 
-#endif // VULKAN_HDL_LIB_VULKANHDL_HPP_
+#endif // _VULKAN_HDL_LIB_VULKAN_WRAPPER_VULKANHDL_HPP_

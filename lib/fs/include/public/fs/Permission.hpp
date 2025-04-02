@@ -9,8 +9,8 @@
  * 
 */
 
-#ifndef LIMINAL_FS_INCLUDE_PUBLIC_FS_PERMISION_HPP_
-#define LIMINAL_FS_INCLUDE_PUBLIC_FS_PERMISION_HPP_
+#ifndef _LIMINAL_FS_PERMISION_HPP_
+#define _LIMINAL_FS_PERMISION_HPP_
 
 #include <sys/stat.h>
 #include <memory>
@@ -60,4 +60,4 @@ namespace fs {
 fs::Permission::Type operator|(const fs::Permission::Type &a, const fs::Permission::Type &b);
 fs::Permission::Type operator&(const fs::Permission::Type &a, const fs::Permission::Type &b);
 
-#endif // LIMINAL_FS_INCLUDE_PUBLIC_FS_PERMISION_HPP_
+#endif // _LIMINAL_FS_PERMISION_HPP_

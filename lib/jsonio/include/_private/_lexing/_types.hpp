@@ -9,8 +9,8 @@
  * 
 */
 
-#ifndef LIMINAL_LIB_jsonio__PRIVATE__LEXING__TYPES_HPP_
-#define LIMINAL_LIB_jsonio__PRIVATE__LEXING__TYPES_HPP_
+#ifndef _LIMINAL_LIB_JSONIO__PRIVATE__LEXING__TYPES_HPP_
+#define _LIMINAL_LIB_JSONIO__PRIVATE__LEXING__TYPES_HPP_
 
 #include <string>
 #include <vector>
@@ -69,4 +69,4 @@ namespace jsonio {
 } // namespace jsonio
 
 
-#endif // LIMINAL_LIB_jsonio__PRIVATE__LEXING__TYPES_HPP_
+#endif // _LIMINAL_LIB_JSONIO__PRIVATE__LEXING__TYPES_HPP_

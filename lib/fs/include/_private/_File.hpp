@@ -9,8 +9,8 @@
  * 
  */
 
-#ifndef LIMINAL_LIB_FS__PRIVATE__FILE_HPP_
-#define LIMINAL_LIB_FS__PRIVATE__FILE_HPP_
+#ifndef _LIMINAL_LIB_FS__PRIVATE__FILE_HPP_
+#define _LIMINAL_LIB_FS__PRIVATE__FILE_HPP_
 
 #include "Status.hpp"
 #include "Path.hpp"
@@ -116,4 +116,4 @@ namespace fs {
     }
 } // namespace name
 
-#endif // LIMINAL_LIB_FS__PRIVATE__FILE_HPP_
+#endif // _LIMINAL_LIB_FS__PRIVATE__FILE_HPP_

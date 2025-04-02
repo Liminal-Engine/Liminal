@@ -1,5 +1,5 @@
-#ifndef LIMINAL_LIB_FS_SIZE_HPP_
-#define LIMINAL_LIB_FS_SIZE_HPP_
+#ifndef _LIMINAL_FS_SIZE_HPP_
+#define _LIMINAL_FS_SIZE_HPP_
 
 #include <memory>
 #include <cstdint>
@@ -27,4 +27,4 @@ namespace fs {
     };
 } // namespace fs
 
-#endif // LIMINAL_LIB_FS_SIZE_HPP_
+#endif // _LIMINAL_FS_SIZE_HPP_

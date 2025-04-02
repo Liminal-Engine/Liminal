@@ -9,8 +9,8 @@
  * 
 */
 
-#ifndef LIMINAL_LIB_ERROR_ERROR_HPP_
-#define LIMINAL_LIB_ERROR_ERROR_HPP_
+#ifndef _LIMINAL_LIB_ERROR_ERROR_HPP_
+#define _LIMINAL_LIB_ERROR_ERROR_HPP_
 
 #include <stdexcept>
 #include <experimental/source_location>
@@ -63,4 +63,4 @@ namespace error {
 } // namespace error
 
 
-#endif // LIMINAL_LIB_ERROR_ERROR_HPP_
+#endif // _LIMINAL_LIB_ERROR_ERROR_HPP_

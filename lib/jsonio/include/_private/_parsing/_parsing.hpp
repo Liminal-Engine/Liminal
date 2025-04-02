@@ -9,8 +9,8 @@
  * 
 */
 
-#ifndef LIMINAL_LIB_jsonio__PRIVATE__PARSING__PARSING_HPP_
-#define LIMINAL_LIB_jsonio__PRIVATE__PARSING__PARSING_HPP_
+#ifndef _LIMINAL_LIB_JSONIO__PRIVATE__PARSING__PARSING_HPP_
+#define _LIMINAL_LIB_JSONIO__PRIVATE__PARSING__PARSING_HPP_
 
 #include "_private/_lexing/_types.hpp"
 #include "_private/_JsonValue.hpp"
@@ -32,4 +32,4 @@ namespace jsonio {
 } // namespace jsonio
 
 
-#endif // LIMINAL_LIB_jsonio__PRIVATE__PARSING__PARSING_HPP_
+#endif // _LIMINAL_LIB_JSONIO__PRIVATE__PARSING__PARSING_HPP_

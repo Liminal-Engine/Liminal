@@ -9,8 +9,8 @@
  * 
 */
 
-#ifndef LIMINAL_LIB_VULKANWRAPPER__INSTANCE__VKINSTANCE_WRAPPERS_HPP_
-#define LIMINAL_LIB_VULKANWRAPPER__INSTANCE__VKINSTANCE_WRAPPERS_HPP_
+#ifndef _LIMINAL_LIB_VULKANWRAPPER__INSTANCE__VKINSTANCE_WRAPPERS_HPP_
+#define _LIMINAL_LIB_VULKANWRAPPER__INSTANCE__VKINSTANCE_WRAPPERS_HPP_
 
 #include "_private/_layer/_Layer_t.hpp"
 #include "_private/_extension/_Extensions_t.hpp"
@@ -56,4 +56,4 @@ namespace vulkan_wrapper {
     } // namespace _private
 } // vulkan_wrapper
 
-#endif // LIMINAL_LIB_VULKANWRAPPER__INSTANCE__VKINSTANCE_WRAPPERS_HPP_
+#endif // _LIMINAL_LIB_VULKANWRAPPER__INSTANCE__VKINSTANCE_WRAPPERS_HPP_

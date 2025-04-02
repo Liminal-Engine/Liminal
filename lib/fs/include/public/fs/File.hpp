@@ -9,8 +9,8 @@
  * 
  */
 
-#ifndef LIMINAL_LIB_FS_FILE_HPP_
-#define LIMINAL_LIB_FS_FILE_HPP_
+#ifndef _LIMINAL_FS_FILE_HPP_
+#define _LIMINAL_FS_FILE_HPP_
 
 #include "InFile.hpp"
 #include "OutFile.hpp"
@@ -26,4 +26,4 @@ namespace fs {
 
 } // namespace fs
 
-#endif // LIMINAL_LIB_FS_FILE_HPP_
+#endif // _LIMINAL_FS_FILE_HPP_

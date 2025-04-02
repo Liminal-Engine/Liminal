@@ -9,8 +9,8 @@
  * 
 */
 
-#ifndef LIMINAL_LIB_jsonio_INCLUDE__PRIVATE__ERROR__ERRORS_HPP
-#define LIMINAL_LIB_jsonio_INCLUDE__PRIVATE__ERROR__ERRORS_HPP
+#ifndef _LIMINAL_LIB_JSONIO__PRIVATE__ERROR__ERRORS_HPP_
+#define _LIMINAL_LIB_JSONIO__PRIVATE__ERROR__ERRORS_HPP_
 
 #include <error/error.hpp>
 #include <logger/logger.hpp>

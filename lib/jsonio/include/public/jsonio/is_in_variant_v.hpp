@@ -9,8 +9,8 @@
  * 
 */
 
-#ifndef LIMINAL_LIB_jsonio_IS_IN_VARIANT_V_HPP_
-#define LIMINAL_LIB_jsonio_IS_IN_VARIANT_V_HPP_
+#ifndef _LIMINAL_LIB_JSONIO_IS_IN_VARIANT_V_HPP_
+#define _LIMINAL_LIB_JSONIO_IS_IN_VARIANT_V_HPP_
 
 #include <variant>
 
@@ -28,4 +28,4 @@ namespace jsonio {
 } // namespace jsonio
 
 
-#endif // LIMINAL_LIB_jsonio_IS_IN_VARIANT_V_HPP_
+#endif // _LIMINAL_LIB_JSONIO_IS_IN_VARIANT_V_HPP_

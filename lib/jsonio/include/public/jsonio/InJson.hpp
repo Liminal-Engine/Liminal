@@ -9,8 +9,8 @@
  * 
 */
 
-#ifndef LIMINAL_LIB_jsonio_INJSON_HPP_
-#define LIMINAL_LIB_jsonio_INJSON_HPP_
+#ifndef _LIMINAL_LIB_JSONIO_INJSON_HPP_
+#define _LIMINAL_LIB_JSONIO_INJSON_HPP_
 
 #include "Status.hpp"
 #include "types.hpp"
@@ -62,4 +62,4 @@ namespace jsonio {
 } // namespace jsonio
 
 
-#endif // LIMINAL_LIB_jsonio_INJSON_HPP_
+#endif // _LIMINAL_LIB_JSONIO_INJSON_HPP_

@@ -9,8 +9,8 @@
  * 
 */
 
-#ifndef FS_LIB_IFILE_HPP_
-#define FS_LIB_IFILE_HPP_
+#ifndef _LIMINAL_FS_IFILE_HPP_
+#define _LIMINAL_FS_IFILE_HPP_
 
 #include "Status.hpp"
 #include "Path.hpp"
@@ -45,4 +45,4 @@ namespace fs {
     };
 }
 
-#endif // FS_LIB_IFILE_HPP_
+#endif // _LIMINAL_FS_IFILE_HPP_

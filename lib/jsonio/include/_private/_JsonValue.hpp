@@ -9,8 +9,8 @@
  * 
 */
 
-#ifndef LIMINAL_LIB_jsonio__PRIVATE__JSONVALUE_HPP_
-#define LIMINAL_LIB_jsonio__PRIVATE__JSONVALUE_HPP_
+#ifndef _LIMINAL_LIB_JSONIO__PRIVATE__JSONVALUE_HPP_
+#define _LIMINAL_LIB_JSONIO__PRIVATE__JSONVALUE_HPP_
 
 #include "Status.hpp"
 #include "is_in_variant_v.hpp"
@@ -101,4 +101,4 @@ namespace jsonio {
     } // namespace _private
 } // namespace jsonio
 
-#endif // LIMINAL_LIB_jsonio__PRIVATE__JSONVALUE_HPP_
+#endif // _LIMINAL_LIB_JSONIO__PRIVATE__JSONVALUE_HPP_

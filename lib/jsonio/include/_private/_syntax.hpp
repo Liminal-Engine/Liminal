@@ -9,8 +9,8 @@
  * 
 */
 
-#ifndef LIMINAL_LIB_jsonio__PRIVATE__SYNTAX_HPP_
-#define LIMINAL_LIB_jsonio__PRIVATE__SYNTAX_HPP_
+#ifndef _LIMINAL_LIB_JSONIO__PRIVATE__SYNTAX_HPP_
+#define _LIMINAL_LIB_JSONIO__PRIVATE__SYNTAX_HPP_
 
 namespace jsonio {
     namespace _private  {
@@ -64,4 +64,4 @@ namespace jsonio {
     } // namespace _private
 } // namespace jsonio
 
-#endif // LIMINAL_LIB_jsonio__PRIVATE__SYNTAX_HPP_
+#endif // _LIMINAL_LIB_JSONIO__PRIVATE__SYNTAX_HPP_

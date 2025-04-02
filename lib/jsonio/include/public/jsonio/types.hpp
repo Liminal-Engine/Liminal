@@ -9,8 +9,8 @@
  * 
  */
 
-#ifndef LIMINAL_LIB_JSONIO_TYPES_HPP_
-#define LIMINAL_LIB_JSONIO_TYPES_HPP_
+#ifndef _LIMINAL_LIB_JSONIO_TYPES_HPP_
+#define _LIMINAL_LIB_JSONIO_TYPES_HPP_
 
 
 #include "is_in_variant_v.hpp"
@@ -144,4 +144,4 @@ namespace jsonio {
     } // namespace types
 } // namespace jsonio
 
-#endif // LIMINAL_LIB_JSONIO_TYPES_HPP_
+#endif // _LIMINAL_LIB_JSONIO_TYPES_HPP_

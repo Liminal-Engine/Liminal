@@ -9,8 +9,8 @@
  * 
 */
 
-#ifndef LIMINAL_LIB_FS_INCLUDE__PRIVATE__ERROR__ERRORS_HPP_
-#define LIMINAL_LIB_FS_INCLUDE__PRIVATE__ERROR__ERRORS_HPP_
+#ifndef _LIMINAL__LIB_FS_INCLUDE__PRIVATE__ERROR__ERRORS_HPP_
+#define _LIMINAL__LIB_FS_INCLUDE__PRIVATE__ERROR__ERRORS_HPP_
 
 namespace fs {
     namespace _private {
@@ -18,5 +18,5 @@ namespace fs {
     } // namespace _private
 } // namespace fs
 
-#endif // LIMINAL_LIB_FS_INCLUDE__PRIVATE__ERROR__ERRORS_HPP_
+#endif // _LIMINAL__LIB_FS_INCLUDE__PRIVATE__ERROR__ERRORS_HPP_
 
