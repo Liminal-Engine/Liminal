@@ -133,7 +133,8 @@ namespace logger {
                     std::string bufferStr{this->_buffer.str() + "\n"};
 
                     _LoggerImpl::_file.write(prefix + bufferStr);
-                    this->_stream << this->_ansiColor << prefix << bufferStr;
+                    this->_stream << this->_ansiColor << prefix << bufferStr <<
+                    this->_colorToAnsi(_private::_Color::RESET) << std::flush;
                     _LoggerImpl::_firstLog = false;
                     this->_buffer.str(""); // reset buffer;
                 }
@@ -151,7 +152,6 @@ namespace logger {
             }
 
             std::ostream &getOutput(void) const { return this->_stream; };
-
     };
 
     Logger::Logger(
@@ -178,7 +178,6 @@ namespace logger {
     Logger &Logger::operator<<(std::ostream& (*manipulator)(std::ostream&)) {
         if (manipulator == static_cast<std::ostream& (*)(std::ostream&)>(std::endl))
             this->_loggerImpl->log();
-            // TODO :reset color here
         else
             this->_loggerImpl->bufferize(manipulator);
         return *this;
@@ -202,13 +201,12 @@ namespace logger {
         
     fs::OutFile Logger::_LoggerImpl::_file = fs::OutFile{fs::Path{_private::_getFormatedDate() + ".log"}};
 
-    Logger trace(std::cerr, Level::TRACE, _private::_Color::GREEN);
-    Logger debug(std::cerr, Level::DEBUG, _private::_Color::BLUE);
+    Logger trace(std::cout, Level::TRACE, _private::_Color::GREEN);
+    Logger debug(std::cout, Level::DEBUG, _private::_Color::BLUE);
     Logger info(std::cout, Level::INFO, _private::_Color::WHITE);
-    Logger warn(std::cout, Level::WARNING, _private::_Color::YELLOW);
-    Logger error(std::cout, Level::ERROR, _private::_Color::ORANGE);
-    Logger fatal(std::cout, Level::FATAL, _private::_Color::RED);
-
+    Logger warn(std::cerr, Level::WARNING, _private::_Color::YELLOW);
+    Logger error(std::cerr, Level::ERROR, _private::_Color::ORANGE);
+    Logger fatal(std::cerr, Level::FATAL, _private::_Color::RED);
     #undef MAX_BUFFER_SIZE
 
 } // namespace logger

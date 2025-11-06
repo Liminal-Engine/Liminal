@@ -91,9 +91,9 @@ class LoggerTest : public ::testing::Test {
         _PERFORM_LOG(instance, actions); \
         EXPECT_TRUE( \
             _shouldLog(logLevel, #instance) ? \
-                std::string{#expected} == "\"\"" ? \
-                buffer.str() == "" : \
-                std::regex_search(buffer.str(), ::test::logger::Helper::getMessageRegexp(levelDisplay, expected)) : \
+            std::string{#expected} == "\"\"" ? \
+            buffer.str() == "" : \
+            std::regex_search(buffer.str(), ::test::logger::Helper::getMessageRegexp(levelDisplay, expected)) : \
             buffer.str().empty()); \
     };
 
@@ -109,7 +109,7 @@ class LoggerTest : public ::testing::Test {
 CREATE_LOGGER_TEST(
     Empty,
     logger::Level::TRACE,
-    << "Nothing should be logged since no end maniolator provided",
+    << "Nothing should be logged since no end manipulator provided",
     ""
 );
 

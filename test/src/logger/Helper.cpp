@@ -10,13 +10,13 @@
 */
 
 #include "test/logger/Helper.hpp"
-            
+
 namespace test {
     namespace logger {
         
         std::regex Helper::getMessageRegexp(const std::string &levelStr, const std::string &message) {
-            // FIXME : here, WARNING must be a param as well
-            return std::regex{R"(^.*\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z.\d{3}\s{2}\[)" + levelStr + R"(\]\s{1,5}>\s)" + message + R"(\n$)"};
+            //                date                                                   [   levelStr    ]>                  message   \n\033[0m (reset color)
+            return std::regex{R"(^.*\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z.\d{3}\s{2}\[)" + levelStr + R"(\]\s{1,5}>\s)" + message + R"(\n(\x1B\[0m)?$)"};
         }
     } // namespace logger
 } // namespace test
