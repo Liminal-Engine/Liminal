@@ -46,15 +46,21 @@ namespace error {
 
     };
 
-    Base::Base(void) = default;
+    Base::Base(void) noexcept = default;
 
-    void Base::init(const std::experimental::source_location &loc, const char *prettyFunction, const char *format, va_list args) {
+    Base::~Base() noexcept = default;
+
+    void Base::init(
+        const std::experimental::source_location &loc,
+        const char *prettyFunction,
+        const char *format,
+        va_list args
+    ) {
         std::vector<char> buffer(DEFAULT_ERR_BUFF_SIZE, 0);
         vsnprintf(buffer.data(), buffer.size(), format, args);
         this->_impl = std::make_unique<Base::_BaseImpl>(loc, prettyFunction,  std::string{buffer.data()});
     }
 
-    Base::~Base() = default;
 
     void Base::log(void) const { return this->_impl->log(); }
 } // namespace error

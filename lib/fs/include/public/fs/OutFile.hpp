@@ -36,9 +36,9 @@ namespace fs {
             Status clear(void);
             Status write(const std::string &data); //TODO : test that file has indeed been reset after write
 
-        private:
-            class _OutFileImpl;
-            const std::unique_ptr<_OutFileImpl> _pImpl;
+            private:
+                class _OutFileImpl;
+                const std::unique_ptr<_OutFileImpl> _pImpl;
     };
 } // namespace fs
 

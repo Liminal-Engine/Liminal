@@ -87,6 +87,11 @@ namespace parseop {
     std::string replace(const std::string &input, const std::string &target, const std::string &replacement, const std::size_t &nOccurence = 0);
     std::string replace(const std::string &input, const std::vector<std::string> &targets, const std::string &replacement, const std::size_t &nOccurence = 0);
 
+    bool containsAll(const std::vector<std::string> &superset, const std::vector<std::string> &subset);
+
+    std::string prettify(const std::vector<std::string> &input, const std::string &bulletPoint = "-");
+
+    std::vector<const char *> toCStrVector(const std::vector<std::string> &input);
 } // namespace parseop
 
 

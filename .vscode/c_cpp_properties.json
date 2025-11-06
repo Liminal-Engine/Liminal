@@ -4,13 +4,24 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/build/_deps/googletest-src/googletest/include",
-                "${workspaceFolder}/build/_deps/googletest-src/googlemock/include"
+                "/usr/include/c++/13",  // adapte le numéro de version de GCC
+                "/usr/include/x86_64-linux-gnu/c++/13",
+                "/usr/include",
+                "/usr/local/include"
             ],
             "defines": [],
-            "compilerPath": "/usr/bin/gcc",
+            "compilerPath": "/usr/bin/g++",
             "cStandard": "c17",
-            "intelliSenseMode": "linux-gcc-x64"
+            "cppStandard": "c++20",
+            "intelliSenseMode": "linux-gcc-x64",
+            "browse": {
+                "path": [
+                    "${workspaceFolder}/**",
+                    "/usr/include/c++/13",
+                    "/usr/include"
+                ],
+                "limitSymbolsToIncludedHeaders": true
+            }
         }
     ],
     "version": 4

@@ -47,10 +47,15 @@ namespace error {
     class Base : std::exception {
         public:            
 
-            Base(void);
-            virtual ~Base();
+            Base(void) noexcept;
+            virtual ~Base() noexcept;
 
-            void init(const std::experimental::source_location &loc, const char *prettyFunction, const char *format, va_list args);
+            void init(
+                const std::experimental::source_location &loc,
+                const char *prettyFunction,
+                const char *format,
+                va_list args
+            );
 
             // Re declaration
             virtual void log(void) const;

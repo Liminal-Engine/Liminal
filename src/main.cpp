@@ -34,6 +34,8 @@
 #include "fs/Path.hpp"
 #include <fs/Permission.hpp>
 #include <time/Date.hpp>
+#include <fs/OutFile.hpp>
+#include <renderer/Context.hpp>
 
 #include <parseop/parseop.hpp>
 #include <error/error.hpp>
@@ -53,19 +55,40 @@ int main() {
     // ::jsonio::OutJson outJson;
     // outJson.parse(fs::Path("/home/matteo/Projects/Liminal/basic.json"));
     // outJson.insert();
+    glfwInit();
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+    GLFWwindow* window = glfwCreateWindow(800, 800, "Liminal Engine", nullptr, nullptr);
+    vk::raii::Context vkRAIIContext;
+    renderer::Context context(vkRAIIContext, window);
+    glfwDestroyWindow(window);
+        
+    // std::vector<std::string> tokPath = parseop::tokenize("", '.');
 
-    std::vector<std::string> tokPath = parseop::tokenize("", '.');
+    // logger::error << true << ' ' << false << std::endl;
 
-    ::jsonio::OutJson json;
-    json.parse(fs::Path("/home/matteo/Projects/Liminal/basic.json"));
-    json.insert<jsonio::types::FloatNum_t>("NEWKEY", 42.23);
-    // outJson.write(::fs::Path("ioajze"));
+    // fs::OutFile instance(fs::Path("/home/matteo/Projects/Liminal/test/assets/fs/OutFile/a.txt"));
+    // instance.open(true);
+    // if (!instance.isOpen()) std::cerr << "instance NOT OPEN" << std::endl;
+    // instance.write(std::string(10 * 1024 * 1024, 'A'));
+    // instance.close();
+    // std::ifstream file("/home/matteo/Projects/Liminal/test/assets/fs/OutFile/a.txt"); // Open the file
+    // if (!file.is_open()) std::cerr << "file not opened" <<std::endl;
+    // std::ostringstream buffer;
+    // buffer << file.rdbuf();
+    // std::cout << std::boolalpha << (buffer.str() == std::string(10 * 1024 * 1024, 'A')) << std::endl;
+
+
+    // ::jsonio::OutJson json;
     // json.parse(fs::Path("/home/matteo/Projects/Liminal/basic.json"));
-    // ::jsonio::Status status  = json.insert<::jsonio::types::Object_t>("", ::jsonio::types::Object_t(), true);
-    // status = json.insert<std::string>("toto", "tata");
-    // status = json.insert("titi", jsonio::types::Object_t());
-    // status = json.insert("titi.tutu.toto", jsonio::types::Object_t());
-    ::jsonio::Status status = json.write(fs::Path("/home/matteo/Projects/Liminal/basic.json"), true);
+    // json.insert<jsonio::types::FloatNum_t>("NEWKEY", 42.23);
+    // // outJson.write(::fs::Path("ioajze"));
+    // // json.parse(fs::Path("/home/matteo/Projects/Liminal/basic.json"));
+    // // ::jsonio::Status status  = json.insert<::jsonio::types::Object_t>("", ::jsonio::types::Object_t(), true);
+    // // status = json.insert<std::string>("toto", "tata");
+    // // status = json.insert("titi", jsonio::types::Object_t());
+    // // status = json.insert("titi.tutu.toto", jsonio::types::Object_t());
+    // ::jsonio::Status status = json.write(fs::Path("/home/matteo/Projects/Liminal/basic.json"), true);
     // status = json.insert("titi.tutu.tiktok", std::string("tana"));
     // status = json.write(::fs::Path("/home/matteo/Projects/Liminal/basic.json"));
     // json.insert("", ::jsonio::types::Object_t(), true);

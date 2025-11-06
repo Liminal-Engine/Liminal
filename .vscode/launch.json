@@ -50,7 +50,7 @@
         "request": "launch",
         "args": [
           "-R",
-          "WhenGivenOpenablePaths/FSInFileGetContentMethod.ReturnGivenStatus/",
+          "StringType_using_logger_debug",
           "--output-on-failure"
         ],
         "stopAtEntry": false,
