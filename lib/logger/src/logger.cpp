@@ -25,8 +25,11 @@ namespace logger {
     #define MAX_BUFFER_SIZE 2048
 
     namespace _private {
-
-        static Level _level = Level::DEBUG; // TODO init depending on config file
+#ifndef NDEBUG
+    static Level _level = Level::TRACE; // TODO init depending on config file
+#else
+    static Level _level = Level::INFO; // TODO init depending on config file
+#endif
 
         enum class _Color {
             RESET,
@@ -201,12 +204,42 @@ namespace logger {
         
     fs::OutFile Logger::_LoggerImpl::_file = fs::OutFile{fs::Path{_private::_getFormatedDate() + ".log"}};
 
-    Logger trace(std::cout, Level::TRACE, _private::_Color::GREEN);
-    Logger debug(std::cout, Level::DEBUG, _private::_Color::BLUE);
-    Logger info(std::cout, Level::INFO, _private::_Color::WHITE);
-    Logger warn(std::cerr, Level::WARNING, _private::_Color::YELLOW);
-    Logger error(std::cerr, Level::ERROR, _private::_Color::ORANGE);
-    Logger fatal(std::cerr, Level::FATAL, _private::_Color::RED);
+    class DummyLogger : public Logger {
+    public:
+        DummyLogger() : Logger(std::cout, Level::TRACE, _private::_Color::RESET) {}
+
+        template<typename T>
+        DummyLogger &operator<<(const T&) { return *this; }
+
+        DummyLogger &operator<<(std::ostream& (*)(std::ostream&)) { return *this; }
+    };
+
+    
+#ifdef NDEBUG
+static DummyLogger traceImpl;
+static DummyLogger debugImpl;
+#else
+static Logger traceImpl(std::cout, Level::TRACE, _private::_Color::GREEN);
+static Logger debugImpl(std::cout, Level::DEBUG, _private::_Color::BLUE);
+#endif
+
+static Logger infoImpl(std::cout, Level::INFO, _private::_Color::WHITE);
+static Logger warnImpl(std::cerr, Level::WARNING, _private::_Color::YELLOW);
+static Logger errorImpl(std::cerr, Level::ERROR, _private::_Color::ORANGE);
+static Logger fatalImpl(std::cerr, Level::FATAL, _private::_Color::RED);
+
+// références visibles publiquement
+Logger& trace = traceImpl;
+Logger& debug = debugImpl;
+Logger& info = infoImpl;
+Logger& warn = warnImpl;
+Logger& error = errorImpl;
+Logger& fatal = fatalImpl;
+
+
+
+
+
     #undef MAX_BUFFER_SIZE
 
 } // namespace logger

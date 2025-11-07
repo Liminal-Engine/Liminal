@@ -55,14 +55,17 @@ namespace logger {
             class _LoggerImpl;
             std::unique_ptr<_LoggerImpl> _loggerImpl;
     };
-    
+
+
     // Use those instances
-    extern Logger trace;
-    extern Logger debug;
-    extern Logger info;
-    extern Logger warn;
-    extern Logger error;
-    extern Logger fatal;
+    extern Logger &info;
+    extern Logger &warn;
+    extern Logger &error;
+    extern Logger &fatal;
+    extern Logger &trace;
+    extern Logger &debug;
+    
+
 
 } // namespace logger
     
