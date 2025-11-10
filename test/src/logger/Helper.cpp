@@ -16,7 +16,7 @@ namespace test {
         
         std::regex Helper::getMessageRegexp(const std::string &levelStr, const std::string &message) {
             //                date                                                   [   levelStr    ]>                  message   \n\033[0m (reset color)
-            return std::regex{R"(^.*\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z.\d{3}\s{2}\[)" + levelStr + R"(\]\s{1,5}>\s)" + message + R"(\n(\x1B\[0m)?$)"};
+            return std::regex{R"(^.*\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}:\d{3}Z\s{2}\[)" + levelStr + R"(\]\s{1,5}>\s)" + message + R"(\n(\x1B\[0m)?$)"};
         }
     } // namespace logger
 } // namespace test
