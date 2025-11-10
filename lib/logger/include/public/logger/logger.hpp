@@ -38,18 +38,17 @@ namespace logger {
             template<typename T>
             Logger &operator<<(const T &message);
 
-            //MAX IS 2048
             template<size_t N>
-            Logger &operator<<(const char (&message)[N]);
+            Logger &operator<<(const char (&message)[N]) { return *this << std::string(message); }
 
             Logger &operator<<(std::ostream& (*manipulator)(std::ostream&));
 
-            // TODO : implement this ?
-            // /usr/bin/ld: CMakeFiles/LiminalUnitTests.dir/src/logger/logger.test.cpp.o: in function `LoggerTest_ComplexFormatting_using_logger_trace_Test::TestBody()':
-            // /home/matteo/Projects/Liminal/tests/src/logger/logger.test.cpp:186: undefined reference to `logger::Logger& logger::Logger::operator<< <std::_Setw>(std::_Setw const&)'
-
             // Getters:
             std::ostream &getOutput(void) const;
+
+            // handled automatically except for crashes
+            void flushFileBuffer(void);
+            
 
         private:
             class _LoggerImpl;

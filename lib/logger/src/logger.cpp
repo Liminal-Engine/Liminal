@@ -22,7 +22,7 @@
 
 namespace logger {
 
-    #define MAX_BUFFER_SIZE 2048
+#define BUFFER_SIZE_TO_FLUSH 65'536
 
     namespace _private {
 #ifndef NDEBUG
@@ -57,7 +57,7 @@ namespace logger {
         };
 
         std::string _getFormatedDate(void) {
-            return time_::Date::now().asStr("%Y-%m-%dT%H:%M:%SZ.%{ms}");
+            return time_::Date::now().asStr("%Y-%m-%dT%H:%M:%S:%{ms}Z");
             // auto now = std::chrono::system_clock::now();
             // std::time_t now_time_t = std::chrono::system_clock::to_time_t(now);
             // std::stringstream date;
@@ -86,6 +86,7 @@ namespace logger {
 
             static bool _firstLog;
             static fs::OutFile _file;
+            static std::string _fileBuffer;
 
             static std::string _colorToAnsi(const _private::_Color &color) {
                 switch (color) {
@@ -127,34 +128,40 @@ namespace logger {
             }
 
             ~_LoggerImpl() {
+                _LoggerImpl::flushFileBuffer();
                 if (Logger::_LoggerImpl::_file.isOpen()) Logger::_LoggerImpl::_file.close();
             }
 
             void log(void) {
                 if (this->_level >= _private::_level) {
-                    std::string prefix{_private::_getFormatedDate() + " " + this->_getFormatedLogLevel()};
-                    std::string bufferStr{this->_buffer.str() + "\n"};
+                    std::string prefix(_private::_getFormatedDate() + " " + this->_getFormatedLogLevel());
+                    std::string bufferStr(this->_buffer.str() + "\n");
 
-                    _LoggerImpl::_file.write(prefix + bufferStr);
+                    if (_LoggerImpl::_firstLog) {
+                        _LoggerImpl::_firstLog = false;
+                        if ( !_LoggerImpl::_file.getAbsolutePath().exists() ) _LoggerImpl::_file.getAbsolutePath().create(fs::Entry::Type::REGULAR_FILE, true);
+                        if (_LoggerImpl::_file.open() != fs::Status::OK) error << "Failed to open log file: " << _LoggerImpl::_file.getAbsolutePath().asStr() << std::endl;
+                    }
                     this->_stream << this->_ansiColor << prefix << bufferStr <<
                     this->_colorToAnsi(_private::_Color::RESET) << std::flush;
-                    _LoggerImpl::_firstLog = false;
                     this->_buffer.str(""); // reset buffer;
+
+                    _LoggerImpl::_fileBuffer += std::string(prefix + bufferStr);
+                    if (_LoggerImpl::_fileBuffer.size() >= BUFFER_SIZE_TO_FLUSH) _LoggerImpl::flushFileBuffer();
                 }
             };
 
             template<typename T>
             void bufferize(const T &message) {
-                std::ostringstream tmp{this->_buffer.str()};
-                tmp << message;
-
-                if (tmp.str().size() < MAX_BUFFER_SIZE) {
-                    this->_buffer << message;
-                } else //should never happen since temlated compile with max 2048
-                    std::cerr << _private::_levelToStr(Level::WARNING) << _private::_getFormatedDate() << "[WARNING] > Logger buffer size exceeded, message may not be printed";
+                this->_buffer << message;
             }
 
             std::ostream &getOutput(void) const { return this->_stream; };
+
+            static void flushFileBuffer(void) {
+                _LoggerImpl::_file.write(_LoggerImpl::_fileBuffer);
+                _LoggerImpl::_fileBuffer = "";
+            }
     };
 
     Logger::Logger(
@@ -165,16 +172,9 @@ namespace logger {
     _loggerImpl{std::make_unique<Logger::_LoggerImpl>(stream, level, color)}
     {}
 
-
     template<typename T>
     Logger &Logger::operator<<(const T &message) {
         this->_loggerImpl->bufferize(message);
-        return *this;
-    }
-
-    template<size_t N>
-    Logger &Logger::operator<<(const char (&message)[N]) {
-        this->_loggerImpl->bufferize(std::string(message));
         return *this;
     }
 
@@ -187,6 +187,8 @@ namespace logger {
     }
 
     std::ostream &Logger::getOutput(void) const { return this->_loggerImpl->getOutput(); }
+
+    void Logger::flushFileBuffer(void) { return this->_loggerImpl->flushFileBuffer(); }
 
     Level setLevel(const Level & level) { 
         // TOOD : show this no matter the old log level so that this info is always dislpayed ?
@@ -203,6 +205,7 @@ namespace logger {
     **/
         
     fs::OutFile Logger::_LoggerImpl::_file = fs::OutFile{fs::Path{_private::_getFormatedDate() + ".log"}};
+    std::string Logger::_LoggerImpl::_fileBuffer("");
 
     class DummyLogger : public Logger {
     public:
@@ -212,6 +215,8 @@ namespace logger {
         DummyLogger &operator<<(const T&) { return *this; }
 
         DummyLogger &operator<<(std::ostream& (*)(std::ostream&)) { return *this; }
+
+        void flushFileBuffer(void) {  }
     };
 
     
