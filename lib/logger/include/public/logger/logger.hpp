@@ -46,9 +46,9 @@ namespace logger {
             // Getters:
             std::ostream &getOutput(void) const;
 
-            // handled automatically except for crashes
-            void flushFileBuffer(void);
-            
+            static void startWorker(void);
+            static void stopWorker(void);
+            static void flushOnCrash(int signal); // call automatically with signal
 
         private:
             class _LoggerImpl;

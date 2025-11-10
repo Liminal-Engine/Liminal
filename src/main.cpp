@@ -49,20 +49,31 @@
 #include <vector>
 #include <climits>
 #include <limits>
+#include <csignal>
 
+void setupLoggerSignalHandlers() {
+    std::signal(SIGSEGV, logger::Logger::flushOnCrash);
+    std::signal(SIGABRT, logger::Logger::flushOnCrash);
+    std::signal(SIGINT,  logger::Logger::flushOnCrash);
+    std::signal(SIGTERM, logger::Logger::flushOnCrash);
+}
 
 int main() {
+    setupLoggerSignalHandlers();
+    logger::Logger::startWorker();
     // ::jsonio::OutJson outJson;
     // outJson.parse(fs::Path("/home/matteo/Projects/Liminal/basic.json"));
     // outJson.insert();
+    logger::fatal << "test fatal" << std::endl;
+    logger::warn << "test warn" << std::endl;
+    logger::info << "test info" << std::endl;
     glfwInit();
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
     GLFWwindow* window = glfwCreateWindow(800, 800, "Liminal Engine", nullptr, nullptr);
-    vk::raii::Context vkRAIIContext;
-    renderer::Context context(vkRAIIContext, window);
+    renderer::Context context(window);
     glfwDestroyWindow(window);
-        
+    logger::Logger::stopWorker();
     // std::vector<std::string> tokPath = parseop::tokenize("", '.');
 
     // logger::error << true << ' ' << false << std::endl;

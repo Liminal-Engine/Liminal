@@ -20,6 +20,15 @@
 #include <fstream>
 #include <type_traits>
 
+
+
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+#include <queue>
+#include <csignal>
+#include <atomic>
+
 namespace logger {
 
 #define BUFFER_SIZE_TO_FLUSH 65'536
@@ -56,20 +65,7 @@ namespace logger {
             }
         };
 
-        std::string _getFormatedDate(void) {
-            return time_::Date::now().asStr("%Y-%m-%dT%H:%M:%S:%{ms}Z");
-            // auto now = std::chrono::system_clock::now();
-            // std::time_t now_time_t = std::chrono::system_clock::to_time_t(now);
-            // std::stringstream date;
-            // date << std::put_time(std::gmtime(&now_time_t), "%Y-%m-%dT%H:%M:%SZ");
-            // auto duration = now.time_since_epoch();
-            // auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count() % 1000;
-            // date << "." << std::setw(3) << std::setfill('0') << millis;
-            // return date.str();
-            // return time_::Date{}.toFormat("%Y-%m-%dT%H:%M:%SZ");
-
-            // return time_::Date::now().asStr("%Y-%m-%dT%H:%M:%SZ"); // FIXME : find a waya to keep milliseconds
-        };
+        std::string _getFormatedDate(void) { return time_::Date::now().asStr("%Y-%m-%dT%H:%M:%S:%{ms}Z"); };
 
     } // namespace private
 
@@ -87,6 +83,31 @@ namespace logger {
             static bool _firstLog;
             static fs::OutFile _file;
             static std::string _fileBuffer;
+
+            static std::queue<std::string> _logMessages;
+            static std::mutex _mutex;
+            static std::condition_variable _condition;
+            static std::atomic<bool> _running;
+            static std::thread _worker;
+
+            static void _workerFunc(void) {
+                while (_LoggerImpl::_running) {
+                    std::unique_lock<std::mutex> lock(_mutex);
+                    _LoggerImpl::_condition.wait(lock, []{return !_logMessages.empty() || !_LoggerImpl::_running; });
+                    while (!_logMessages.empty()) {
+                        std::string message = std::move(_LoggerImpl::_logMessages.front());
+                        _LoggerImpl::_logMessages.pop();
+                        _LoggerImpl::_fileBuffer += message;
+                        if (_LoggerImpl::_fileBuffer.size() >= BUFFER_SIZE_TO_FLUSH) _LoggerImpl::_flushFileBuffer();
+                    }
+                }
+                // Flush remaining logs
+                while (!_LoggerImpl::_logMessages.empty()) {
+                    _LoggerImpl::_fileBuffer += _LoggerImpl::_logMessages.front();
+                    _LoggerImpl::_logMessages.pop();
+                }
+                _LoggerImpl::_flushFileBuffer();
+            }
 
             static std::string _colorToAnsi(const _private::_Color &color) {
                 switch (color) {
@@ -128,7 +149,7 @@ namespace logger {
             }
 
             ~_LoggerImpl() {
-                _LoggerImpl::flushFileBuffer();
+                _LoggerImpl::_flushFileBuffer();
                 if (Logger::_LoggerImpl::_file.isOpen()) Logger::_LoggerImpl::_file.close();
             }
 
@@ -137,17 +158,23 @@ namespace logger {
                     std::string prefix(_private::_getFormatedDate() + " " + this->_getFormatedLogLevel());
                     std::string bufferStr(this->_buffer.str() + "\n");
 
+                    this->_stream << this->_ansiColor << prefix << bufferStr <<
+                    this->_colorToAnsi(_private::_Color::RESET) << std::flush;
                     if (_LoggerImpl::_firstLog) {
                         _LoggerImpl::_firstLog = false;
                         if ( !_LoggerImpl::_file.getAbsolutePath().exists() ) _LoggerImpl::_file.getAbsolutePath().create(fs::Entry::Type::REGULAR_FILE, true);
                         if (_LoggerImpl::_file.open() != fs::Status::OK) error << "Failed to open log file: " << _LoggerImpl::_file.getAbsolutePath().asStr() << std::endl;
                     }
-                    this->_stream << this->_ansiColor << prefix << bufferStr <<
-                    this->_colorToAnsi(_private::_Color::RESET) << std::flush;
-                    this->_buffer.str(""); // reset buffer;
+                    {
+                        std::lock_guard<std::mutex> lock(_LoggerImpl::_mutex);
+                        _LoggerImpl::_logMessages.push(prefix + bufferStr);
+                    }
+                    _LoggerImpl::_condition.notify_one();
+                    this->_buffer.str("");
+                    // this->_buffer.str(""); // reset buffer;
 
-                    _LoggerImpl::_fileBuffer += std::string(prefix + bufferStr);
-                    if (_LoggerImpl::_fileBuffer.size() >= BUFFER_SIZE_TO_FLUSH) _LoggerImpl::flushFileBuffer();
+                    // _LoggerImpl::_fileBuffer += std::string(prefix + bufferStr);
+                    // if (_LoggerImpl::_fileBuffer.size() >= BUFFER_SIZE_TO_FLUSH) _LoggerImpl::_flushFileBuffer();
                 }
             };
 
@@ -158,10 +185,31 @@ namespace logger {
 
             std::ostream &getOutput(void) const { return this->_stream; };
 
-            static void flushFileBuffer(void) {
+            static void _flushFileBuffer(void) {
                 _LoggerImpl::_file.write(_LoggerImpl::_fileBuffer);
                 _LoggerImpl::_fileBuffer = "";
             }
+
+            static void startWorker(void) {
+                _LoggerImpl::_running = true;
+                _LoggerImpl::_worker = std::thread(_LoggerImpl::_workerFunc);
+            }
+
+            static void stopWorker(void) {
+                _LoggerImpl::_running = false;
+                _LoggerImpl::_condition.notify_all();
+                if (_LoggerImpl::_worker.joinable()) _LoggerImpl::_worker.join();
+            }
+
+            static void flushOnCrash(int) {
+                std::lock_guard<std::mutex> lock(_mutex);
+                while (!_logMessages.empty()) {
+                    _fileBuffer += _logMessages.front();
+                    _logMessages.pop();
+                }
+                _LoggerImpl::_flushFileBuffer();
+            }
+
     };
 
     Logger::Logger(
@@ -188,7 +236,9 @@ namespace logger {
 
     std::ostream &Logger::getOutput(void) const { return this->_loggerImpl->getOutput(); }
 
-    void Logger::flushFileBuffer(void) { return this->_loggerImpl->flushFileBuffer(); }
+    void Logger::startWorker(void) { return _LoggerImpl::startWorker(); }
+    void Logger::stopWorker(void) { return _LoggerImpl::stopWorker(); }
+    void Logger::flushOnCrash(int signal) { return _LoggerImpl::flushOnCrash(signal); }
 
     Level setLevel(const Level & level) { 
         // TOOD : show this no matter the old log level so that this info is always dislpayed ?
@@ -216,7 +266,6 @@ namespace logger {
 
         DummyLogger &operator<<(std::ostream& (*)(std::ostream&)) { return *this; }
 
-        void flushFileBuffer(void) {  }
     };
 
     
@@ -248,3 +297,9 @@ Logger& fatal = fatalImpl;
     #undef MAX_BUFFER_SIZE
 
 } // namespace logger
+
+std::queue<std::string> logger::Logger::_LoggerImpl::_logMessages;
+std::mutex logger::Logger::_LoggerImpl::_mutex;
+std::condition_variable logger::Logger::_LoggerImpl::_condition;
+std::atomic<bool> logger::Logger::_LoggerImpl::_running{false};
+std::thread logger::Logger::_LoggerImpl::_worker;
