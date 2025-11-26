@@ -67,6 +67,8 @@ namespace fs {
                     return Status::E_CLOSE_FILE_NOT_OPEN;
                 }
 
+                fs::Path getAbsolutePath(void) const { return this->_absolute_path; }
+
                 // std::optional<std::string> getExtension(void) const {
                 //     return this->_extension;
                 // }

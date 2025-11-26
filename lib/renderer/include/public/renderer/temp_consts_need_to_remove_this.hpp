@@ -20,31 +20,33 @@
 namespace renderer {
 
     const std::vector<std::string> REQUIRED_INSTANCE_LAYER_NAMES = {
-#ifndef NDEBUG
-        "VK_LAYER_KHRONOS_validation"
+#ifdef NDEBUG
 #else
-
+    "VK_LAYER_KHRONOS_validation"
 #endif // NDEBUG
     };
 
-    const std::vector<std::string> REQUIRED_INSTANCE_EXTENSION_NAMES = {
+    inline const std::vector<std::string> REQUIRED_INSTANCE_EXTENSION_NAMES = {
         "VK_KHR_surface",
-        "VK_KHR_xcb_surface"
+        "VK_KHR_xcb_surface",
+        VK_EXT_DEBUG_UTILS_EXTENSION_NAME
     };
 
-    const std::vector<std::string> REQUIRED_DEVICE_EXTENSION_NAMES = {
-        VK_KHR_SWAPCHAIN_EXTENSION_NAME
+    inline const std::vector<std::string> REQUIRED_DEVICE_EXTENSION_NAMES = {
+        VK_KHR_SWAPCHAIN_EXTENSION_NAME,
     };
 
-    const char *APPLICATION_NAME = "Liminal Engine";
+    inline const bool MERGE_GRAPHICS_AND_PRESENT_QUEUE_INDEX_IF_POSSIBLE = true;
+
+    inline const char *APPLICATION_NAME = "Liminal Engine";
 
     // TODO : read VERSION file instead
-    const uint32_t APPLICATION_VERSION = VK_MAKE_VERSION(0, 10 ,10);
+    inline const uint32_t APPLICATION_VERSION = VK_MAKE_VERSION(1, 0, 0);
 
-    const char *ENGINE_NAME = "Liminal";
+    inline const char *ENGINE_NAME = "Liminal";
 
     // TODO : this may change if we create apps (such as games) that uses the engine
-    const uint32_t ENGINE_VERSION = APPLICATION_VERSION;
+    inline const uint32_t ENGINE_VERSION = APPLICATION_VERSION;
 
     #define MIN_VULKAN_VERSION VK_API_VERSION_1_3
 } // namespace renderer

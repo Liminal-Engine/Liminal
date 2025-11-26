@@ -30,6 +30,7 @@ namespace fs {
             // From base class :
             Status open(const bool &clear = false);
             Status close(void);
+            fs::Path getAbsolutePath(void) const;
             // FIXME : replace with getPath();
             bool isOpen(void) const;
 

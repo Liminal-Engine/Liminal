@@ -30,6 +30,7 @@ namespace fs {
             //Common methods for each template class (redefined because template class is hidden)
             Status open(void);
             Status close(void);
+            fs::Path getAbsolutePath(void) const;
 
             // FIXME : replace with getPath
             // std::optional<std::string> getExtension(void) const;

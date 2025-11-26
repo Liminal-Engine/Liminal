@@ -6,10 +6,10 @@ if [ -z "$1" ] || { [ "$1" != "Debug" ] && [ "$1" != "Release" ] && [ "$1" != "C
 fi
 
 if [ "$1" == "Continue" ]; then
-    cd $(dirname $0)/build
+    cd $(dirname $0)/vendors/build
     cmake --build . -- -j$(nproc)
 else
-    cd $(dirname $0)
+    cd $(dirname $0)/vendors
     rm -rf build
     mkdir build && cd build
     cmake -DCMAKE_BUILD_TYPE=$1 .. # -DCMAKE_VERBOSE_MAKEFILE=ON // TODO : make those parameters depends on $1 == "Debug"

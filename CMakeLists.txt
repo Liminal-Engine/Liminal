@@ -8,7 +8,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -g -g3 -Wall -Wextra -Wp
 
 # Get the number of cores
 execute_process(COMMAND nproc OUTPUT_VARIABLE NUM_CORES OUTPUT_STRIP_TRAILING_WHITESPACE)
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Ofast -flto=${NUM_CORES} -DNDEBUG -funroll-loops -fvisibility=hidden ") #-march=native -Wall -Wextra -Wpedantic -Werror
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Ofast -flto=${NUM_CORES} -DNDEBUG -funroll-loops -fvisibility=hidden -Werror") #-march=native -Wall -Wextra -Wpedantic -Werror
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
@@ -28,5 +28,15 @@ foreach(FULL_DIR ${FULL_LIB_DIRS})
     target_link_libraries(Liminal PUBLIC ${DIR})
 endforeach()
 
+# add vendors
+# 1. shaderc_combined
+target_include_directories(Liminal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendors/shaderc/libshaderc/include)
+target_include_directories(Liminal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendors/shaderc/libshaderc_util/include)
+target_include_directories(Liminal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendors/shaderc/spirv-tools/include)
+target_link_libraries(Liminal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendors/build/shaderc/libshaderc/libshaderc_combined.a)
+
+# add tests
 enable_testing()
 add_subdirectory(test)
+
+
