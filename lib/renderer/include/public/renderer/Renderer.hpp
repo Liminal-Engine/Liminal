@@ -22,7 +22,7 @@ namespace renderer {
             Renderer(GLFWwindow *window);
             ~Renderer();
 
-            void draw(void) const;
+            void draw(void);
             void waitForGPUToFinishJobs(void) const;
 
         private:

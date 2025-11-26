@@ -171,7 +171,7 @@ namespace renderer {
                             {"present", std::make_tuple(presentIndex, std::vector<float>{1.0f})}
                         };
                     };
-                    if ( res.create(queuesCreationMap) != __Status::E_OK) logger::fatal << "__GPU creation failed for: " << res.getName() << std::endl;
+                    if ( res.create(queuesCreationMap) != __Status::__E_OK) logger::fatal << "__GPU creation failed for: " << res.getName() << std::endl;
                     return res;
                 }
 

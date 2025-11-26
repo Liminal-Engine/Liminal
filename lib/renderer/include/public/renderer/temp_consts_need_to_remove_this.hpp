@@ -49,6 +49,8 @@ namespace renderer {
     inline const uint32_t ENGINE_VERSION = APPLICATION_VERSION;
 
     #define MIN_VULKAN_VERSION VK_API_VERSION_1_3
+
+    inline const int MAX_FRAMES_IN_FLIGHT = 2;
 } // namespace renderer
 
 

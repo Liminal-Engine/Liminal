@@ -61,7 +61,7 @@ namespace renderer {
             __presenter(__createPresenter(this->__context.getGPU(), this->__swapChain, this->__pipelineHandler))
             {}
 
-            void draw(void) const {
+            void draw(void) {
                 this->__presenter.draw(this->__context.getGPU(), this->__swapChain, this->__pipelineHandler);
             }
 
@@ -76,7 +76,7 @@ namespace renderer {
 
     Renderer::~Renderer() = default;
 
-    void Renderer::draw(void) const { this->__impl->draw(); }
+    void Renderer::draw(void) { this->__impl->draw(); }
     void Renderer::waitForGPUToFinishJobs(void) const { this->__impl->waitForGPUToFinishJobs(); }
 
 } // namespace renderer

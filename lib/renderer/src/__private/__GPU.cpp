@@ -187,7 +187,7 @@ namespace renderer {
                     logger::trace << "Creating logical device forGPU " << this->__name << "..." << std::endl;
                     if (this->__created) {
                         logger::error << "GPU " << this->__name << " is already created" << std::endl;
-                        return __Status::E_ALREADY_EXISTS;
+                        return __Status::__E_ALREADY_EXISTS;
                     }
 
                     // 1. Create logical device
@@ -211,7 +211,7 @@ namespace renderer {
                         this->__queues.emplace(name, __GPU::__Queue(this->__logicalDevice, name, queueCreateInfo));
                     }
                     this->__created = true;
-                    return __Status::E_OK;
+                    return __Status::__E_OK;
                 }
 
                 std::optional<std::reference_wrapper<const __GPU::__Queue>> getQueue(const std::string &name) const {

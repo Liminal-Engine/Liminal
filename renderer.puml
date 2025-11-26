@@ -1,0 +1,96 @@
+@startuml renderer_class_diagram
+
+namespace renderer {
+    class Context {
+        --Constructeurs--
+        + Context(const GPU &GPU)
+        --Méthodes--
+        - **static** VkInstance __createVkInstanceHandler(void)
+        - **static** VkSurfaceKHR __createVkSurfaceHandler(GLFWindow *window)
+        --Proritétées--
+        - VkInstance __vkInstanceHandler
+        - VkSurfaceKHR __vkSurfaceHandler
+        - GPU __GPU
+    }
+    note left of Context::__GPU
+        This is the selected GPU
+        the app will work with
+    end note
+
+    class GPU {
+        --Constructeurs--
+        - GPU(const VkPhysicalDevice &vkPhysicalDeviceHandler)
+        -- Méthodes --
+        + **static** std::vector<GPU> listAvailableGPUs(!!!!!!!!!!!!!!!!!)
+        + **static** GPU findBest(void)
+        + std::string getName()
+        -- Propritétées --
+        - std::unordered_map<std::string, QueueType> __queueTypes
+        - VkPhysicalDevice __vkPhysicalDeviceHandler
+        - VkDevice __vkLogicalDeviceHandler
+        - std::unordered_map<std::string, VkQueue> __vkQueueHandlers
+    }
+
+    class __QueueType {
+        -- Méthodes --
+        uint32_t asIndex(void)
+    }
+
+    class SwapChain {
+        --Constructeurs--
+        -- Méthodes --
+        -- Propritétées --
+        - VKSwapChainKHR __vkSwapChainHandler
+        - std::vector<VkImage> __vkImageHandlers
+        - __SwapChainSettings __settings
+        - std::vector<VkImageView> __vkimageViewHandlers
+
+    }
+
+    struct __SwapChainSettings {
+        --Constructeurs--
+        -- Méthodes --
+        -- Propritétées --
+        + **const** VkSurfaceFormatKHR vkSurfaceFormat
+        + **const** VkPresentModeKHR vkPresentMode
+        + **const** VkExtent2D vkExtent
+    }
+
+    class GraphicsPipeline {
+        --Constructeurs--
+        -- Méthodes --
+        -- Propritétées --
+        - VkPilelineLayout __vkLayoutHandler
+        - VkRenderPass __vkRenderPassHandler
+        - VkGraphicsPipeline __vkGraphicsPipelineHandler
+    }
+
+    class __Commands {
+        --Constructeurs--
+        -- Méthodes --
+        -- Propritétées --
+        - VkCommandPool __vkPoolHandler
+        - VkCommandBuffer __vkBufferHandler
+    }
+
+    class Renderer {
+        --Constructeurs--
+        -- Méthodes --
+        -- Propritétées --
+        - GraphicsPipeline __graphicsPipeline
+        - SwapChain __swapChain
+        - Context __context
+        - __Commands __commands
+        - std::unordered_map<string, VkSemaphore> __vkSemaphoreHandlers
+        - std::unordered_map<string, VkFence> __vkFeenceHandlers
+    }
+}
+
+Context ..> GPU
+GPU ..> __QueueType
+SwapChain ..> __SwapChainSettings
+Renderer ..> GraphicsPipeline
+Renderer ..> SwapChain
+Renderer ..> Context
+Renderer ..> __Commands
+@enduml

@@ -33,7 +33,7 @@ namespace renderer {
                     const __GPU &__gpu,
                     const __SwapChain &__swapChain,
                     const __PipelineHandler &__pipelineHandler
-                ) const;
+                );
     
             private:
                 class __Impl;
