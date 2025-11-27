@@ -15,12 +15,12 @@
 namespace renderer {
     namespace __private {
         enum __Status {
-            __E_OK,
-            __E_NOK,
-            __E_ALREADY_EXISTS,
-            __E_NO_EXISTS,
-            __E_NOT_CREATED,
-            __E_PIPELINE_NOT_FOUND
+            E_OK,
+            E_NOK,
+            E_ALREADY_EXISTS,
+            E_NO_EXISTS,
+            E_NOT_CREATED,
+            E_PIPELINE_NOT_FOUND
         };
     } // namespace __private
 } // namespace renderer

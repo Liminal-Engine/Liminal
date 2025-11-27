@@ -69,17 +69,17 @@ namespace renderer {
 
                 __Status setFormat(const vk::SurfaceFormatKHR &format) {
                     this->__format = format;
-                    return __Status::__E_OK;
+                    return __Status::E_OK;
                 }
 
                 __Status setPresentMode(const vk::PresentModeKHR &presentMode) {
                     this->__presentMode = presentMode;
-                    return __Status::__E_OK;
+                    return __Status::E_OK;
                 }
 
                 __Status setExtent(const vk::Extent2D &extent) {
                     this->__extent = extent;
-                    return __Status::__E_OK;
+                    return __Status::E_OK;
                 }
         };
 

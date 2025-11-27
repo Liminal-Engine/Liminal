@@ -110,7 +110,7 @@ namespace renderer {
                     const std::optional<std::reference_wrapper<const vk::raii::Pipeline>> &pipeline = pipelineHandler.getPipeline("graphics");
                     if ( !pipeline.has_value() ) {
                         logger::error << "Failed to find \"graphics\" pipeline" << std::endl;
-                        return __Status::__E_PIPELINE_NOT_FOUND;
+                        return __Status::E_PIPELINE_NOT_FOUND;
                     }
                     // 2.3.2 Bind pipeline to the command buffer
                     this->__commandBuffers[this->__currentFrame].bindPipeline(vk::PipelineBindPoint::eGraphics, *pipeline->get());
@@ -126,7 +126,7 @@ namespace renderer {
                     this->__commandBuffers[this->__currentFrame].endRenderPass();
                     // 8. Finish command buffer recording
                     this->__commandBuffers[this->__currentFrame].end();
-                    return __Status::__E_OK;
+                    return __Status::E_OK;
                 }
 
             public:
@@ -191,7 +191,7 @@ namespace renderer {
                     uint32_t imageIndex = nextImageResult.second;
                     // 4. Reset and record command buffer
                     this->__commandBuffers[this->__currentFrame].reset();
-                    if (this->__recordCommandBuffer(imageIndex, swapChain, pipelineHandler) != __Status::__E_OK) {
+                    if (this->__recordCommandBuffer(imageIndex, swapChain, pipelineHandler) != __Status::E_OK) {
                         logger::error << "Failed to record command buffer for GPU " << gpu.getName() << std::endl;
                         return;
                     }
