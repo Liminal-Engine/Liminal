@@ -63,6 +63,10 @@ namespace renderer {
                         const uint32_t &getCount(void) const;
                         const std::vector<float> &getPriorities(void) const;
                         const vk::raii::Queue &getVKQueue(void) const;
+                        const vk::Result &getStatus(void) const;
+
+                        void submit(const vk::SubmitInfo &submitInfo, const vk::raii::Fence &fence);
+                        const vk::Result &present(const vk::PresentInfoKHR &presentInfo);
 
                     private:
                         __Queue(
@@ -89,6 +93,7 @@ namespace renderer {
                 );
 
                 const vk::raii::PhysicalDevice &getVKPhysicalDevice(void) const;
+                const vk::Device &getRawVKLogicalDevice(void) const;
                 const std::string &getName(void) const;
                 const vk::PhysicalDeviceProperties &getProperties(void) const;
                 const vk::PhysicalDeviceFeatures &getFeatures(void) const;
@@ -106,7 +111,7 @@ namespace renderer {
                 // __Status removeQueue(const std::string &name);
                 // std::optional<std::reference_wrapper<const __Queue>> &getQueue(const std::string &name) const;
                 __Status create(const QueuesCreationMap_t &queuesCreationMap);
-                std::optional<std::reference_wrapper<const __Queue>> getQueue(const std::string &name) const;
+                std::optional<std::reference_wrapper<__Queue>> getQueue(const std::string &name);
                 std::vector<uint32_t> getQueuesIndicies(void) const;
 
             private:

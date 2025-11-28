@@ -9,8 +9,10 @@
  * 
 **/
 
+#include "__private/__vkConfig.hpp"
 #include "__private/__GPU.hpp"
 #include "__private/__Context.hpp"
+#include "__private/__errors.hpp"
 #include "temp_consts_need_to_remove_this.hpp"
 
 #include <logger/logger.hpp>
@@ -154,14 +156,18 @@ namespace renderer {
                     const bool &suitableOnly
                 ) {
                     logger::trace << "Loading available GPUs" << std::endl;
-                    vk::raii::PhysicalDevices vkGPUS(VKInstance);
+                    auto [result, rawPhysicalDevices] = (*VKInstance).enumeratePhysicalDevices();
+                    if (result != vk::Result::eSuccess) {
+                        __LOG_VK_CREATE_ERROR(result, "GPU failed to enumerate available physical devices");
+                        return std::vector<__GPU>{};
+                    }
                     std::vector<__GPU> availableGPUs;
-                    availableGPUs.reserve(vkGPUS.size());
+                    availableGPUs.reserve(rawPhysicalDevices.size());
                     std::transform(
-                        vkGPUS.begin(),
-                        vkGPUS.end(),
+                        rawPhysicalDevices.begin(),
+                        rawPhysicalDevices.end(),
                         std::back_inserter(availableGPUs),
-                        [&](const vk::raii::PhysicalDevice &vkGPU) -> __GPU { return __GPU(vkGPU, VKSurface); }
+                        [&](const vk::PhysicalDevice &rawPhysicalDevice) -> __GPU { return __GPU(vk::raii::PhysicalDevice(VKInstance, rawPhysicalDevice), VKSurface); }
                     );
                     return suitableOnly ? __getSuitableOnlyGPUs(std::move(availableGPUs), VKSurface) : std::move(availableGPUs);
                 }
@@ -201,8 +207,13 @@ namespace renderer {
                         requiredDeviceExtensionNames,
                         {}
                     );
-                        logger::trace << "Creating logical device for GPU " << this->__name << std::endl;
-                    this->__logicalDevice = vk::raii::Device(this->__vkGPU, deviceCreateInfo);
+                    logger::trace << "Creating logical device for GPU " << this->__name << std::endl;
+                    auto [result, rawLogicalDevice] = (*this->__vkGPU).createDevice(deviceCreateInfo);
+                    if (result != vk::Result::eSuccess) {
+                        __LOG_VK_CREATE_ERROR(*this, result, "GPU failed to create it's VK logical device");
+                        return __Status::E_LOGICAL_DEVICE_CREATION;
+                    }
+                    this->__logicalDevice = vk::raii::Device(this->__vkGPU, rawLogicalDevice);
                     // 2. Register queues
                     logger::trace << "Registering queues for GPU " << this->__name << std::endl;
                     for (const auto &[name, info] : queuesCreationMap) {
@@ -214,10 +225,10 @@ namespace renderer {
                     return __Status::E_OK;
                 }
 
-                std::optional<std::reference_wrapper<const __GPU::__Queue>> getQueue(const std::string &name) const {
+                std::optional<std::reference_wrapper<__GPU::__Queue>> getQueue(const std::string &name) {
                     auto it = this->__queues.find(name);
                     if (it == this->__queues.end()) return std::nullopt;
-                    return std::cref(it->second);
+                    return std::ref(it->second);
                 }
 
                 std::vector<uint32_t> getQueuesIndicies(void) const {
@@ -239,6 +250,7 @@ namespace renderer {
                 const __SurfaceSupport &getSurfaceSupport(void) const { return this->__surfaceSupport; }
                 const std::vector<vk::QueueFamilyProperties> &getQueueFamilies(void) const { return this->__availableQueueFamilies; }
                 const vk::raii::Device &getVKLogicalDevice(void) const { return this->__logicalDevice; }
+                const vk::Device &getRawVKLogicalDevice(void) const { return *this->__logicalDevice; }
         };
 
 
@@ -254,6 +266,7 @@ namespace renderer {
         ) { return __GPU::__Impl::listAvailableGPUs(VKInstance, VKSurface, suitableOnly); }
 
         const vk::raii::PhysicalDevice &__GPU::getVKPhysicalDevice(void) const { return this->__impl->getVKPhysicalDevice(); }
+        const vk::Device &__GPU::getRawVKLogicalDevice(void) const { return this->__impl->getRawVKLogicalDevice(); }
         const std::string &__GPU::getName(void) const { return this->__impl->getName(); }
         const vk::PhysicalDeviceProperties &__GPU::getProperties(void) const { return this->__impl->getProperties(); }
         const vk::PhysicalDeviceFeatures &__GPU::getFeatures(void) const { return this->__impl->getFeatures(); }
@@ -266,7 +279,7 @@ namespace renderer {
         std::vector<uint32_t> __GPU::getAvailableQueueFamilyIndicesSupportingSurface(const vk::raii::SurfaceKHR &VKSurface) const { return this->__impl->getAvailableQueueFamilyIndicesSupportingSurface(VKSurface); }
 
         __Status __GPU::create(const QueuesCreationMap_t &queuesCreationMap) { return this->__impl->create(queuesCreationMap); }
-        std::optional<std::reference_wrapper<const __GPU::__Queue>> __GPU::getQueue(const std::string &name) const { return this->__impl->getQueue(name); }
+        std::optional<std::reference_wrapper<__GPU::__Queue>> __GPU::getQueue(const std::string &name) { return this->__impl->getQueue(name); }
         std::vector<uint32_t> __GPU::getQueuesIndicies(void) const { return this->__impl->getQueuesIndicies(); }
     } // namespace __private
 } // namespace renderer

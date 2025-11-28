@@ -52,12 +52,19 @@ namespace renderer {
                         std::unique_ptr<__Impl> __impl;
                 };
 
-                __SwapChain(GLFWwindow* window, const __GPU &gpu, const vk::raii::SurfaceKHR &surface);
+                __SwapChain(GLFWwindow* window, const vk::raii::SurfaceKHR &surface, __GPU &gpu);
                 ~__SwapChain();
                 
                 const __Settings &getSettings(void) const;
                 const std::vector<vk::raii::ImageView> &getImageViews(void) const;
                 const vk::raii::SwapchainKHR &getVKSwapChain(void) const;
+                const vk::Result &getStatus(void) const;
+
+                // returns std::pair<status, nextImage>
+                const std::pair<vk::Result, uint32_t> acquireNextimage(
+                    const vk::raii::Semaphore &semaphore,
+                    const uint64_t &timeout = std::numeric_limits<uint64_t>::max()
+                );
 
             private:
                 class __Impl;

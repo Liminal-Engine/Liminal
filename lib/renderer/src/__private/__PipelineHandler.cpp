@@ -9,7 +9,9 @@
  * 
 **/
 
+#include "__private/__vkConfig.hpp"
 #include "__private/__PipelineHandler.hpp"
+#include "__private/__errors.hpp"
 
 #include <logger/logger.hpp>
 #include <fs/Path.hpp>
@@ -26,6 +28,9 @@ namespace renderer {
     namespace __private {
         class __PipelineHandler::__Impl {
             private:
+                const __GPU &__relatedGPU;
+                const __SwapChain &__relatedSwapChain;
+
                 vk::raii::PipelineLayout __layout;
                 vk::raii::RenderPass __renderPass;
                 std::unordered_map<std::string, vk::raii::Pipeline> __pipelines;
@@ -38,7 +43,12 @@ namespace renderer {
                         {}
                     );
                     logger::trace << "Creating graphics pipeline layout for GPU " << gpu.getName() << std::endl;
-                    return vk::raii::PipelineLayout(gpu.getVKLogicalDevice(), createInfo);
+                    auto [result, rawLayout] = gpu.getRawVKLogicalDevice().createPipelineLayout(createInfo);
+                    if (result != vk::Result::eSuccess) {
+                        __LOG_VK_CREATE_ERROR(gpu, result, "PipelineHandler failed to create VK pipeline layout");
+                        return vk::raii::PipelineLayout(nullptr);
+                    }
+                    return vk::raii::PipelineLayout(gpu.getVKLogicalDevice(), rawLayout);
                 }
 
                 static vk::raii::RenderPass __createRenderPass(const __private::__GPU &gpu, const __private::__SwapChain &swapChain) {
@@ -82,7 +92,12 @@ namespace renderer {
                         subpasses
                     );
                     logger::trace << "Creating render pass for GPU " << gpu.getName() << std::endl;
-                    return vk::raii::RenderPass(gpu.getVKLogicalDevice(), createInfo);
+                    auto [result, rawRenderPass] = gpu.getRawVKLogicalDevice().createRenderPass(createInfo);
+                    if (result != vk::Result::eSuccess) {
+                        __LOG_VK_CREATE_ERROR(gpu, result, "PipelineHandler failed to create a render pass");
+                        return vk::raii::RenderPass(nullptr);
+                    }
+                    return vk::raii::RenderPass(gpu.getVKLogicalDevice(), rawRenderPass);
                 }
 
                 // TODO ? :
@@ -122,8 +137,12 @@ namespace renderer {
                     }
                     std::vector<uint32_t> vertexEncodedContent(vertexContent.size() / 4);
                     std::memcpy(vertexEncodedContent.data(), vertexContent.data(), vertexContent.size());
-                    vk::ShaderModuleCreateInfo vertexShaderModuleCreateInfo({}, vertexEncodedContent);
-                    vk::raii::ShaderModule vertexShaderModule(gpu.getVKLogicalDevice(), vertexShaderModuleCreateInfo);
+                    vk::ShaderModuleCreateInfo vertexShaderModuleCreateInfo({}, vertexEncodedContent);                    
+                    vk::raii::ShaderModule vertexShaderModule(nullptr);
+                    auto [rawVertexShaderResult, rawVertexShaderModule] = gpu.getRawVKLogicalDevice().createShaderModule(vertexShaderModuleCreateInfo);
+                    if (rawVertexShaderResult != vk::Result::eSuccess) __LOG_VK_CREATE_ERROR(gpu, rawVertexShaderResult, "PipelineHandler failed to create vertex shader module");
+                    else vertexShaderModule = vk::raii::ShaderModule(gpu.getVKLogicalDevice(), rawVertexShaderModule);
+                    (gpu.getVKLogicalDevice(), vertexShaderModuleCreateInfo);
                     #pragma endregion
                     #pragma region 2. fragment shader
                     fs::Path fragmentSrcPath("/home/matteo/Projects/Liminal/shaders/triangle.frag.spv");
@@ -145,7 +164,10 @@ namespace renderer {
                     std::vector<uint32_t> encodedContent(fragmentContent.size() / 4);
                     std::memcpy(encodedContent.data(), fragmentContent.data(), fragmentContent.size());
                     vk::ShaderModuleCreateInfo fragmentShaderModuleCreateInfo({}, encodedContent);
-                    vk::raii::ShaderModule fragmentShaderModule(gpu.getVKLogicalDevice(), fragmentShaderModuleCreateInfo);
+                    vk::raii::ShaderModule fragmentShaderModule(nullptr);
+                    auto [rawFragmentShaderResult, rawFragmentShaderModule] = gpu.getRawVKLogicalDevice().createShaderModule(fragmentShaderModuleCreateInfo);
+                    if (rawFragmentShaderResult != vk::Result::eSuccess) __LOG_VK_CREATE_ERROR(gpu, rawFragmentShaderResult, "PipelineHandler failed to create fragment shader module");
+                    else fragmentShaderModule = vk::raii::ShaderModule(gpu.getVKLogicalDevice(), rawFragmentShaderModule);
                     #pragma endregion
                     #pragma region 3. Shader stages
                     vk::PipelineShaderStageCreateInfo vertexShaderStageCreateInfo({}, vk::ShaderStageFlagBits::eVertex, *vertexShaderModule, "main");
@@ -236,17 +258,24 @@ namespace renderer {
                     );
                     #pragma endregion
                     #pragma region 12. Create graphics pipeline
-                    return vk::raii::Pipeline(gpu.getVKLogicalDevice(), nullptr, pipelineCreateInfo);
+                    auto [rawPipelineResult, rawPipeline] = gpu.getRawVKLogicalDevice().createGraphicsPipeline(nullptr, pipelineCreateInfo);
+                    if (rawPipelineResult != vk::Result::eSuccess) {
+                        __LOG_VK_CREATE_ERROR(gpu, rawPipelineResult, "PipelineHandler failed to create VK pipeline");
+                        return vk::raii::Pipeline(nullptr);
+                    }
+                    return vk::raii::Pipeline(gpu.getVKLogicalDevice(), rawPipeline);
                     #pragma endregion
                 }
 
             public:
                 __Impl(const __private::__GPU &gpu, const __private::__SwapChain &swapChain) :
-                __layout(__createLayout(gpu)),
-                __renderPass(__createRenderPass(gpu, swapChain)),
+                __relatedGPU(gpu),
+                __relatedSwapChain(swapChain),
+                __layout(__createLayout(this->__relatedGPU)),
+                __renderPass(__createRenderPass(this->__relatedGPU, this->__relatedSwapChain)),
                 __pipelines([&]() {
                         std::unordered_map<std::string, vk::raii::Pipeline> map;
-                        map.emplace("graphics", __createVKPipeline(gpu, swapChain, this->__layout, this->__renderPass));
+                        map.emplace("GRAPHICS", __createVKPipeline(this->__relatedGPU, this->__relatedSwapChain, this->__layout, this->__renderPass));
                         return map;
                 }())
                 {

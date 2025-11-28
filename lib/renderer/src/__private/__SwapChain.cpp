@@ -9,7 +9,9 @@
  * 
 **/
 
+#include "__private/__vkConfig.hpp"
 #include "__private/__SwapChain.hpp"
+#include "__private/__errors.hpp"
 
 #include <logger/logger.hpp>
 
@@ -17,13 +19,17 @@ namespace renderer {
     namespace __private {
         class __SwapChain::__Impl {
             private:
+                GLFWwindow *__relatedWindow;
+                const vk::raii::SurfaceKHR &__relatedSurface;
+                __GPU &__relatedGPU;
 
+                vk::Result __status;
                 __SwapChain::__Settings __settings;
                 vk::raii::SwapchainKHR __VKSwapChain;
                 std::vector<vk::Image> __images;
                 std::vector<vk::raii::ImageView> __imageViews;
 
-                static vk::SwapchainCreateInfoKHR __createVKSwapChainCreateInfo(const __Settings &settings, const __GPU &gpu, const vk::raii::SurfaceKHR &surface) {
+                static vk::SwapchainCreateInfoKHR __createVKSwapChainCreateInfo(const __Settings &settings, __GPU &gpu, const vk::raii::SurfaceKHR &surface) {
                     logger::trace << "Creating swap chain create info" << std::endl;
                     const __GPU::__SurfaceSupport &gpuSurfaceSupport = gpu.getSurfaceSupport();
                     vk::SurfaceCapabilitiesKHR gpuSurfaceCapabilities = gpuSurfaceSupport.getCapabilitiles();
@@ -40,7 +46,7 @@ namespace renderer {
                         settings.getExtent(),
                         1,
                         vk::ImageUsageFlagBits::eColorAttachment,
-                        gpu.getQueue("graphics_present").has_value() ? vk::SharingMode::eExclusive : vk::SharingMode::eConcurrent,
+                        gpu.getQueue("GRAPHICS_AND_PRESENT").has_value() ? vk::SharingMode::eExclusive : vk::SharingMode::eConcurrent,
                         queuesIndicies,
                         gpuSurfaceCapabilities.currentTransform,
                         vk::CompositeAlphaFlagBitsKHR::eOpaque,
@@ -51,12 +57,22 @@ namespace renderer {
 
                 static vk::raii::SwapchainKHR __createVKSwapChain(
                     const __SwapChain::__Settings &settings,
-                    const __GPU &gpu,
+                    __GPU &gpu,
                     const vk::raii::SurfaceKHR &surface
                 ) {
                     vk::SwapchainCreateInfoKHR createInfo = __createVKSwapChainCreateInfo(settings, gpu, surface);
                     logger::trace << "Creating swap chain" << std::endl;
-                    return gpu.getVKLogicalDevice().createSwapchainKHR(createInfo);
+                    auto [result, rawVKSwapChain] = gpu.getRawVKLogicalDevice().createSwapchainKHR(createInfo);
+                    if (result != vk::Result::eSuccess) {
+                        __LOG_VK_CREATE_ERROR(gpu, result, "SwapChain failed to create VK SwapChain");
+                        return vk::raii::SwapchainKHR(nullptr);
+                    }
+                    return vk::raii::SwapchainKHR(gpu.getVKLogicalDevice(), rawVKSwapChain);
+                }
+
+                static std::vector<vk::Image> __createImages(const vk::raii::SwapchainKHR &vkSwapChain) {
+                    logger::trace << "Creating swap chain images" << std::endl;
+                    return vkSwapChain.getImages();
                 }
 
                 static std::vector<vk::raii::ImageView> __createImageViews(
@@ -86,38 +102,61 @@ namespace renderer {
                             componentMapping,
                             subresourceRange
                         );
-                        res.push_back(gpu.getVKLogicalDevice().createImageView(imageViewCreateInfo));
+                        auto [result, rawImageView] = gpu.getRawVKLogicalDevice().createImageView(imageViewCreateInfo);
+                        if (result != vk::Result::eSuccess) {
+                            __LOG_VK_CREATE_ERROR(gpu, result, "SwapChain failed to create an image view");
+                            return std::vector<vk::raii::ImageView>{};
+                        }
+                        res.push_back(vk::raii::ImageView(gpu.getVKLogicalDevice(), rawImageView));
                     }
                     return res;
                 }
 
             public:
-                __Impl(GLFWwindow* window, const __GPU &gpu, const vk::raii::SurfaceKHR &surface) :
+                __Impl(GLFWwindow* window, const vk::raii::SurfaceKHR &surface, __GPU &gpu) :
+                __relatedWindow(window),
+                __relatedSurface(surface),
+                __relatedGPU(gpu),
+                __status(vk::Result::eSuccess),
                 __settings([&]() {
                     logger::trace << "Creating swap chain settings" << std::endl;
-                    return __SwapChain::__Settings::createOptimal(gpu, window);
+                    return __SwapChain::__Settings::createOptimal(this->__relatedGPU, this->__relatedWindow);
                 }()),
-                __VKSwapChain(__createVKSwapChain(this->__settings, gpu, surface)),
-                __images([&]() {
-                    logger::trace << "Creating swap chain images" << std::endl;
-                    return this->__VKSwapChain.getImages();
-                }()),
-                __imageViews(__createImageViews(gpu, this->__settings, this->__images))        
+                __VKSwapChain(__createVKSwapChain(this->__settings, this->__relatedGPU, this->__relatedSurface)),
+                __images(__createImages(this->__VKSwapChain)),
+                __imageViews(__createImageViews(this->__relatedGPU, this->__settings, this->__images))
                 {
                 }
 
                 const __SwapChain::__Settings &getSettings(void) const { return this->__settings; }
                 const std::vector<vk::raii::ImageView> &getImageViews(void) const { return this->__imageViews; }
                 const vk::raii::SwapchainKHR &getVKSwapChain(void) const { return this->__VKSwapChain; }
+                const vk::Result &getStatus(void) const { return this->__status; }
+
+                const std::pair<vk::Result, uint32_t> acquireNextImage(const vk::raii::Semaphore &semaphore, const uint64_t &timeout) {
+                    auto [status, nextImage] = this->__VKSwapChain.acquireNextImage(timeout, *semaphore);
+                    this->__status = status;
+                    /*
+                    * This is not essentialy a serious error, it may be due to surface changes.
+                    * However, it must be handled correctly via __SwapChain::getStatus();
+                    */ 
+                    if (this->__status != vk::Result::eSuccess) logger::info << "Acquiring next swap chain image did not return success" << std::endl;
+                    return std::make_pair(this->__status, nextImage);
+                }
+
+
 
         };
 
-        __SwapChain::__SwapChain(GLFWwindow* window, const __GPU &gpu, const vk::raii::SurfaceKHR &surface) : __impl(std::make_unique<__Impl>(window, gpu, surface)) {}
+        __SwapChain::__SwapChain(GLFWwindow* window, const vk::raii::SurfaceKHR &surface, __GPU &gpu) : __impl(std::make_unique<__Impl>(window, surface, gpu)) {}
         __SwapChain::~__SwapChain() = default;
 
         const __SwapChain::__Settings &__SwapChain::getSettings(void) const { return this->__impl->getSettings(); }
         const std::vector<vk::raii::ImageView> &__SwapChain::getImageViews(void) const { return this->__impl->getImageViews(); }
         const vk::raii::SwapchainKHR &__SwapChain::getVKSwapChain(void) const { return this->__impl->getVKSwapChain(); }
+        const vk::Result &__SwapChain::getStatus(void) const { return this->__impl->getStatus(); }
+
+        const std::pair<vk::Result, uint32_t>  __SwapChain::acquireNextimage(const vk::raii::Semaphore &semaphore, const uint64_t &timeout) { return this->__impl->acquireNextImage(semaphore, timeout); }
     } // namespace __private
 
 } // namespace renderer

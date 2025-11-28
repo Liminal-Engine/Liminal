@@ -9,8 +9,10 @@
  * 
 **/
 
+#include "__private/__vkConfig.hpp"
 #include "__private/__Context.hpp"
 #include "__private/__GPU.hpp"
+#include "__private/__errors.hpp"
 #include "temp_consts_need_to_remove_this.hpp"
 
 #include <logger/logger.hpp>
@@ -83,6 +85,7 @@ namespace renderer {
                 std::vector<std::string> __availableInstanceExtensionNames;
                 vk::raii::Context __vkRAIIContext;
                 vk::raii::Instance __instance;
+                vk::DispatchLoaderDynamic __dynamicDispatchLoader;
                 vk::raii::DebugUtilsMessengerEXT __messenger;
                 vk::raii::SurfaceKHR __surface;
                 __GPU __gpu;
@@ -98,24 +101,6 @@ namespace renderer {
                         ENGINE_NAME,
                         ENGINE_VERSION,
                         MIN_VULKAN_VERSION
-                    );
-                }
-
-                static vk::DebugUtilsMessengerCreateInfoEXT __createMessengerCreateInfo(void) {
-                    logger::trace << "Creating Vulkan messenger create info" << std::endl;
-                    return vk::DebugUtilsMessengerCreateInfoEXT(
-                        {},
-                        vk::DebugUtilsMessageSeverityFlagBitsEXT::eError |
-                        vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning |
-                        vk::DebugUtilsMessageSeverityFlagBitsEXT::eInfo |
-                        vk::DebugUtilsMessageSeverityFlagBitsEXT::eVerbose,
-                        
-                        vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral |
-                        vk::DebugUtilsMessageTypeFlagBitsEXT::eValidation |
-                        vk::DebugUtilsMessageTypeFlagBitsEXT::ePerformance |
-                        vk::DebugUtilsMessageTypeFlagBitsEXT::eDeviceAddressBinding,
-                        __vulkanLogsCallback,
-                        nullptr
                     );
                 }
 
@@ -140,10 +125,43 @@ namespace renderer {
                     logger::trace << "Creating Vulkan instance create info" << std::endl;
                     vk::InstanceCreateInfo instanceCreateInfo({}, &applicationInfo, instanceLayerNames, instanceExtensionNames);
                     vk::DebugUtilsMessengerCreateInfoEXT messenger = __createMessengerCreateInfo();
-                    instanceCreateInfo.pNext = &messenger;
-                    
+                    instanceCreateInfo.pNext = &messenger;                    
                     logger::trace << "Creating Vulkan instance" << std::endl;
-                    return vk::raii::Instance(vkRAIIContext, instanceCreateInfo);
+                    auto [result, rawInstance] = vk::createInstance(instanceCreateInfo);
+                    if (result != vk::Result::eSuccess) {
+                        __LOG_VK_CREATE_ERROR(result, "Context failed to create VK Instance");
+                        return vk::raii::Instance(nullptr);
+                    }
+                    return vk::raii::Instance(vkRAIIContext, rawInstance);
+                }
+
+                static vk::DebugUtilsMessengerCreateInfoEXT __createMessengerCreateInfo(void) {
+                    logger::trace << "Creating Vulkan messenger create info" << std::endl;
+                    return vk::DebugUtilsMessengerCreateInfoEXT(
+                        {},
+                        vk::DebugUtilsMessageSeverityFlagBitsEXT::eError |
+                        vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning |
+                        vk::DebugUtilsMessageSeverityFlagBitsEXT::eInfo |
+                        vk::DebugUtilsMessageSeverityFlagBitsEXT::eVerbose,
+                        
+                        vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral |
+                        vk::DebugUtilsMessageTypeFlagBitsEXT::eValidation |
+                        vk::DebugUtilsMessageTypeFlagBitsEXT::ePerformance |
+                        vk::DebugUtilsMessageTypeFlagBitsEXT::eDeviceAddressBinding,
+                        __vulkanLogsCallback,
+                        nullptr
+                    );
+                }
+
+                static vk::raii::DebugUtilsMessengerEXT __createMessenger(const vk::raii::Instance &vkInstance, const vk::DispatchLoaderDynamic &dynamicDispatchLoader) {
+                    logger::trace << "Creating instance messenger" << std::endl;
+                    vk::DebugUtilsMessengerCreateInfoEXT createInfo = __createMessengerCreateInfo();                    
+                    auto [result, rawMessenger] = (*vkInstance).createDebugUtilsMessengerEXT(createInfo, nullptr, dynamicDispatchLoader);
+                    if (result != vk::Result::eSuccess) {
+                        __LOG_VK_CREATE_ERROR(result, "Contxt failed to create messenger");
+                        return vk::raii::DebugUtilsMessengerEXT(nullptr);
+                    }
+                    return vk::raii::DebugUtilsMessengerEXT(vkInstance, rawMessenger);
                 }
 
                 static __GPU __setupGPU(const vk::raii::Instance &instance, const vk::raii::SurfaceKHR &surface) {
@@ -164,11 +182,11 @@ namespace renderer {
                     }
                     __GPU::QueuesCreationMap_t queuesCreationMap;
                     if (graphicsIndex == presentIndex) {
-                        queuesCreationMap = {{ "graphics_present", std::make_tuple(graphicsIndex, std::vector<float>(1.0f)) }};
+                        queuesCreationMap = {{ "GRAPHICS_AND_PRESENT", std::make_tuple(graphicsIndex, std::vector<float>(1.0f)) }};
                     } else {
                         queuesCreationMap = {
-                            {"graphics", std::make_tuple(graphicsIndex, std::vector<float>{1.0f})},
-                            {"present", std::make_tuple(presentIndex, std::vector<float>{1.0f})}
+                            {"GRAPHICS", std::make_tuple(graphicsIndex, std::vector<float>{1.0f})},
+                            {"PRESENT", std::make_tuple(presentIndex, std::vector<float>{1.0f})}
                         };
                     };
                     if ( res.create(queuesCreationMap) != __Status::E_OK) logger::fatal << "__GPU creation failed for: " << res.getName() << std::endl;
@@ -180,7 +198,11 @@ namespace renderer {
                 __availableInstanceLayerNames(
                         []() {
                             logger::trace << "Loading available instance layers" << std::endl;
-                            std::vector<vk::LayerProperties> availableInstanceLayers(vk::enumerateInstanceLayerProperties());
+                            auto [result, availableInstanceLayers] = vk::enumerateInstanceLayerProperties();
+                            if (result != vk::Result::eSuccess) {
+                                __LOG_VK_CREATE_ERROR(result, "Context failed to enumerate available instance layers");
+                                return std::vector<std::string>{};
+                            }
                             std::vector<std::string> res(availableInstanceLayers.size());
                             std::transform(
                                 availableInstanceLayers.begin(),
@@ -196,7 +218,11 @@ namespace renderer {
                     __availableInstanceExtensionNames(
                         []() {
                             logger::trace << "Loading available instance extensions" << std::endl;
-                            std::vector<vk::ExtensionProperties> availableInstanceExtensions(vk::enumerateInstanceExtensionProperties());
+                            auto [result, availableInstanceExtensions] = vk::enumerateInstanceExtensionProperties();
+                            if (result != vk::Result::eSuccess) {
+                                __LOG_VK_CREATE_ERROR(result, "Context failed to enumerate available instance extensions");
+                                return std::vector<std::string>{};
+                            }
                             std::vector<std::string> res(availableInstanceExtensions.size());
                             std::transform(
                                 availableInstanceExtensions.begin(),
@@ -216,7 +242,8 @@ namespace renderer {
                             this->__availableInstanceExtensionNames
                         )
                     ),
-                    __messenger(this->__instance, __createMessengerCreateInfo()),
+                    __dynamicDispatchLoader(*this->__instance, vkGetInstanceProcAddr),
+                    __messenger(__createMessenger(this->__instance, this->__dynamicDispatchLoader)),
                     __surface(
                         [&]() {
                             VkSurfaceKHR rawSurface;
@@ -236,7 +263,7 @@ namespace renderer {
                     const vk::raii::Context& getVKRAIIContext(void) const { return this->__vkRAIIContext; }
                     const vk::raii::Instance& getVKInstance(void) const { return this->__instance; }
                     const vk::raii::SurfaceKHR& getVKSurface(void) const { return this->__surface; }
-                    const __GPU &getGPU(void) const { return this->__gpu; }
+                    __GPU &getGPU(void) { return this->__gpu; }
 
         };
 
@@ -247,6 +274,6 @@ namespace renderer {
         const vk::raii::Context& __Context::getVKRAIIContext(void) const { return this->_impl->getVKRAIIContext(); }
         const vk::raii::Instance& __Context::getVKInstance(void) const { return this->_impl->getVKInstance(); };
         const vk::raii::SurfaceKHR& __Context::getVKSurface(void) const { return this->_impl->getVKSurface(); }
-        const __GPU &__Context::getGPU(void) const { return this->_impl->getGPU(); }
+        __GPU &__Context::getGPU(void) { return this->_impl->getGPU(); }
     } // namespace __private
 } // namespace renderer

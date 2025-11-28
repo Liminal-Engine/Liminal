@@ -9,6 +9,7 @@
  * 
 **/
 
+#include "__private/__vkConfig.hpp"
 #include "__private/__GPU.hpp"
 
 #include <logger/logger.hpp>

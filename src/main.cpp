@@ -51,11 +51,19 @@
 #include <limits>
 #include <csignal>
 
+
+
 void setupLoggerSignalHandlers() {
     std::signal(SIGSEGV, logger::Logger::flushOnCrash);
     std::signal(SIGABRT, logger::Logger::flushOnCrash);
     std::signal(SIGINT,  logger::Logger::flushOnCrash);
     std::signal(SIGTERM, logger::Logger::flushOnCrash);
+}
+
+static void surfaceChangedCallback(GLFWwindow *window, int width, int height) {
+    (void)(window);
+    (void)(width);
+    (void(height));
 }
 
 int main() {
@@ -66,8 +74,9 @@ int main() {
     // outJson.insert();
     glfwInit();
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
     GLFWwindow* window = glfwCreateWindow(800, 800, "Liminal Engine", nullptr, nullptr);
+    glfwSetFramebufferSizeCallback(window, surfaceChangedCallback);
     // renderer::Context context(window);
     // renderer::SwapChain swapChain(window, context.getGPU(), context.getVKSurface());
     // renderer::PipelineHandler pipelineHandler(context.getGPU(), swapChain);

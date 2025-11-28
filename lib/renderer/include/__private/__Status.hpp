@@ -20,7 +20,10 @@ namespace renderer {
             E_ALREADY_EXISTS,
             E_NO_EXISTS,
             E_NOT_CREATED,
-            E_PIPELINE_NOT_FOUND
+            E_PIPELINE_NOT_FOUND,
+            E_VK_INTERNAL_ERROR,
+            E_FRAMEBUFFERS_RECREATION,
+            E_LOGICAL_DEVICE_CREATION
         };
     } // namespace __private
 } // namespace renderer

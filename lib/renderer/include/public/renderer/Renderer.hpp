@@ -15,7 +15,6 @@
 #include <GLFW/glfw3.h>
 
 #include <memory>
-
 namespace renderer {
     class Renderer {
         public:
@@ -23,7 +22,7 @@ namespace renderer {
             ~Renderer();
 
             void draw(void);
-            void waitForGPUToFinishJobs(void) const;
+            void waitForGPUToFinishJobs(void);
 
         private:
             class __Impl;

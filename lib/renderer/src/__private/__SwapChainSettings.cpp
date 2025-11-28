@@ -9,6 +9,7 @@
  * 
 **/
 
+#include "__private/__vkConfig.hpp"
 #include "__private/__SwapChain.hpp"
 
 namespace renderer {

@@ -12,6 +12,7 @@
 #ifndef __LIMINAL__LIB__RENDERER__INCLUDE__PUBLIC__RENDERER__PRESENTER_HPP__
 #define __LIMINAL__LIB__RENDERER__INCLUDE__PUBLIC__RENDERER__PRESENTER_HPP__
 
+#include "Renderer.hpp"
 #include "__private/__GPU.hpp"
 #include "__private/__SwapChain.hpp"
 #include "__private/__PipelineHandler.hpp"
@@ -23,18 +24,17 @@ namespace renderer {
         class __Presenter {
             public:
                 __Presenter(
-                    const __GPU &__gpu,
-                    const __SwapChain &__swapChain,
-                    const __PipelineHandler &__pipelineHandler
+                    __GPU &gpu,
+                    __SwapChain &swapChain,
+                    const __PipelineHandler &pipelineHandler
                 );
                 ~__Presenter();
+
+                __GPU::__Queue &getGPUGraphicsQueue(void);
+                __GPU::__Queue &getGPUPresentQueue(void);
     
-                void draw(
-                    const __GPU &__gpu,
-                    const __SwapChain &__swapChain,
-                    const __PipelineHandler &__pipelineHandler
-                );
-    
+                void draw(void);
+
             private:
                 class __Impl;
                 std::unique_ptr<__Impl> __impl;

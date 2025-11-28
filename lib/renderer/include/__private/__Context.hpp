@@ -34,7 +34,7 @@ namespace renderer {
                 const vk::raii::Context& getVKRAIIContext(void) const;
                 const vk::raii::Instance& getVKInstance(void) const;
                 const vk::raii::SurfaceKHR& getVKSurface(void) const;
-                const __GPU &getGPU(void) const;
+                __GPU &getGPU(void);
     
             private:
                 class _Impl;

@@ -9,6 +9,7 @@
  * 
 **/
 
+#include "__private/__vkConfig.hpp"
 #include "Renderer.hpp"
 #include "__private/__Status.hpp"
 #include "__private/__Context.hpp"
@@ -37,9 +38,9 @@ namespace renderer {
                 return __private::__Context(window);
             }
 
-            static __private::__SwapChain __createSwapChain(GLFWwindow *window, const __private::__GPU &gpu, const vk::raii::SurfaceKHR &surface) {
+            static __private::__SwapChain __createSwapChain(GLFWwindow *window, __private::__GPU &gpu, const vk::raii::SurfaceKHR &surface) {
                 logger::info << "Creating swap chain for GPU " << gpu.getName() << std::endl;
-                return __private::__SwapChain(window, gpu, surface);
+                return __private::__SwapChain(window,surface, gpu);
             }
 
             static __private::__PipelineHandler __createPipelineHandler(const __private::__GPU &gpu, const __private::__SwapChain &swapChain) {
@@ -47,7 +48,7 @@ namespace renderer {
                 return __private::__PipelineHandler(gpu, swapChain);
             }
 
-            static __private::__Presenter __createPresenter(const __private::__GPU &gpu, const __private::__SwapChain &swapChain, const __private::__PipelineHandler &pipelineHandler) {
+            static __private::__Presenter __createPresenter(__private::__GPU &gpu, __private::__SwapChain &swapChain, const __private::__PipelineHandler &pipelineHandler) {
                 logger::info << "Creating presenter for GPU " << gpu.getName() << std::endl;
                 return __private::__Presenter(gpu, swapChain, pipelineHandler);
             }
@@ -62,13 +63,14 @@ namespace renderer {
             {}
 
             void draw(void) {
-                this->__presenter.draw(this->__context.getGPU(), this->__swapChain, this->__pipelineHandler);
+                // 3. Draw
+                this->__presenter.draw();
             }
 
-            void waitForGPUToFinishJobs(void) const {
+            void waitForGPUToFinishJobs(void) {
                 this->__context.getGPU().getVKLogicalDevice().waitIdle();
             }
-            
+
     };
 
     Renderer::Renderer(GLFWwindow *window) : __impl(std::make_unique<__Impl>(window))
@@ -77,6 +79,6 @@ namespace renderer {
     Renderer::~Renderer() = default;
 
     void Renderer::draw(void) { this->__impl->draw(); }
-    void Renderer::waitForGPUToFinishJobs(void) const { this->__impl->waitForGPUToFinishJobs(); }
+    void Renderer::waitForGPUToFinishJobs(void) { this->__impl->waitForGPUToFinishJobs(); }
 
 } // namespace renderer

@@ -51,6 +51,17 @@ namespace renderer {
     #define MIN_VULKAN_VERSION VK_API_VERSION_1_3
 
     inline const int MAX_FRAMES_IN_FLIGHT = 2;
+
+    inline const std::vector<std::string> POSSIBLE_GRAPHICS_QUEUE_NAMES = {
+        "GRAPHICS_AND_PRESENT",
+        "GRAPHICS"
+    };
+
+    inline const std::vector<std::string> POSSIBLE_PRESENT_QUEUE_NAMES = {
+        "GRAPHICS_AND_PRESENT",
+        "PRESENT"
+    };
+
 } // namespace renderer
 
 
