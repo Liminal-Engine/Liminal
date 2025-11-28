@@ -38,6 +38,7 @@ namespace renderer {
                     const std::vector<vk::PresentModeKHR> &gpuPresentModes = gpuSurfaceSupport.getPresentModes();
                     // 1. Surface format
                     // 1.1 Default initialize
+                    // FIXME : le find ça marche pas car format est un type complex qui contient .format et .colorSpace
                     // TODO : toujours favoriser Srgb, sinon prendre le premier, à écrire ddans le fichier de conf.
                     // TODO : si autre que sRGB, il faut convertir manuellement la couleur à la fin de la pipeline
                     // TODO : attention, il ya plusieurs format sRGB possible, voir lesquels prendre

@@ -100,14 +100,16 @@ namespace renderer {
 
             void handleSurfaceChange(void) {
                 /**
-                 * swapchain
-swapchain images
-swapchain image views
-framebuffers
-(render pass si format change)
-(pipelines si render pass change ou viewport non dynamique)
-
-                 * 
+                 * Things that needs to be recreated upon surface change (in this exact order only)
+                 * 1. SwapChain:
+                 *      1.1 SwapChain image views
+                 *      1.2 Swap chain images
+                 *      1.3 VK swap chain
+                 * 2. Pipeline Handler (under conditions)
+                 *      2.1 PipelineHandler render pass if __SwapChain::__Settings__Format has changed
+                 *      2.2 PipelineHandler graphics pipelines if render pass has changed or viewport is non dynamic (which is not our case)
+                 * 3. Presenter:
+                 *      3.1 Presenter VK framebuffers
                  */
                 // 1. Wait for the GPU to finish all its ongoing jobs
                 logger::trace << "Renderer waiting for GPU to finish all jobs..." << std::endl;
@@ -116,10 +118,15 @@ framebuffers
                 logger::trace << "Renderer updating surface properties" << std::endl;
                 this->__context.getGPU().getSurfaceSupport().update();
                 // 3. Update swap chain
-                logger::trace << "Renderer updatng Swap Chain" << std::endl;
+                logger::trace << "Renderer updating Swap Chain" << std::endl;
+                const vk::SurfaceFormatKHR oldSwapChainFormat = this->__swapChain.getSettings().getFormat();
                 this->__swapChain.updateUponSurfaceChange();
-                // TODO: should I recreate pipelines and/or renderpass ?
-                // 4. Update presenter
+                // 4. If the format has changed update pipeline handler
+                if (oldSwapChainFormat != this->__swapChain.getSettings().getFormat()) {
+                    logger::trace << "SwapChain format has changed, so updating pipeline handler" << std::endl;
+                    this->__pipelineHandler.updateUponSwapChainFormatChange();
+                }
+                // 5. Update presenter
                 logger::trace << "Renderer updating Presenter" << std::endl;
                 this->__presenter.updateUponSurfaceChange();
             }

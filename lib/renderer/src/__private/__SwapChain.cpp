@@ -145,19 +145,19 @@ namespace renderer {
                 }
 
                 void updateUponSurfaceChange(void) {
-                    logger::trace << "Swapchain destroying image views" << std::endl;
+                    logger::trace << "\tSwapchain destroying image views" << std::endl;
                     this->__imageViews.clear();
-                    logger::trace << "Swapchain destroying images" << std::endl;
+                    logger::trace << "\tSwapchain destroying images" << std::endl;
                     this->__images.clear();
-                    logger::trace << "Swapchain destroying VK SwapChain" << std::endl;
+                    logger::trace << "\tSwapchain destroying VK SwapChain" << std::endl;
                     this->__VKSwapChain.clear();
-                    logger::trace << "Swapchain recreating optimal settings" << std::endl;
+                    logger::trace << "\tSwapchain recreating optimal settings" << std::endl;
                     this->__settings =__SwapChain::__Settings::createOptimal(this->__relatedGPU, this->__relatedWindow);
-                    logger::trace << "Swapchain recreating VK SwapChain" << std::endl;
+                    logger::trace << "\tSwapchain recreating VK SwapChain" << std::endl;
                     this->__VKSwapChain = __createVKSwapChain(this->__settings, this->__relatedGPU, this->__relatedSurface);
-                    logger::trace << "Swapchain recreating images" << std::endl;
+                    logger::trace << "\tSwapchain recreating images" << std::endl;
                     this->__images = __createImages(this->__VKSwapChain);
-                    logger::trace << "Swapchain recreating image views" << std::endl;
+                    logger::trace << "\tSwapchain recreating image views" << std::endl;
                     this->__imageViews = __createImageViews(this->__relatedGPU, this->__settings, this->__images);
                 }
 

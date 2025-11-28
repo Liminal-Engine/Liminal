@@ -27,6 +27,8 @@ namespace renderer {
                 const vk::raii::RenderPass &getRenderPass(void) const;
     
                 std::optional<std::reference_wrapper<const vk::raii::Pipeline>> getPipeline(const std::string &name) const;
+
+                void updateUponSwapChainFormatChange(void);
     
             private:
                 class __Impl;

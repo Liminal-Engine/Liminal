@@ -291,7 +291,9 @@ namespace renderer {
                 }
 
                 void updateUponSurfaceChange(void) {
+                    logger::trace << "\tPresenter destroying frame buffers" << std::endl;
                     this->__frameBuffers.clear();
+                    logger::trace << "\tPresenter recreating frame buffers" << std::endl;
                     this->__frameBuffers = __createFrameBuffers(this->__relatedGPU, this->__relatedSwapChain, this->__relatedPipelineHandler);
                 }
 

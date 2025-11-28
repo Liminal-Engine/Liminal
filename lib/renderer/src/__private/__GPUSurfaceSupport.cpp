@@ -70,15 +70,15 @@ namespace renderer {
                 const std::vector<vk::PresentModeKHR> &getPresentModes(void) const { return this->__presentModes; }
 
                 void update (void) {
-                    logger::trace << "GPU destroying GPU surface formats" << std::endl;
+                    logger::trace << "\tGPU destroying GPU surface formats" << std::endl;
                     this->__formats.clear();
-                    logger::trace << "GPU destroying surface present modes" << std::endl;
+                    logger::trace << "\tGPU destroying surface present modes" << std::endl;
                     this->__presentModes.clear();
-                    logger::trace << "GPU recreating surface capabilities" << std::endl;
+                    logger::trace << "\tGPU recreating surface capabilities" << std::endl;
                     this->__capabilities = __createCapabilities(this->__relatedVKGPU, this->__relatedSurface);
-                    logger::trace << "GPU recreating surface formats" << std::endl;
+                    logger::trace << "\tGPU recreating surface formats" << std::endl;
                     this->__formats = __createFormats(this->__relatedVKGPU, this->__relatedSurface);
-                    logger::trace << "GPU recreating surface present modes" << std::endl;
+                    logger::trace << "\tGPU recreating surface present modes" << std::endl;
                     this->__presentModes = __createPresentModes(this->__relatedVKGPU, this->__relatedSurface);
                 }
         };

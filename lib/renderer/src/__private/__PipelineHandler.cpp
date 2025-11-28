@@ -31,9 +31,9 @@ namespace renderer {
                 const __GPU &__relatedGPU;
                 const __SwapChain &__relatedSwapChain;
 
-                vk::raii::PipelineLayout __layout;
-                vk::raii::RenderPass __renderPass;
-                std::unordered_map<std::string, vk::raii::Pipeline> __pipelines;
+                vk::raii::PipelineLayout __vkLayout;
+                vk::raii::RenderPass __vkRenderPass;
+                std::unordered_map<std::string, vk::raii::Pipeline> __vkPipelines;
 
                 static vk::raii::PipelineLayout __createLayout(const __private::__GPU &gpu) {
                     logger::trace << "Creating graphics pipeline layout create info for GPU " << gpu.getName() << std::endl;
@@ -267,27 +267,49 @@ namespace renderer {
                     #pragma endregion
                 }
 
+                static std::unordered_map<std::string, vk::raii::Pipeline> __createVKPipelines(
+                    const __private::__GPU &gpu,
+                    const __private::__SwapChain &swapChain,
+                    const vk::raii::PipelineLayout &vkLayout,
+                    const vk::raii::RenderPass &vkRenderPass
+                ) {
+                    logger::trace << "PipelineHandler creating VK graphics pipelines" << std::endl;
+                    std::unordered_map<std::string, vk::raii::Pipeline> map;
+                    logger::trace << "Creating graphics pipeline \"" << "GRAPHICS" << "\"" << std::endl;
+                    map.emplace("GRAPHICS", __createVKPipeline(gpu, swapChain, vkLayout, vkRenderPass));
+                    return map;
+                }
+
             public:
                 __Impl(const __private::__GPU &gpu, const __private::__SwapChain &swapChain) :
                 __relatedGPU(gpu),
                 __relatedSwapChain(swapChain),
-                __layout(__createLayout(this->__relatedGPU)),
-                __renderPass(__createRenderPass(this->__relatedGPU, this->__relatedSwapChain)),
-                __pipelines([&]() {
-                        std::unordered_map<std::string, vk::raii::Pipeline> map;
-                        map.emplace("GRAPHICS", __createVKPipeline(this->__relatedGPU, this->__relatedSwapChain, this->__layout, this->__renderPass));
-                        return map;
-                }())
+                __vkLayout(__createLayout(this->__relatedGPU)),
+                __vkRenderPass(__createRenderPass(this->__relatedGPU, this->__relatedSwapChain)),
+                __vkPipelines(__createVKPipelines(this->__relatedGPU, this->__relatedSwapChain, this->__vkLayout, this->__vkRenderPass))
                 {
-
                 }
 
-                const vk::raii::RenderPass &getRenderPass(void) const { return this->__renderPass; }
+                const vk::raii::RenderPass &getRenderPass(void) const { return this->__vkRenderPass; }
 
                 std::optional<std::reference_wrapper<const vk::raii::Pipeline>> getPipeline(const std::string &name) const {
-                    auto it = this->__pipelines.find(name);
-                    if (it == this->__pipelines.end()) return std::nullopt;
+                    auto it = this->__vkPipelines.find(name);
+                    if (it == this->__vkPipelines.end()) return std::nullopt;
                     return std::cref(it->second);
+                }
+
+                void updateUponSwapChainFormatChange(void) {
+                    logger::trace << "\tPipelineHandler destroying VK render pass" << std::endl;
+                    this->__vkRenderPass.clear();
+                    logger::trace << "\tPipelineHandler recreating VK render pass" << std::endl;
+                    this->__vkRenderPass = __createRenderPass(this->__relatedGPU, this->__relatedSwapChain);
+                    // graphics pipelines needs to be recreated if the render pass changes or if the viewport is non dynamic
+                    // in our case, viewport is dynamic but since the renderpass change, we need to recreate the graphics pipelines as well
+                    // N.B.: this only concerns the graphics pipelines
+                    logger::trace << "\tPipelineHandler destroying VK graphics pipelines" << std::endl;
+                    this->__vkPipelines.clear();
+                    logger::trace << "\tPipelineHandler recreating VK graphics pipelines" << std::endl;
+                    this->__vkPipelines = __createVKPipelines(this->__relatedGPU, this->__relatedSwapChain, this->__vkLayout, this->__vkRenderPass);
                 }
         };
 
@@ -297,6 +319,7 @@ namespace renderer {
 
         const vk::raii::RenderPass &__PipelineHandler::getRenderPass(void) const { return this->__impl->getRenderPass(); }
         std::optional<std::reference_wrapper<const vk::raii::Pipeline>> __PipelineHandler::getPipeline(const std::string &name) const { return this->__impl->getPipeline(name); }
+        void __PipelineHandler::updateUponSwapChainFormatChange(void) { this->__impl->updateUponSwapChainFormatChange(); }
     } // namespace __private
     
     
