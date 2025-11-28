@@ -33,7 +33,7 @@ namespace renderer {
                         __Settings(const __Settings&) = delete;
                         __Settings& operator=(const __Settings&) = delete;
 
-                        static __Settings createOptimal(const __GPU &gpu, GLFWwindow *window);
+                        static __Settings createOptimal(__GPU &gpu, GLFWwindow *window);
 
                         const vk::SurfaceFormatKHR &getFormat(void) const;
                         const vk::PresentModeKHR &getPresentMode(void) const;
@@ -65,6 +65,8 @@ namespace renderer {
                     const vk::raii::Semaphore &semaphore,
                     const uint64_t &timeout = std::numeric_limits<uint64_t>::max()
                 );
+
+                void updateUponSurfaceChange(void);
 
             private:
                 class __Impl;

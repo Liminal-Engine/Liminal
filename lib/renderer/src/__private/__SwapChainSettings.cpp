@@ -31,14 +31,18 @@ namespace renderer {
                 __extent(extent)
                 {}
                 
-                static __SwapChain::__Settings createOptimal(const __GPU &gpu, GLFWwindow *window) {
+                static __SwapChain::__Settings createOptimal(__GPU &gpu, GLFWwindow *window) {
                     const __GPU::__SurfaceSupport &gpuSurfaceSupport = gpu.getSurfaceSupport();
                     const vk::SurfaceCapabilitiesKHR &gpuSurfaceCapabilities = gpuSurfaceSupport.getCapabilitiles();
                     const std::vector<vk::SurfaceFormatKHR> &gpuFormats = gpuSurfaceSupport.getFormats();
                     const std::vector<vk::PresentModeKHR> &gpuPresentModes = gpuSurfaceSupport.getPresentModes();
                     // 1. Surface format
                     // 1.1 Default initialize
-                    vk::SurfaceFormatKHR bestSurfaceFormat = gpuSurfaceSupport.getFormats()[0];
+                    // TODO : toujours favoriser Srgb, sinon prendre le premier, à écrire ddans le fichier de conf.
+                    // TODO : si autre que sRGB, il faut convertir manuellement la couleur à la fin de la pipeline
+                    // TODO : attention, il ya plusieurs format sRGB possible, voir lesquels prendre
+                    const std::vector<vk::SurfaceFormatKHR> &supportedFormats = gpuSurfaceSupport.getFormats();
+                    vk::SurfaceFormatKHR bestSurfaceFormat = std::find(supportedFormats.begin(), supportedFormats.end(), vk::Format::eB8G8R8A8Srgb) != supportedFormats.end() ? vk::Format::eB8G8R8A8Srgb : supportedFormats[0];
                     // 1.2 Finding
                     for (const vk::SurfaceFormatKHR &format : gpuFormats) {
                         if (format.format == vk::Format::eB8G8R8A8Srgb && format.colorSpace == vk::ColorSpaceKHR::eSrgbNonlinear) {
@@ -97,7 +101,7 @@ namespace renderer {
         __SwapChain::__Settings::__Settings(__SwapChain::__Settings&&) noexcept = default;
         __SwapChain::__Settings& __SwapChain::__Settings::operator=(__SwapChain::__Settings&&) noexcept = default;
 
-        __SwapChain::__Settings __SwapChain::__Settings::createOptimal(const __GPU &gpu, GLFWwindow *window) { return __SwapChain::__Settings::__Impl::createOptimal(gpu, window); }
+        __SwapChain::__Settings __SwapChain::__Settings::createOptimal(__GPU &gpu, GLFWwindow *window) { return __SwapChain::__Settings::__Impl::createOptimal(gpu, window); }
 
         const vk::SurfaceFormatKHR &__SwapChain::__Settings::getFormat(void) const { return this->__impl->getFormat(); }
         const vk::PresentModeKHR &__SwapChain::__Settings::getPresentMode(void) const { return this->__impl->getPresentMode(); }

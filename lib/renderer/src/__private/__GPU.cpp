@@ -108,7 +108,7 @@ namespace renderer {
                     return vkGPU;
                 }()),
                 __properties([&](){
-                    vk::PhysicalDeviceProperties res(vkGPU.getProperties());
+                    vk::PhysicalDeviceProperties res(this->__vkGPU.getProperties());
                     std::stringstream ss;
                     ss << "\tLoading properties for GPU " << this->__name << '\n'
                     << "- Vendor ID: 0x" << std::hex << res.vendorID << std::dec << '\n'
@@ -120,11 +120,11 @@ namespace renderer {
                 }()),
                 __features([&]() {
                     logger::trace << "\tLoading features for GPU " << this->__name << std::endl;
-                    return vkGPU.getFeatures();
+                    return this->__vkGPU.getFeatures();
                 }()),
                 __extensionNames([&]() {
                     logger::trace << "\tLoading extension names for GPU" << this->__name << std::endl;
-                    std::vector<vk::ExtensionProperties> vkGPUExtensions(vkGPU.enumerateDeviceExtensionProperties());
+                    std::vector<vk::ExtensionProperties> vkGPUExtensions(this->__vkGPU.enumerateDeviceExtensionProperties());
                     std::vector<std::string> res;
                     res.reserve(vkGPUExtensions.size());
                     std::transform(
@@ -137,11 +137,11 @@ namespace renderer {
                 }()),
                 __surfaceSupport([&]() {
                     logger::trace << "\tLoading surface support for GPU " << this->__name << std::endl;
-                    return __SurfaceSupport(vkGPU, surface);
+                    return __SurfaceSupport(this->__vkGPU, surface);
                 }()),
                 __availableQueueFamilies([&]() {
                     logger::trace << "\tLoading queue family properties for GPU " << this->__name << std::endl;
-                    return vkGPU.getQueueFamilyProperties();
+                    return this->__vkGPU.getQueueFamilyProperties();
                 }()),
                 __logicalDevice(nullptr),
                 __created(false)
@@ -247,7 +247,7 @@ namespace renderer {
                 const vk::PhysicalDeviceProperties &getProperties(void) const { return this->__properties; }
                 const vk::PhysicalDeviceFeatures &getFeatures(void) const { return this->__features; }
                 const std::vector<std::string> &getExtensionNames(void) const { return this->__extensionNames; }
-                const __SurfaceSupport &getSurfaceSupport(void) const { return this->__surfaceSupport; }
+                __SurfaceSupport &getSurfaceSupport(void) { return this->__surfaceSupport; }
                 const std::vector<vk::QueueFamilyProperties> &getQueueFamilies(void) const { return this->__availableQueueFamilies; }
                 const vk::raii::Device &getVKLogicalDevice(void) const { return this->__logicalDevice; }
                 const vk::Device &getRawVKLogicalDevice(void) const { return *this->__logicalDevice; }
@@ -271,7 +271,7 @@ namespace renderer {
         const vk::PhysicalDeviceProperties &__GPU::getProperties(void) const { return this->__impl->getProperties(); }
         const vk::PhysicalDeviceFeatures &__GPU::getFeatures(void) const { return this->__impl->getFeatures(); }
         const std::vector<std::string> &__GPU::getExtensionNames(void) const { return this->__impl->getExtensionNames(); }
-        const __GPU::__SurfaceSupport &__GPU::getSurfaceSupport(void) const { return this->__impl->getSurfaceSupport(); }
+        __GPU::__SurfaceSupport &__GPU::getSurfaceSupport(void) { return this->__impl->getSurfaceSupport(); }
         const std::vector<vk::QueueFamilyProperties> &__GPU::getQueueFamilies(void) const { return this->__impl->getQueueFamilies(); }
         const vk::raii::Device &__GPU::getVKLogicalDevice(void) const { return this->__impl->getVKLogicalDevice(); }
 

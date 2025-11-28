@@ -23,6 +23,7 @@ namespace renderer {
 
             void draw(void);
             void waitForGPUToFinishJobs(void);
+            void handleSurfaceChange(void);
 
         private:
             class __Impl;

@@ -37,6 +37,9 @@ namespace renderer {
                         const vk::SurfaceCapabilitiesKHR &getCapabilitiles(void) const;
                         const std::vector<vk::SurfaceFormatKHR> &getFormats(void) const;
                         const std::vector<vk::PresentModeKHR> &getPresentModes(void) const;
+
+                        void update(void);
+
                     private:
                         __SurfaceSupport(
                             const vk::raii::PhysicalDevice &vkGPU,
@@ -98,7 +101,7 @@ namespace renderer {
                 const vk::PhysicalDeviceProperties &getProperties(void) const;
                 const vk::PhysicalDeviceFeatures &getFeatures(void) const;
                 const std::vector<std::string> &getExtensionNames(void) const;
-                const __SurfaceSupport &getSurfaceSupport(void) const;
+                __SurfaceSupport &getSurfaceSupport(void);
                 const std::vector<vk::QueueFamilyProperties> &getQueueFamilies(void) const;
                 const vk::raii::Device &getVKLogicalDevice(void) const;
 

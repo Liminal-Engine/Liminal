@@ -35,6 +35,8 @@ namespace renderer {
     
                 void draw(void);
 
+                void updateUponSurfaceChange(void);
+
             private:
                 class __Impl;
                 std::unique_ptr<__Impl> __impl;

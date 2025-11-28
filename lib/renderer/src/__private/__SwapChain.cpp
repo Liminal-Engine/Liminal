@@ -61,7 +61,7 @@ namespace renderer {
                     const vk::raii::SurfaceKHR &surface
                 ) {
                     vk::SwapchainCreateInfoKHR createInfo = __createVKSwapChainCreateInfo(settings, gpu, surface);
-                    logger::trace << "Creating swap chain" << std::endl;
+                    logger::trace << "SwapChain creating VK SwapChain" << std::endl;
                     auto [result, rawVKSwapChain] = gpu.getRawVKLogicalDevice().createSwapchainKHR(createInfo);
                     if (result != vk::Result::eSuccess) {
                         __LOG_VK_CREATE_ERROR(gpu, result, "SwapChain failed to create VK SwapChain");
@@ -144,6 +144,22 @@ namespace renderer {
                     return std::make_pair(this->__status, nextImage);
                 }
 
+                void updateUponSurfaceChange(void) {
+                    logger::trace << "Swapchain destroying image views" << std::endl;
+                    this->__imageViews.clear();
+                    logger::trace << "Swapchain destroying images" << std::endl;
+                    this->__images.clear();
+                    logger::trace << "Swapchain destroying VK SwapChain" << std::endl;
+                    this->__VKSwapChain.clear();
+                    logger::trace << "Swapchain recreating optimal settings" << std::endl;
+                    this->__settings =__SwapChain::__Settings::createOptimal(this->__relatedGPU, this->__relatedWindow);
+                    logger::trace << "Swapchain recreating VK SwapChain" << std::endl;
+                    this->__VKSwapChain = __createVKSwapChain(this->__settings, this->__relatedGPU, this->__relatedSurface);
+                    logger::trace << "Swapchain recreating images" << std::endl;
+                    this->__images = __createImages(this->__VKSwapChain);
+                    logger::trace << "Swapchain recreating image views" << std::endl;
+                    this->__imageViews = __createImageViews(this->__relatedGPU, this->__settings, this->__images);
+                }
 
 
         };
@@ -157,6 +173,8 @@ namespace renderer {
         const vk::Result &__SwapChain::getStatus(void) const { return this->__impl->getStatus(); }
 
         const std::pair<vk::Result, uint32_t>  __SwapChain::acquireNextimage(const vk::raii::Semaphore &semaphore, const uint64_t &timeout) { return this->__impl->acquireNextImage(semaphore, timeout); }
+
+        void __SwapChain::updateUponSurfaceChange(void) { this->__impl->updateUponSurfaceChange(); }
     } // namespace __private
 
 } // namespace renderer

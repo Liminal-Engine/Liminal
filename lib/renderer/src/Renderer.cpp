@@ -53,6 +53,29 @@ namespace renderer {
                 return __private::__Presenter(gpu, swapChain, pipelineHandler);
             }
 
+            bool __presentationIsPossible(void) {
+                // 1. Check present queue status
+                const vk::Result &presentQueueStatus = this->__presenter.getGPUPresentQueue().getStatus();
+                if (presentQueueStatus == vk::Result::eErrorOutOfDateKHR || presentQueueStatus == vk::Result::eSuboptimalKHR) {
+                    logger::info << "Invalid present queue status detected: " << vk::to_string(presentQueueStatus) << std::endl;
+                    return false;
+                }
+                if (presentQueueStatus != vk::Result::eSuccess) {
+                    logger::error << "Unhandled present queue status: " << vk::to_string(presentQueueStatus)
+                    << ". Unexpected behavior may happen" << std::endl;
+                }
+                const vk::Result &swapChainStatus = this->__swapChain.getStatus();
+                if (swapChainStatus == vk::Result::eErrorOutOfDateKHR || swapChainStatus == vk::Result::eSuboptimalKHR) {
+                    logger::info << "Invalid swapchain status detected: " << vk::to_string(swapChainStatus) << std::endl;
+                    return false;
+                }
+                if (swapChainStatus != vk::Result::eSuccess) {
+                    logger::error << "Unhandled swapchain status: " << vk::to_string(swapChainStatus)
+                    << ". Unexpected behavior may happen" << std::endl;
+                }
+                return true;
+            }
+
         public:
             __Impl(GLFWwindow *window) :
             __window(window),
@@ -64,11 +87,41 @@ namespace renderer {
 
             void draw(void) {
                 // 3. Draw
+                if ( !this->__presentationIsPossible() ) {
+                    logger::info << "Impossible presentation detected, handling surface change" << std::endl;
+                    this->handleSurfaceChange();
+                }
                 this->__presenter.draw();
             }
 
             void waitForGPUToFinishJobs(void) {
                 this->__context.getGPU().getVKLogicalDevice().waitIdle();
+            }
+
+            void handleSurfaceChange(void) {
+                /**
+                 * swapchain
+swapchain images
+swapchain image views
+framebuffers
+(render pass si format change)
+(pipelines si render pass change ou viewport non dynamique)
+
+                 * 
+                 */
+                // 1. Wait for the GPU to finish all its ongoing jobs
+                logger::trace << "Renderer waiting for GPU to finish all jobs..." << std::endl;
+                this->waitForGPUToFinishJobs();
+                // 2. Update surface properties
+                logger::trace << "Renderer updating surface properties" << std::endl;
+                this->__context.getGPU().getSurfaceSupport().update();
+                // 3. Update swap chain
+                logger::trace << "Renderer updatng Swap Chain" << std::endl;
+                this->__swapChain.updateUponSurfaceChange();
+                // TODO: should I recreate pipelines and/or renderpass ?
+                // 4. Update presenter
+                logger::trace << "Renderer updating Presenter" << std::endl;
+                this->__presenter.updateUponSurfaceChange();
             }
 
     };
@@ -80,5 +133,6 @@ namespace renderer {
 
     void Renderer::draw(void) { this->__impl->draw(); }
     void Renderer::waitForGPUToFinishJobs(void) { this->__impl->waitForGPUToFinishJobs(); }
+    void Renderer::handleSurfaceChange(void) { this->__impl->handleSurfaceChange(); }
 
 } // namespace renderer

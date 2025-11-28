@@ -242,7 +242,8 @@ namespace renderer {
                     return res;
                 }()),
                 __currentFrame(0)
-                {}
+                {
+                }
 
                 __GPU::__Queue &getGPUGraphicsQueue(void) { return this->__gpuGraphicsQueue; }
                 __GPU::__Queue &getGPUPresentQueue(void) { return this->__gpuPresentQueue; }
@@ -253,14 +254,14 @@ namespace renderer {
                         logger::error << "Error, cannot wait for \"render_finished\" fence" << std::endl;
                         return;
                     }
-                    // 2. After waiting, reset the fence to "unsignaled" state
-                    this->__relatedGPU.getVKLogicalDevice().resetFences(*this->__renderFinishedFences[this->__currentFrame]);
-                    // 3. Acquire image form the swap chain
+                    // 2. Acquire image form the swap chain
                     auto [swapChainStatus, nextImage] = this->__relatedSwapChain.acquireNextimage(this->__imageAvailableSemaphores[this->__currentFrame]);
                     if (swapChainStatus != vk::Result::eSuccess) {
                         logger::info << "Swap chain is no longer compatible. Aborting draw cycle" << std::endl;
                         return;
                     }
+                    // 3. make sure the fence goes back to "unsignaled" state after we acquire the next image
+                    this->__relatedGPU.getVKLogicalDevice().resetFences(*this->__renderFinishedFences[this->__currentFrame]);
                     // 4. Reset and record command buffer
                     this->__commandBuffers[this->__currentFrame].reset();
                     if (this->__recordCommandBuffer(nextImage, this->__relatedSwapChain, this->__relatedPipelineHandler) != __Status::E_OK) {
@@ -289,6 +290,11 @@ namespace renderer {
                     this->__currentFrame = (this->__currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
                 }
 
+                void updateUponSurfaceChange(void) {
+                    this->__frameBuffers.clear();
+                    this->__frameBuffers = __createFrameBuffers(this->__relatedGPU, this->__relatedSwapChain, this->__relatedPipelineHandler);
+                }
+
         };
 
         __Presenter::__Presenter(
@@ -304,5 +310,7 @@ namespace renderer {
         void __Presenter::draw(void) { return this->__impl->draw(); }
         __GPU::__Queue &__Presenter::getGPUGraphicsQueue(void) { return this->__impl->getGPUGraphicsQueue(); }
         __GPU::__Queue &__Presenter::getGPUPresentQueue(void) { return this->__impl->getGPUPresentQueue(); }
+        
+        void __Presenter::updateUponSurfaceChange(void) { this->__impl->updateUponSurfaceChange(); }
     } // namespace __private
 } // namespace renderer
