@@ -23,7 +23,6 @@ namespace renderer {
                 const vk::raii::SurfaceKHR &__relatedSurface;
                 __GPU &__relatedGPU;
 
-                vk::Result __status;
                 __SwapChain::__Settings __settings;
                 vk::raii::SwapchainKHR __VKSwapChain;
                 std::vector<vk::Image> __images;
@@ -117,7 +116,6 @@ namespace renderer {
                 __relatedWindow(window),
                 __relatedSurface(surface),
                 __relatedGPU(gpu),
-                __status(vk::Result::eSuccess),
                 __settings([&]() {
                     logger::trace << "Creating swap chain settings" << std::endl;
                     return __SwapChain::__Settings::createOptimal(this->__relatedGPU, this->__relatedWindow);
@@ -131,17 +129,27 @@ namespace renderer {
                 const __SwapChain::__Settings &getSettings(void) const { return this->__settings; }
                 const std::vector<vk::raii::ImageView> &getImageViews(void) const { return this->__imageViews; }
                 const vk::raii::SwapchainKHR &getVKSwapChain(void) const { return this->__VKSwapChain; }
-                const vk::Result &getStatus(void) const { return this->__status; }
 
-                const std::pair<vk::Result, uint32_t> acquireNextImage(const vk::raii::Semaphore &semaphore, const uint64_t &timeout) {
-                    auto [status, nextImage] = this->__VKSwapChain.acquireNextImage(timeout, *semaphore);
-                    this->__status = status;
+                const std::pair<__Status, uint32_t> acquireNextImage(const vk::raii::Semaphore &semaphore, const uint64_t &timeout) {
+                    auto [vkResult, nextImage] = this->__VKSwapChain.acquireNextImage(timeout, *semaphore);
+                    if (vkResult == vk::Result::eSuccess) return std::make_pair(__Status::E_OK, nextImage);
                     /*
                     * This is not essentialy a serious error, it may be due to surface changes.
-                    * However, it must be handled correctly via __SwapChain::getStatus();
+                    * However, it must be handled correctly.
                     */ 
-                    if (this->__status != vk::Result::eSuccess) logger::info << "Acquiring next swap chain image did not return success" << std::endl;
-                    return std::make_pair(this->__status, nextImage);
+                    
+                    if (vkResult == vk::Result::eErrorOutOfDateKHR) {
+                        logger::info << "VK swap chain is out of date" << std::endl;
+                        return std::make_pair(__Status::E_SWAP_CHAIN_SUBOPTIMAL, nextImage);
+                    }
+                    else if (vkResult == vk::Result::eSuboptimalKHR) {
+                        logger::info << "VK swap chain is suboptimal" << std::endl;
+                        return std::make_pair(__Status::E_SWAP_CHAIN_OUT_OF_DATE, nextImage);
+                    }
+                    logger::error << "VK swap chain is in an unknown state: " << vk::to_string(vkResult)
+                    << ". Undetermined behavior is expected" << std::endl;
+                    return std::make_pair(__Status::E_VK_INTERNAL_ERROR, nextImage);
+                    
                 }
 
                 void updateUponSurfaceChange(void) {
@@ -170,9 +178,8 @@ namespace renderer {
         const __SwapChain::__Settings &__SwapChain::getSettings(void) const { return this->__impl->getSettings(); }
         const std::vector<vk::raii::ImageView> &__SwapChain::getImageViews(void) const { return this->__impl->getImageViews(); }
         const vk::raii::SwapchainKHR &__SwapChain::getVKSwapChain(void) const { return this->__impl->getVKSwapChain(); }
-        const vk::Result &__SwapChain::getStatus(void) const { return this->__impl->getStatus(); }
 
-        const std::pair<vk::Result, uint32_t>  __SwapChain::acquireNextimage(const vk::raii::Semaphore &semaphore, const uint64_t &timeout) { return this->__impl->acquireNextImage(semaphore, timeout); }
+        const std::pair<__Status, uint32_t>  __SwapChain::acquireNextimage(const vk::raii::Semaphore &semaphore, const uint64_t &timeout) { return this->__impl->acquireNextImage(semaphore, timeout); }
 
         void __SwapChain::updateUponSurfaceChange(void) { this->__impl->updateUponSurfaceChange(); }
     } // namespace __private

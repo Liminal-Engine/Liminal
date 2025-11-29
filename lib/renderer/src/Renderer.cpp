@@ -53,29 +53,6 @@ namespace renderer {
                 return __private::__Presenter(gpu, swapChain, pipelineHandler);
             }
 
-            bool __presentationIsPossible(void) {
-                // 1. Check present queue status
-                const vk::Result &presentQueueStatus = this->__presenter.getGPUPresentQueue().getStatus();
-                if (presentQueueStatus == vk::Result::eErrorOutOfDateKHR || presentQueueStatus == vk::Result::eSuboptimalKHR) {
-                    logger::info << "Invalid present queue status detected: " << vk::to_string(presentQueueStatus) << std::endl;
-                    return false;
-                }
-                if (presentQueueStatus != vk::Result::eSuccess) {
-                    logger::error << "Unhandled present queue status: " << vk::to_string(presentQueueStatus)
-                    << ". Unexpected behavior may happen" << std::endl;
-                }
-                const vk::Result &swapChainStatus = this->__swapChain.getStatus();
-                if (swapChainStatus == vk::Result::eErrorOutOfDateKHR || swapChainStatus == vk::Result::eSuboptimalKHR) {
-                    logger::info << "Invalid swapchain status detected: " << vk::to_string(swapChainStatus) << std::endl;
-                    return false;
-                }
-                if (swapChainStatus != vk::Result::eSuccess) {
-                    logger::error << "Unhandled swapchain status: " << vk::to_string(swapChainStatus)
-                    << ". Unexpected behavior may happen" << std::endl;
-                }
-                return true;
-            }
-
         public:
             __Impl(GLFWwindow *window) :
             __window(window),
@@ -86,12 +63,17 @@ namespace renderer {
             {}
 
             void draw(void) {
-                // 3. Draw
-                if ( !this->__presentationIsPossible() ) {
-                    logger::info << "Impossible presentation detected, handling surface change" << std::endl;
-                    this->handleSurfaceChange();
+                if (const __private::__Status presenterDrawStatus = this->__presenter.draw(); presenterDrawStatus != __private::__Status::E_OK) {
+                    switch (presenterDrawStatus) {
+                        case __private::__Status::E_PRESENT_QUEUE_OUT_OF_DATE:
+                        case __private::__Status::E_PRESENT_QUEUE_SUBOPTIMAL:
+                        case __private::__Status::E_SWAP_CHAIN_OUT_OF_DATE:
+                        case __private::__Status::E_SWAP_CHAIN_SUBOPTIMAL:
+                            return this->handleSurfaceChange();
+                        default:
+                            break;
+                    }
                 }
-                this->__presenter.draw();
             }
 
             void waitForGPUToFinishJobs(void) {
@@ -102,15 +84,15 @@ namespace renderer {
                 /**
                  * Things that needs to be recreated upon surface change (in this exact order only)
                  * 1. SwapChain:
-                 *      1.1 SwapChain image views
-                 *      1.2 Swap chain images
+                 *      1.1 SwapChain VK image views
+                 *      1.2 Swap chain VK images
                  *      1.3 VK swap chain
                  * 2. Pipeline Handler (under conditions)
-                 *      2.1 PipelineHandler render pass if __SwapChain::__Settings__Format has changed
-                 *      2.2 PipelineHandler graphics pipelines if render pass has changed or viewport is non dynamic (which is not our case)
+                 *      2.1 PipelineHandler VK render pass if __SwapChain::__Settings__Format has changed
+                 *      2.2 PipelineHandler VK graphics pipelines if render pass has changed or viewport is non dynamic (Liminal Engine has dynamic viewport)
                  * 3. Presenter:
                  *      3.1 Presenter VK framebuffers
-                 */
+                **/
                 // 1. Wait for the GPU to finish all its ongoing jobs
                 logger::trace << "Renderer waiting for GPU to finish all jobs..." << std::endl;
                 this->waitForGPUToFinishJobs();

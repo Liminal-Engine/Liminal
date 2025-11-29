@@ -33,7 +33,7 @@ namespace renderer {
                 __GPU::__Queue &getGPUGraphicsQueue(void);
                 __GPU::__Queue &getGPUPresentQueue(void);
     
-                void draw(void);
+                __Status draw(void);
 
                 void updateUponSurfaceChange(void);
 

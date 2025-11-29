@@ -58,10 +58,8 @@ namespace renderer {
                 const __Settings &getSettings(void) const;
                 const std::vector<vk::raii::ImageView> &getImageViews(void) const;
                 const vk::raii::SwapchainKHR &getVKSwapChain(void) const;
-                const vk::Result &getStatus(void) const;
 
-                // returns std::pair<status, nextImage>
-                const std::pair<vk::Result, uint32_t> acquireNextimage(
+                const std::pair<__Status, uint32_t> acquireNextimage(
                     const vk::raii::Semaphore &semaphore,
                     const uint64_t &timeout = std::numeric_limits<uint64_t>::max()
                 );

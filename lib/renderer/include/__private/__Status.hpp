@@ -23,7 +23,12 @@ namespace renderer {
             E_PIPELINE_NOT_FOUND,
             E_VK_INTERNAL_ERROR,
             E_FRAMEBUFFERS_RECREATION,
-            E_LOGICAL_DEVICE_CREATION
+            E_LOGICAL_DEVICE_CREATION,
+            E_SWAP_CHAIN_OUT_OF_DATE,
+            E_SWAP_CHAIN_SUBOPTIMAL,
+            E_PRESENT_QUEUE_OUT_OF_DATE,
+            E_PRESENT_QUEUE_SUBOPTIMAL,
+            E_WAIT_FENCE
         };
     } // namespace __private
 } // namespace renderer

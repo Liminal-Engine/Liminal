@@ -66,10 +66,9 @@ namespace renderer {
                         const uint32_t &getCount(void) const;
                         const std::vector<float> &getPriorities(void) const;
                         const vk::raii::Queue &getVKQueue(void) const;
-                        const vk::Result &getStatus(void) const;
 
                         void submit(const vk::SubmitInfo &submitInfo, const vk::raii::Fence &fence);
-                        const vk::Result &present(const vk::PresentInfoKHR &presentInfo);
+                        __Status present(const vk::PresentInfoKHR &presentInfo);
 
                     private:
                         __Queue(

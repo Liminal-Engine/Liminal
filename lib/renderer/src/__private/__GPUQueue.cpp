@@ -23,7 +23,6 @@ namespace renderer {
                 const uint32_t __count;
                 const std::vector<float> __priorities;
                 const vk::raii::Queue __VKQueue;
-                vk::Result __status;
 
             public:
                 __Impl(
@@ -56,8 +55,7 @@ namespace renderer {
                     // inevitably in the GPU
                     vk::Queue rawQueue = (*vkLogicalDevice).getQueue(createInfo.queueFamilyIndex, 0);
                     return vk::raii::Queue(vkLogicalDevice, rawQueue);
-                }()),
-                __status(vk::Result::eSuccess)
+                }())
                 {}
 
                 const std::string &getName(void) const { return this->__name; }
@@ -65,14 +63,28 @@ namespace renderer {
                 const uint32_t &getCount(void) const { return this->__count; }
                 const std::vector<float> &getPriorities(void) const { return this->__priorities; }
                 const vk::raii::Queue &getVKQueue(void) const { return this->__VKQueue; }
-                const vk::Result &getStatus(void) const { return this->__status; }
 
                 void submit(const vk::SubmitInfo &submitInfo, const vk::raii::Fence &fence) {
                     this->__VKQueue.submit(submitInfo, *fence);
                 }
 
-                const vk::Result &present(const vk::PresentInfoKHR &presentInfo) {
-                    return this->__status = this->__VKQueue.presentKHR(presentInfo);
+                __Status present(const vk::PresentInfoKHR &presentInfo) {
+                    vk::Result vkPresentResult = this->__VKQueue.presentKHR(presentInfo);
+                    if (vkPresentResult == vk::Result::eSuccess) return __Status::E_OK;
+                    /**
+                     * This is not essentialy a serious error. However, it must be handled correctly
+                    **/
+                    if (vkPresentResult == vk::Result::eErrorOutOfDateKHR) {
+                        logger::info << "Present queue is out of date" << std::endl;
+                        return __Status::E_PRESENT_QUEUE_OUT_OF_DATE;
+                    }
+                    if (vkPresentResult == vk::Result::eSuboptimalKHR) {
+                        logger::info << "Present queue is suboptimal" << std::endl;
+                        return __Status::E_PRESENT_QUEUE_SUBOPTIMAL;
+                    }
+                    logger::error << "Present queue is in an unknown state: " << vk::to_string(vkPresentResult)
+                    << ". Undetermined behavior is expected" << std::endl;
+                    return __Status::E_VK_INTERNAL_ERROR;
                 }
 
         };
@@ -94,10 +106,9 @@ namespace renderer {
         const uint32_t &__GPU::__Queue::getCount(void) const { return this->__impl->getCount(); }
         const std::vector<float> &__GPU::__Queue::getPriorities(void) const { return this->__impl->getPriorities(); }
         const vk::raii::Queue &__GPU::__Queue::getVKQueue(void) const { return this->__impl->getVKQueue(); }
-        const vk::Result &__GPU::__Queue::getStatus(void) const { return this->__impl->getStatus(); }
         
         void __GPU::__Queue::submit(const vk::SubmitInfo &submitInfo, const vk::raii::Fence &fence) { this->__impl->submit(submitInfo, fence); }
-        const vk::Result &__GPU::__Queue::present(const vk::PresentInfoKHR &presentInfo) { return this->__impl->present(presentInfo); }
+        __Status __GPU::__Queue::present(const vk::PresentInfoKHR &presentInfo) { return this->__impl->present(presentInfo); }
         
     } // namespace __private
 } // namespace renderer

@@ -248,25 +248,25 @@ namespace renderer {
                 __GPU::__Queue &getGPUGraphicsQueue(void) { return this->__gpuGraphicsQueue; }
                 __GPU::__Queue &getGPUPresentQueue(void) { return this->__gpuPresentQueue; }
 
-                void draw(void) {
+                __Status draw(void) {
                     // 1. Wait until the previous frame has finished, so that command buffer and sempaphores are available
                     if (this->__relatedGPU.getVKLogicalDevice().waitForFences(*this->__renderFinishedFences[this->__currentFrame], vk::True, std::numeric_limits<uint64_t>::max()) != vk::Result::eSuccess) {
                         logger::error << "Error, cannot wait for \"render_finished\" fence" << std::endl;
-                        return;
+                        return E_WAIT_FENCE;
                     }
                     // 2. Acquire image form the swap chain
-                    auto [swapChainStatus, nextImage] = this->__relatedSwapChain.acquireNextimage(this->__imageAvailableSemaphores[this->__currentFrame]);
-                    if (swapChainStatus != vk::Result::eSuccess) {
+                    auto [nextImageStatus, nextImage] = this->__relatedSwapChain.acquireNextimage(this->__imageAvailableSemaphores[this->__currentFrame]);
+                    if (nextImageStatus != __Status::E_OK) {
                         logger::info << "Swap chain is no longer compatible. Aborting draw cycle" << std::endl;
-                        return;
+                        return nextImageStatus;
                     }
                     // 3. make sure the fence goes back to "unsignaled" state after we acquire the next image
                     this->__relatedGPU.getVKLogicalDevice().resetFences(*this->__renderFinishedFences[this->__currentFrame]);
                     // 4. Reset and record command buffer
                     this->__commandBuffers[this->__currentFrame].reset();
-                    if (this->__recordCommandBuffer(nextImage, this->__relatedSwapChain, this->__relatedPipelineHandler) != __Status::E_OK) {
+                    if (const __Status recordStatus = this->__recordCommandBuffer(nextImage, this->__relatedSwapChain, this->__relatedPipelineHandler); recordStatus != __Status::E_OK) {
                         logger::error << "Failed to record command buffer for GPU " << this->__relatedGPU.getName() << std::endl;
-                        return;
+                        return recordStatus;
                     }
                     // 5. Submit command buffer after recording it (NOTE: recording MAY not need to appen each frame)
                     // 5.1 Create submit info
@@ -282,12 +282,13 @@ namespace renderer {
                     // 6. Presentation
                     vk::PresentInfoKHR presentInfo(*this->__renderFinishedSemaphores[this->__currentFrame], *this->__relatedSwapChain.getVKSwapChain(), nextImage);
                     // 7. Tell the swapchain we want to present an image to it (to the image reserved for presentation) using the present queue
-                    if (this->__gpuPresentQueue.present(presentInfo) != vk::Result::eSuccess) {
+                    if (const __Status presentStatus = this->__gpuPresentQueue.present(presentInfo); presentStatus != __Status::E_OK) {
                         logger::info << "Present queue is no longer compatible. Aborting draw cycle" << std::endl;
-                        return;
+                        return presentStatus;
                     }
                     // 8. Advance to next frame
                     this->__currentFrame = (this->__currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
+                    return __Status::E_OK;
                 }
 
                 void updateUponSurfaceChange(void) {
@@ -309,7 +310,7 @@ namespace renderer {
 
         __Presenter::~__Presenter() = default;
 
-        void __Presenter::draw(void) { return this->__impl->draw(); }
+        __Status __Presenter::draw(void) { return this->__impl->draw(); }
         __GPU::__Queue &__Presenter::getGPUGraphicsQueue(void) { return this->__impl->getGPUGraphicsQueue(); }
         __GPU::__Queue &__Presenter::getGPUPresentQueue(void) { return this->__impl->getGPUPresentQueue(); }
         
