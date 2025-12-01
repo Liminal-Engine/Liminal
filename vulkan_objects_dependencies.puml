@@ -1,0 +1,103 @@
+@startuml renderer_class_diagram
+
+class Window
+
+namespace Context {
+    class Instance
+    class Messenger
+    class Surface
+}
+
+namespace GPU {
+    class PhysicalDevice
+    class PhysicalDeviceProperties
+    class PhysicalDeviceFeatures
+    class SurfaceCapabilities
+    class QueueFamilyProperties
+    class LogicalDevice
+    class SurfaceFormat
+    class PresentMode
+    class VKQueue
+}
+
+namespace SwapChain {
+    class SurfaceFormat
+    class PresentMode
+    class Extent
+
+    class VKSwapChain
+    class Image
+    class ImageView
+
+}
+
+namespace PipelineHandler {
+    class PipelineLayout
+    class RenderPass
+    class Pipeline
+}
+
+namespace Presenter {
+    class FrameBuffer
+
+    class CommanBuffer
+    class CommandPool
+
+    class Semaphore
+    class Fence
+}
+
+Instance <-- "1" Messenger : depends
+Window <-- "1" Surface : depends
+Instance <-- "1" Surface : depends
+
+PhysicalDevice <-- "*" PhysicalDeviceProperties : depends
+PhysicalDevice <-- "*" PhysicalDeviceFeatures : depends
+PhysicalDevice <-- "*" QueueFamilyProperties : depends
+PhysicalDevice <-- "1" LogicalDevice : depends
+Surface <-- "*" SurfaceCapabilities : depends
+Surface <-- "*" GPU.SurfaceFormat : depends
+Surface <-- "*" GPU.PresentMode : depends
+LogicalDevice <-- "*" VKQueue : depends
+
+GPU.SurfaceFormat <-- "1" SwapChain.SurfaceFormat : "depends"
+GPU.PresentMode <-- "1" SwapChain.PresentMode : "depends"
+GPU.SurfaceCapabilities <-- "1" SwapChain.Extent : "depends"
+
+SwapChain.SurfaceFormat <-- "1" SwapChain.VKSwapChain : "depends"
+SwapChain.PresentMode <-- "1" SwapChain.VKSwapChain : "depends"
+SwapChain.Extent <-- "1" SwapChain.VKSwapChain : "depends"
+GPU.SurfaceCapabilities <-- "1" SwapChain.VKSwapChain : "depends"
+GPU.VKQueue <-- "1" SwapChain.VKSwapChain : "depends"
+Context.Surface <-- "1" SwapChain.VKSwapChain : "depends"
+
+SwapChain.VKSwapChain <-- "*" SwapChain.Image  : "depends"
+GPU.LogicalDevice <-- "*" SwapChain.ImageView  : "depends"
+SwapChain.SurfaceFormat <-- "*" SwapChain.ImageView  : "depends"
+SwapChain.Image <-- "*" SwapChain.ImageView  : "depends"
+
+
+
+LogicalDevice <-- "*" PipelineLayout : depends
+LogicalDevice <-- "*" RenderPass : depends
+SwapChain.SurfaceFormat <-- "*" RenderPass : depends
+LogicalDevice <-- "*" Pipeline : depends
+SwapChain.Extent <-- "*" Pipeline : depends
+PipelineLayout <-- "*" Pipeline : depends
+RenderPass <-- "*" Pipeline : depends
+
+
+LogicalDevice <-- "*" FrameBuffer : depends
+VKQueue <-- "*" CommandPool : depends
+LogicalDevice <-- "*" CommandPool : depends
+LogicalDevice <-- "*" CommanBuffer : depends
+CommandPool <-- "*" CommanBuffer : depends
+LogicalDevice <-- "*" Semaphore : depends
+LogicalDevice <-- "*" Fence : depends
+VKSwapChain <-- "*" Semaphore : depends
+VKQueue <-- "*" Semaphore : depends
+VKQueue <-- "*" Fence : depends
+
+
+
+@enduml

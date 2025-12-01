@@ -13,6 +13,7 @@
 #define __LIMINAL__RENDERER_INCLUDE_RENDERER__TEMP_CONSTS_NEED_TO_REMOVE_THIS_HPP__
 
 #include <vulkan/vulkan_raii.hpp>
+#include <glm/glm.hpp>
 
 #include <vector>
 
@@ -61,6 +62,40 @@ namespace renderer {
         "GRAPHICS_AND_PRESENT",
         "PRESENT"
     };
+
+            struct VERTEX {
+            glm::vec2 pos;
+            glm::vec3 color;
+
+            static vk::VertexInputBindingDescription getBindingDescription(void) {
+                vk::VertexInputBindingDescription bindingDescription;
+                bindingDescription.setBinding(0)
+                .setStride(sizeof(VERTEX))
+                .setInputRate(vk::VertexInputRate::eVertex);
+                // TODO : check what is per instance rendering
+                return bindingDescription;
+            }
+
+            // We need  2 attribute descriptions because we have 2 "datas" in our verticies array (position and color)
+            static std::array<vk::VertexInputAttributeDescription, 2> getAttributeDescriptions() {
+                std::array<vk::VertexInputAttributeDescription, 2> attributeDescriptions{};
+                attributeDescriptions[0].setBinding(0)
+                .setLocation(0)
+                .setFormat(vk::Format::eR32G32Sfloat) // pour vec2
+                .setOffset(offsetof(VERTEX, pos));
+                attributeDescriptions[1].setBinding(0)
+                .setLocation(1)
+                .setFormat(vk::Format::eR32G32B32Sfloat) // puor vec3
+                .setOffset(offsetof(VERTEX, color));
+                return attributeDescriptions;
+            }
+        };
+
+    inline const std::vector<VERTEX> VERTICES = {
+    {{0.0f, -0.5f}, {1.0f, 1.0f, 1.0f}},
+    {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
+    {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}
+        };
 
 } // namespace renderer
 

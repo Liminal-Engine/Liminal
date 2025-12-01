@@ -2,5 +2,5 @@
 
 cd "$(dirname "$0")"
 
-/usr/local/bin/glslc ./shader.vert -o shader.vert.spv
-/usr/local/bin/glslc ./shader.frag -o shader.frag.spv
+/usr/local/bin/glslc ./triangle.vert -o triangle.vert.spv
+/usr/local/bin/glslc ./triangle.frag -o triangle.frag.spv

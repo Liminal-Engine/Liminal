@@ -182,6 +182,8 @@ namespace renderer {
                     }
                     // 2.3.2 Bind pipeline to the command buffer
                     this->__commandBuffers[this->__currentFrame].bindPipeline(vk::PipelineBindPoint::eGraphics, *pipeline->get());
+                    // 2.3.3 Bind the vertex buffer to the current command buffer
+                    this->__commandBuffers[this->__currentFrame].bindVertexBuffers(0, *this->__relatedPipelineHandler.getVertexBuffer(), vk::DeviceSize(0));
                     // 5. Since viewport and scissor are dynamic in graphics pipeline, we need to set them again here
                     // TODO : why make them dynamic ? Maybe undynamic them
                     vk::Viewport viewport(0.0f, 0.0f, swapChainSettings.getExtent().width, swapChainSettings.getExtent().height, 0.0f, 1.0f);
@@ -189,7 +191,7 @@ namespace renderer {
                     this->__commandBuffers[this->__currentFrame].setViewport(0, viewport);
                     this->__commandBuffers[this->__currentFrame].setScissor(0, scissor);
                     // 6. Draw
-                    this->__commandBuffers[this->__currentFrame].draw(3, 1, 0, 0);
+                    this->__commandBuffers[this->__currentFrame].draw(static_cast<uint32_t>(VERTICES.size()), 1, 0, 0);
                     // 7. End render pass
                     this->__commandBuffers[this->__currentFrame].endRenderPass();
                     // 8. Finish command buffer recording
