@@ -31,11 +31,12 @@ namespace renderer {
                 __SwapChain &__relatedSwapChain;
                 const __PipelineHandler &__relatedPipelineHandler;
 
-                __GPU::__Queue &__gpuGraphicsQueue;
-                __GPU::__Queue &__gpuPresentQueue;
+                const __GPU::__Queue &__gpuGraphicsQueue;
+                const __GPU::__Queue &__gpuPresentQueue;
 
                 std::vector<vk::raii::Framebuffer> __frameBuffers;
-                vk::raii::CommandPool __commandPool;
+                vk::raii::CommandPool __graphicsCommandPool;
+                vk::raii::CommandPool __transferCommandPool;
                 // we don't need raii here since they're auto destroyed when command pool is destroyed.
                 // They are easier to create when non RAII
                 std::vector<vk::CommandBuffer> __commandBuffers;
@@ -44,32 +45,7 @@ namespace renderer {
                 std::vector<vk::raii::Fence> __renderFinishedFences;
                 uint32_t __currentFrame;
 
-                /**
-                 * @brief 
-                 * Possible names must be ordered correctly. The first one found will be the one returned.
-                 * @param gpu
-                 * @param possibleNames 
-                 * @return const __GPU::__Queue& 
-                 */
-                static __GPU::__Queue &__findQueue(__GPU &gpu, const std::vector<std::string> &possibleNames) {
-                    std::string possibleNamesPrettify = parseop::prettify(possibleNames);
-                    logger::trace << "Searching for a queue with possble names:\n" << possibleNamesPrettify << std::endl;
 
-                    std::optional<std::reference_wrapper<__GPU::__Queue>> queue = std::nullopt;
-                    
-                    for (const std::string &possibleName : possibleNames) {
-                        queue = gpu.getQueue(possibleName);
-                        if (queue.has_value()) {
-                            logger::trace << "Presenter found a queue with name " << possibleName << " for GPU " << gpu.getName() << std::endl;
-                            return queue->get();
-                        }
-                        logger::trace << "Presenter did not find a queue with name " << possibleName << " for GPU " << gpu.getName() << std::endl;
-                    }
-                    logger::error << "Presenter couild not find a queue for GPU " << gpu.getName() << " with possible names:\n"
-                    << possibleNamesPrettify << std::endl;
-                    // TODO : handle proper error with error window alert or something else...
-                    throw std::runtime_error("PRESENTER COULD NOT FIND A QUEUE WITH NAMES:\n" + possibleNamesPrettify);
-                }
 
                 static std::vector<vk::raii::Framebuffer> __createFrameBuffers(
                     const __GPU &gpu,
@@ -104,20 +80,18 @@ namespace renderer {
                     return res;
                 }
 
-                static vk::raii::CommandPool __createCommandPool(__GPU &gpu) {
+                static vk::raii::CommandPool __createCommandPool(
+                    const __GPU &gpu,
+                    const __GPU::__Queue &relatedQueue,
+                    const vk::CommandPoolCreateFlags &commandPoolCreateFlags
+                ) {
                     logger::trace << "Retrieving graphics queue for command pool creation for GPU " << gpu.getName() << std::endl;
-                    std::optional<std::reference_wrapper<const __GPU::__Queue>> graphicsQueue = gpu.getQueue("GRAPHICS_AND_PRESENT");
-                    if ( !graphicsQueue.has_value() ) graphicsQueue = gpu.getQueue("GRAPHICS");
-                    if ( !graphicsQueue.has_value() ) {
-                        logger::error << "Failed to find the graphics queue when creating the command pool for GPU" << gpu.getName() << std::endl;
-                        return vk::raii::CommandPool(nullptr);
-                    }
                     logger::trace << "Creating command pool create info for GPU " << gpu.getName() << std::endl;
-                    vk::CommandPoolCreateInfo createInfo(vk::CommandPoolCreateFlagBits::eResetCommandBuffer, graphicsQueue->get().getIndex());
+                    vk::CommandPoolCreateInfo createInfo(commandPoolCreateFlags, relatedQueue.getFamilyIndex());
                     logger::trace << "Creating command pool for GPU " << gpu.getName() << std::endl;
                     auto [result, rawCommandPool] = gpu.getRawVKLogicalDevice().createCommandPool(createInfo);
                     if (result != vk::Result::eSuccess) {
-                        __LOG_VK_CREATE_ERROR(gpu, result, "Presenter failed to create the command pool");
+                        __LOG_VK_CREATE_ERROR(gpu, result, "Presenter failed to create a command pool for queue " + relatedQueue.getName());
                         return vk::raii::CommandPool(nullptr);
                     }
                     return vk::raii::CommandPool(gpu.getVKLogicalDevice(), rawCommandPool);
@@ -211,11 +185,12 @@ namespace renderer {
                 __relatedGPU(gpu),
                 __relatedSwapChain(swapChain),
                 __relatedPipelineHandler(pipelineHandler),
-                __gpuGraphicsQueue(__findQueue(this->__relatedGPU, POSSIBLE_GRAPHICS_QUEUE_NAMES)),
-                __gpuPresentQueue(__findQueue(this->__relatedGPU, POSSIBLE_PRESENT_QUEUE_NAMES)),
+                __gpuGraphicsQueue(this->__relatedGPU.getGraphicsQueue()),
+                __gpuPresentQueue(this->__relatedGPU.getPresentQueue()),
                 __frameBuffers(__createFrameBuffers(this->__relatedGPU, this->__relatedSwapChain, this->__relatedPipelineHandler)),
-                __commandPool(__createCommandPool(this->__relatedGPU)),
-                __commandBuffers(__createCommandBuffers(this->__relatedGPU, this->__commandPool)),
+                __graphicsCommandPool(__createCommandPool(this->__relatedGPU, this->__relatedGPU.getGraphicsQueue(), vk::CommandPoolCreateFlagBits::eResetCommandBuffer)),
+                __transferCommandPool(__createCommandPool(this->__relatedGPU, this->__relatedGPU.getTransferQueue(), vk::CommandPoolCreateFlagBits::eTransient | vk::CommandPoolCreateFlagBits::eResetCommandBuffer)),
+                __commandBuffers(__createCommandBuffers(this->__relatedGPU, this->__graphicsCommandPool)),
                 __imageAvailableSemaphores([&]() -> std::vector<vk::raii::Semaphore> {
                     std::vector<vk::raii::Semaphore> res; res.reserve(MAX_FRAMES_IN_FLIGHT);
 
@@ -247,8 +222,6 @@ namespace renderer {
                 {
                 }
 
-                __GPU::__Queue &getGPUGraphicsQueue(void) { return this->__gpuGraphicsQueue; }
-                __GPU::__Queue &getGPUPresentQueue(void) { return this->__gpuPresentQueue; }
 
                 __Status draw(void) {
                     // 1. Wait until the previous frame has finished, so that command buffer and sempaphores are available
@@ -313,8 +286,6 @@ namespace renderer {
         __Presenter::~__Presenter() = default;
 
         __Status __Presenter::draw(void) { return this->__impl->draw(); }
-        __GPU::__Queue &__Presenter::getGPUGraphicsQueue(void) { return this->__impl->getGPUGraphicsQueue(); }
-        __GPU::__Queue &__Presenter::getGPUPresentQueue(void) { return this->__impl->getGPUPresentQueue(); }
         
         void __Presenter::updateUponSurfaceChange(void) { this->__impl->updateUponSurfaceChange(); }
     } // namespace __private

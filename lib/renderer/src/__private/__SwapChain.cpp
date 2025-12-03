@@ -32,26 +32,28 @@ namespace renderer {
                     logger::trace << "Creating swap chain create info" << std::endl;
                     const __GPU::__SurfaceSupport &gpuSurfaceSupport = gpu.getSurfaceSupport();
                     vk::SurfaceCapabilitiesKHR gpuSurfaceCapabilities = gpuSurfaceSupport.getCapabilitiles();
+                    const vk::SurfaceFormatKHR &swapChainSettingsSurfaceFormat = settings.getFormat();
                     uint32_t imageCount = gpuSurfaceCapabilities.maxImageCount > 0 && gpuSurfaceCapabilities.minImageCount + 1 > gpuSurfaceCapabilities.maxImageCount ?
                     gpuSurfaceCapabilities.maxImageCount :
                     gpuSurfaceCapabilities.minImageCount + 1;
-                    std::vector<uint32_t> queuesIndicies = gpu.getQueuesIndicies();
-                    return vk::SwapchainCreateInfoKHR(
-                        {},
-                        *surface,
-                        imageCount,
-                        settings.getFormat().format,
-                        settings.getFormat().colorSpace,
-                        settings.getExtent(),
-                        1,
-                        vk::ImageUsageFlagBits::eColorAttachment,
-                        gpu.getQueue("GRAPHICS_AND_PRESENT").has_value() ? vk::SharingMode::eExclusive : vk::SharingMode::eConcurrent,
-                        queuesIndicies,
-                        gpuSurfaceCapabilities.currentTransform,
-                        vk::CompositeAlphaFlagBitsKHR::eOpaque,
-                        settings.getPresentMode(),
-                        vk::True
-                    );
+                    std::set<uint32_t> queueIndicesSet = gpu.getQueueIndices();
+                    std::vector<uint32_t> queueIndicesVec(queueIndicesSet.begin(), queueIndicesSet.end());
+                    vk::SwapchainCreateInfoKHR res;
+                    res.setFlags({})
+                    .setSurface(*surface)
+                    .setMinImageCount(imageCount)
+                    .setImageFormat(swapChainSettingsSurfaceFormat.format)
+                    .setImageColorSpace(swapChainSettingsSurfaceFormat.colorSpace)
+                    .setImageExtent(settings.getExtent())
+                    .setImageArrayLayers(1)
+                    .setImageUsage(vk::ImageUsageFlagBits::eColorAttachment)
+                    .setImageSharingMode(gpu.getGraphicsQueue().getFamilyIndex() == gpu.getGraphicsQueue().getFamilyIndex() ? vk::SharingMode::eExclusive : vk::SharingMode::eConcurrent)
+                    .setQueueFamilyIndices(queueIndicesVec)
+                    .setPreTransform(gpuSurfaceCapabilities.currentTransform)
+                    .setCompositeAlpha(vk::CompositeAlphaFlagBitsKHR::eOpaque)
+                    .setPresentMode(settings.getPresentMode())
+                    .setClipped(vk::True);
+                    return res;
                 }
 
                 static vk::raii::SwapchainKHR __createVKSwapChain(

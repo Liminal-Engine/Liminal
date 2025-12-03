@@ -30,8 +30,6 @@ namespace renderer {
                 );
                 ~__Presenter();
 
-                __GPU::__Queue &getGPUGraphicsQueue(void);
-                __GPU::__Queue &getGPUPresentQueue(void);
     
                 __Status draw(void);
 

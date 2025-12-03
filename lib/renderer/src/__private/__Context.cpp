@@ -167,29 +167,10 @@ namespace renderer {
                 static __GPU __setupGPU(const vk::raii::Instance &instance, const vk::raii::SurfaceKHR &surface) {
                     std::vector<__GPU> suitableGPUs(__GPU::listAvailableGPUs(instance, surface, true));
                     __GPU res = std::move(suitableGPUs.front());
-                    logger::info << "Selected __GPU: " << res.getName() << std::endl;
-                    std::vector<uint32_t> graphicsQueueIndicies(res.getAvailableQueueFamilyIndicesSupportingFlags(vk::QueueFlagBits::eGraphics));
-                    std::vector<uint32_t> presentQueueIndicies(res.getAvailableQueueFamilyIndicesSupportingSurface(surface));
-                    uint32_t graphicsIndex = graphicsQueueIndicies[0];
-                    uint32_t presentIndex = presentQueueIndicies[0];
-                    for (uint32_t index : graphicsQueueIndicies) {
-                        if (std::find(presentQueueIndicies.begin(), presentQueueIndicies.end(), graphicsIndex) != presentQueueIndicies.end()) {
-                            graphicsIndex = index;
-                            presentIndex = index;
-                            logger::trace << "Found unified graphics+present queue at family index " << graphicsIndex << std::endl;
-                            break;
-                        }
+                    logger::info << "Selected GPU: " << res.getName() << std::endl;
+                    if (res.setup(surface) != __Status::E_OK) {
+                        logger::error << "Failed to setup GPU " << res.getName() << std::endl;
                     }
-                    __GPU::QueuesCreationMap_t queuesCreationMap;
-                    if (graphicsIndex == presentIndex) {
-                        queuesCreationMap = {{ "GRAPHICS_AND_PRESENT", std::make_tuple(graphicsIndex, std::vector<float>(1.0f)) }};
-                    } else {
-                        queuesCreationMap = {
-                            {"GRAPHICS", std::make_tuple(graphicsIndex, std::vector<float>{1.0f})},
-                            {"PRESENT", std::make_tuple(presentIndex, std::vector<float>{1.0f})}
-                        };
-                    };
-                    if ( res.create(queuesCreationMap) != __Status::E_OK) logger::fatal << "__GPU creation failed for: " << res.getName() << std::endl;
                     return res;
                 }
 

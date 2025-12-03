@@ -26,11 +26,6 @@
 
 namespace renderer {
     namespace __private {
-
-
-
-
-
         class __PipelineHandler::__Impl {
             private:
                 const __GPU &__relatedGPU;

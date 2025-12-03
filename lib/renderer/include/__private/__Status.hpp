@@ -28,7 +28,9 @@ namespace renderer {
             E_SWAP_CHAIN_SUBOPTIMAL,
             E_PRESENT_QUEUE_OUT_OF_DATE,
             E_PRESENT_QUEUE_SUBOPTIMAL,
-            E_WAIT_FENCE
+            E_WAIT_FENCE,
+            E_NO_GRAPHICS_QUEUE_FAMILY,
+            E_NO_PRESENT_QUEUE_FAMILY
         };
     } // namespace __private
 } // namespace renderer
