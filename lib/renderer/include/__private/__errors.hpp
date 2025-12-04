@@ -24,7 +24,7 @@ namespace renderer {
                 logger::error << msg                                               \
                               << "\nError: " << vk::to_string(result)             \
                               << std::endl;                                       \
-            } while (0)
+            } while (0);
 
         // 3 args: (gpu, result, msg)
         #define __LOG_VK_CREATE_ERROR_GPU(gpu, result, msg)                        \
@@ -33,7 +33,7 @@ namespace renderer {
                               << "\nGPU: " << (gpu).getName()                      \
                               << "\nError: " << vk::to_string(result)             \
                               << std::endl;                                       \
-            } while (0)
+            } while (0);
 
         // Select the correct macro depending on the number of arguments
         #define __LOG_VK_CREATE_ERROR_GET_MACRO(_1,_2,_3,NAME,...) NAME

@@ -120,7 +120,7 @@ namespace renderer {
                     return vk::raii::Semaphore(gpu.getVKLogicalDevice(), rawSemaphore);
                 }
 
-                static vk::raii::Fence __createFence(const __GPU &gpu, const vk::FenceCreateFlagBits createFlags = {}) {
+                static vk::raii::Fence __createFence(const __GPU &gpu, const vk::FenceCreateFlags createFlags = {}) {
                     logger::trace << "Creating a fence for GPU " << gpu.getName() << std::endl;
                     vk::FenceCreateInfo createInfo(createFlags);
                     auto [result, rawFence] = gpu.getRawVKLogicalDevice().createFence(createInfo);
@@ -157,7 +157,7 @@ namespace renderer {
                     // 2.3.2 Bind pipeline to the command buffer
                     this->__commandBuffers[this->__currentFrame].bindPipeline(vk::PipelineBindPoint::eGraphics, *pipeline->get());
                     // 2.3.3 Bind the vertex buffer to the current command buffer
-                    this->__commandBuffers[this->__currentFrame].bindVertexBuffers(0, *this->__relatedPipelineHandler.getVertexBuffer(), vk::DeviceSize(0));
+                    this->__commandBuffers[this->__currentFrame].bindVertexBuffers(0, *this->__relatedPipelineHandler.getVertexBuffer().getVKBuffer() , vk::DeviceSize(0));
                     // 5. Since viewport and scissor are dynamic in graphics pipeline, we need to set them again here
                     // TODO : why make them dynamic ? Maybe undynamic them
                     vk::Viewport viewport(0.0f, 0.0f, swapChainSettings.getExtent().width, swapChainSettings.getExtent().height, 0.0f, 1.0f);

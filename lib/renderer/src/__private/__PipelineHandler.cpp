@@ -11,6 +11,7 @@
 
 #include "__private/__vkConfig.hpp"
 #include "__private/__PipelineHandler.hpp"
+#include "__private/__VertexBuffer.hpp"
 #include "__private/__errors.hpp"
 #include "temp_consts_need_to_remove_this.hpp"
 
@@ -35,8 +36,7 @@ namespace renderer {
                 vk::raii::RenderPass __vkRenderPass;
                 std::unordered_map<std::string, vk::raii::Pipeline> __vkPipelines;
 
-                vk::raii::Buffer __vertexBuffer;
-                vk::raii::DeviceMemory __vertexBufferMemory;
+                __VertexBuffer __vertexBuffer;
 
                 static vk::raii::PipelineLayout __createLayout(const __private::__GPU &gpu) {
                     logger::trace << "Creating graphics pipeline layout create info for GPU " << gpu.getName() << std::endl;
@@ -143,9 +143,8 @@ namespace renderer {
                     vk::ShaderModuleCreateInfo vertexShaderModuleCreateInfo({}, vertexEncodedContent);                    
                     vk::raii::ShaderModule vertexShaderModule(nullptr);
                     auto [rawVertexShaderResult, rawVertexShaderModule] = gpu.getRawVKLogicalDevice().createShaderModule(vertexShaderModuleCreateInfo);
-                    if (rawVertexShaderResult != vk::Result::eSuccess) __LOG_VK_CREATE_ERROR(gpu, rawVertexShaderResult, "PipelineHandler failed to create vertex shader module");
-                    else vertexShaderModule = vk::raii::ShaderModule(gpu.getVKLogicalDevice(), rawVertexShaderModule);
-                    (gpu.getVKLogicalDevice(), vertexShaderModuleCreateInfo);
+                    if (rawVertexShaderResult != vk::Result::eSuccess) { __LOG_VK_CREATE_ERROR(gpu, rawVertexShaderResult, "PipelineHandler failed to create vertex shader module"); }
+                    else { vertexShaderModule = vk::raii::ShaderModule(gpu.getVKLogicalDevice(), rawVertexShaderModule); }
                     #pragma endregion
                     #pragma region 2. fragment shader
                     fs::Path fragmentSrcPath("/home/matteo/Projects/Liminal/shaders/triangle.frag.spv");
@@ -169,8 +168,8 @@ namespace renderer {
                     vk::ShaderModuleCreateInfo fragmentShaderModuleCreateInfo({}, encodedContent);
                     vk::raii::ShaderModule fragmentShaderModule(nullptr);
                     auto [rawFragmentShaderResult, rawFragmentShaderModule] = gpu.getRawVKLogicalDevice().createShaderModule(fragmentShaderModuleCreateInfo);
-                    if (rawFragmentShaderResult != vk::Result::eSuccess) __LOG_VK_CREATE_ERROR(gpu, rawFragmentShaderResult, "PipelineHandler failed to create fragment shader module");
-                    else fragmentShaderModule = vk::raii::ShaderModule(gpu.getVKLogicalDevice(), rawFragmentShaderModule);
+                    if (rawFragmentShaderResult != vk::Result::eSuccess) { __LOG_VK_CREATE_ERROR(gpu, rawFragmentShaderResult, "PipelineHandler failed to create fragment shader module"); }
+                    else { fragmentShaderModule = vk::raii::ShaderModule(gpu.getVKLogicalDevice(), rawFragmentShaderModule); }
                     #pragma endregion
                     #pragma region 3. Shader stages
                     vk::PipelineShaderStageCreateInfo vertexShaderStageCreateInfo({}, vk::ShaderStageFlagBits::eVertex, *vertexShaderModule, "main");
@@ -300,41 +299,11 @@ namespace renderer {
                     return 0;
                 }
             
-                static vk::raii::Buffer __createBuffer(const __GPU &gpu) {
-                    logger::trace << "PipelineHandler creating vertex buffer" << std::endl;
-                    vk::BufferCreateInfo createInfo;
-                    createInfo.setSize(sizeof(VERTICES[0]) * VERTICES.size())
-                    .setUsage(vk::BufferUsageFlagBits::eVertexBuffer)
-                    .setSharingMode(vk::SharingMode::eExclusive); // will only be used by the graphics queue
-                    auto [result, rawBuffer] = gpu.getRawVKLogicalDevice().createBuffer(createInfo);
-                    if (result != vk::Result::eSuccess) {
-                        logger::error << "PipelineHandler failed to create vertex buffer" << std::endl;
-                        return vk::raii::Buffer(nullptr);
-                    }
-                    return vk::raii::Buffer(gpu.getVKLogicalDevice(), rawBuffer);
+                static __VertexBuffer __createVertexBuffer(const __GPU &gpu) {
+                    logger::trace << "PipelineHandler creating a vertex buffer for GPU " << gpu.getName() << std::endl;
+                    return __VertexBuffer(gpu, VERTICES);
+                    
                 }
-                
-                // THIS WILL AUTO BIND BUFFER AND THR CREATED DEVICE MEMORY
-                static vk::raii::DeviceMemory __createGPUMemory(const __GPU &gpu, const vk::raii::Buffer &buffer) {
-                    vk::MemoryRequirements bufferMemRequirements = buffer.getMemoryRequirements();
-                    vk::MemoryAllocateInfo allocInfo;
-                    allocInfo.setAllocationSize(bufferMemRequirements.size)
-                    .setMemoryTypeIndex(__findGPUMemoryType(gpu, bufferMemRequirements.memoryTypeBits, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent));
-
-                    auto [result, rawDeviceMemory] = gpu.getRawVKLogicalDevice().allocateMemory(allocInfo);
-                    if (result != vk::Result::eSuccess) {
-                        logger::error << "Failed to allocate buffer memory: " << vk::to_string(result) << std::endl;
-                        vk::raii::DeviceMemory(nullptr);
-                    }
-                    vk::raii::DeviceMemory res(gpu.getVKLogicalDevice(), rawDeviceMemory);
-                    if (gpu.getRawVKLogicalDevice().bindBufferMemory(*buffer, *res, 0) != vk::Result::eSuccess ) {
-                        logger::error << "Failed to bind buffer and device memory" << std::endl;
-                        return vk::raii::DeviceMemory(nullptr);
-                    }
-                    return res;
-                }                
-
-
             public:
                 __Impl(const __private::__GPU &gpu, const __private::__SwapChain &swapChain) :
                 __relatedGPU(gpu),
@@ -342,43 +311,42 @@ namespace renderer {
                 __vkLayout(__createLayout(this->__relatedGPU)),
                 __vkRenderPass(__createRenderPass(this->__relatedGPU, this->__relatedSwapChain)),
                 __vkPipelines(__createVKPipelines(this->__relatedGPU, this->__relatedSwapChain, this->__vkLayout, this->__vkRenderPass)),
-                __vertexBuffer(__createBuffer(this->__relatedGPU)),
-                __vertexBufferMemory(__createGPUMemory(this->__relatedGPU, this->__vertexBuffer))
+                __vertexBuffer(__createVertexBuffer(this->__relatedGPU))
                 {
-                    // We MAP the data
-                    // 1. Map
-                    // The mapMemory method allow to accesss to specified region (defined py offset and size) of the
-                    // GPU RAM to a CPU pointer. You can specify VK_WHOLE_SIZE to map the whole size.
-                    auto [result, data] = this->__relatedGPU.getRawVKLogicalDevice().mapMemory(
-                        *this->__vertexBufferMemory, // raw device memory
-                        0, // offset 
-                        sizeof(VERTICES[0]) * VERTICES.size() // total size (could be also bufferCreateInfo.size)
-                    );
-                    if (result != vk::Result::eSuccess) {
-                        logger::error << "Failed to access GPU memory" << std::endl;
-                        return;
-                    }
-                    // 2. Copy CPU content to CPU pointer
-                    // Now that we have a corresponding CPU pointer, let's fill it up
-                    if (memcpy(
-                        data, // dest
-                        VERTICES.data(), // src
-                        sizeof(VERTICES[0]) * VERTICES.size() // size (could ba also bufferCreateInfo.size)
-                    ) == NULL) {
-                        logger::error << "Failed to integrate verticies data to CPU pointer" << std::endl;
-                    }
-                    // 3. Unmap
-                    /**
-                     * As long as the GPU memory is "mapped" to the CPU, the GPU cannot access it. This is why it is
-                     * mandatory to unmap it.
-                     * The driver may not immediately copy the data, because of caching for example.
-                     * To handle this, we have 2 solutions :
-                     * 1. use deviceMemoryAllocInfo.setMemoryTypeIndex(..., eHostCoherent)
-                     * 2. call vkFlushMappedMemoryRanges after writting to the mapped memory and call vkInvalidateMappedMemoryRanges before reading from the mapped memory
-                     * The solution 2 leads to slighlty better performances but we'll see later why it apparently does not matter.
-                     * This does not return anything
-                     */
-                    this->__relatedGPU.getRawVKLogicalDevice().unmapMemory(*this->__vertexBufferMemory);                    
+                    // // We MAP the data
+                    // // 1. Map
+                    // // The mapMemory method allow to accesss to specified region (defined py offset and size) of the
+                    // // GPU RAM to a CPU pointer. You can specify VK_WHOLE_SIZE to map the whole size.
+                    // auto [result, data] = this->__relatedGPU.getRawVKLogicalDevice().mapMemory(
+                    //     *this->__oldVertexBufferMemoryDELETEME, // raw device memory
+                    //     0, // offset 
+                    //     sizeof(VERTICES[0]) * VERTICES.size() // total size (could be also bufferCreateInfo.size)
+                    // );
+                    // if (result != vk::Result::eSuccess) {
+                    //     logger::error << "Failed to access GPU memory" << std::endl;
+                    //     return;
+                    // }
+                    // // 2. Copy CPU content to CPU pointer
+                    // // Now that we have a corresponding CPU pointer, let's fill it up
+                    // if (memcpy(
+                    //     data, // dest
+                    //     VERTICES.data(), // src
+                    //     sizeof(VERTICES[0]) * VERTICES.size() // size (could ba also bufferCreateInfo.size)
+                    // ) == NULL) {
+                    //     logger::error << "Failed to integrate verticies data to CPU pointer" << std::endl;
+                    // }
+                    // // 3. Unmap
+                    // /**
+                    //  * As long as the GPU memory is "mapped" to the CPU, the GPU cannot access it. This is why it is
+                    //  * mandatory to unmap it.
+                    //  * The driver may not immediately copy the data, because of caching for example.
+                    //  * To handle this, we have 2 solutions :
+                    //  * 1. use deviceMemoryAllocInfo.setMemoryTypeIndex(..., eHostCoherent)
+                    //  * 2. call vkFlushMappedMemoryRanges after writting to the mapped memory and call vkInvalidateMappedMemoryRanges before reading from the mapped memory
+                    //  * The solution 2 leads to slighlty better performances but we'll see later why it apparently does not matter.
+                    //  * This does not return anything
+                    //  */
+                    // this->__relatedGPU.getRawVKLogicalDevice().unmapMemory(*this->__oldVertexBufferMemoryDELETEME);
                 }
 
                 const vk::raii::RenderPass &getRenderPass(void) const { return this->__vkRenderPass; }
@@ -403,9 +371,8 @@ namespace renderer {
                     this->__vkPipelines = __createVKPipelines(this->__relatedGPU, this->__relatedSwapChain, this->__vkLayout, this->__vkRenderPass);
                 }
 
-                const vk::raii::Buffer &getVertexBuffer(void) const { return this->__vertexBuffer; }
+                const __VertexBuffer &getVertexBuffer(void) const { return this->__vertexBuffer; }
         };
-
 
         __PipelineHandler::__PipelineHandler(const __private::__GPU &gpu,  const __private::__SwapChain &swapChain) : __impl(std::make_unique<__Impl>(gpu, swapChain)) {}
         __PipelineHandler::~__PipelineHandler() = default;
@@ -414,7 +381,7 @@ namespace renderer {
         std::optional<std::reference_wrapper<const vk::raii::Pipeline>> __PipelineHandler::getPipeline(const std::string &name) const { return this->__impl->getPipeline(name); }
         void __PipelineHandler::updateUponSwapChainFormatChange(void) { this->__impl->updateUponSwapChainFormatChange(); }
 
-        const vk::raii::Buffer &__PipelineHandler::getVertexBuffer(void) const { return this->__impl->getVertexBuffer(); }
+        const __VertexBuffer &__PipelineHandler::getVertexBuffer(void) const { return this->__impl->getVertexBuffer(); }
     } // namespace __private
     
     

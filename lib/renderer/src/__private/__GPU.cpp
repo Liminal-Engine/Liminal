@@ -35,6 +35,7 @@ namespace renderer {
                 vk::SurfaceCapabilitiesKHR __surfaceCapabilities;
                 __SurfaceSupport __surfaceSupport;
                 std::vector<vk::QueueFamilyProperties> __availableQueueFamilies;
+                vk::PhysicalDeviceMemoryProperties __memProps;
                 // std::unordered_map<std::string, __Queue> __queues;
                 std::set<uint32_t> __queueIndices;
                 vk::raii::Device __logicalDevice;
@@ -154,6 +155,7 @@ namespace renderer {
                     logger::trace << "\tLoading queue family properties for GPU " << this->__name << std::endl;
                     return this->__vkGPU.getQueueFamilyProperties();
                 }()),
+                __memProps(this->__vkGPU.getMemoryProperties()),
                 __logicalDevice(nullptr),
                 __created(false)
                 {
@@ -316,6 +318,22 @@ namespace renderer {
                 const __GPU::__Queue &getPresentQueue(void) const { return this->__presentQueue; }
                 const __GPU::__Queue &getTransferQueue(void) const { return this->__transferQueue; }
                 const std::set<uint32_t> &getQueueIndices(void) const { return this->__queueIndices; }
+
+                uint32_t getMemoryType(
+                    const uint32_t &requiredMemoryType,
+                    const vk::MemoryPropertyFlags &propertyFlags
+                ) const {
+                    for (uint32_t memoryType = 0; memoryType < this->__memProps.memoryTypeCount; memoryType++) {
+                        if (
+                            requiredMemoryType & (1 << memoryType) &&
+                            (this->__memProps.memoryTypes[memoryType].propertyFlags & propertyFlags ) == propertyFlags
+                        ) {
+                            return memoryType;
+                        }
+                    }
+                    logger::error << "No suitable memory type found" << std::endl;
+                    return -1;
+                }
         };
 
 
@@ -348,5 +366,6 @@ namespace renderer {
         const __GPU::__Queue &__GPU::getPresentQueue(void) const { return this->__impl->getPresentQueue(); }
         const __GPU::__Queue &__GPU::getTransferQueue(void) const { return this->__impl->getTransferQueue(); }
         const std::set<uint32_t> &__GPU::getQueueIndices(void) const { return this->__impl->getQueueIndices(); }
+        uint32_t __GPU::getMemoryType(const uint32_t &requiredMemoryType, const vk::MemoryPropertyFlags &propertyFlags) const { return this->__impl->getMemoryType(requiredMemoryType, propertyFlags); }
     } // namespace __private
 } // namespace renderer

@@ -117,6 +117,10 @@ namespace renderer {
                 const __GPU::__Queue &getTransferQueue(void) const;
                 const std::set<uint32_t> &getQueueIndices(void) const;
 
+                uint32_t getMemoryType(
+                    const uint32_t &requiredMemoryType,
+                    const vk::MemoryPropertyFlags &propertyFlags
+                ) const;
             private:
                 explicit __GPU(const vk::raii::PhysicalDevice &vkGPU, const vk::raii::SurfaceKHR &surface);
                 std::unique_ptr<__Impl> __impl;

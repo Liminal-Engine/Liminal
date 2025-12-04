@@ -36,7 +36,7 @@ namespace renderer {
                     uint32_t imageCount = gpuSurfaceCapabilities.maxImageCount > 0 && gpuSurfaceCapabilities.minImageCount + 1 > gpuSurfaceCapabilities.maxImageCount ?
                     gpuSurfaceCapabilities.maxImageCount :
                     gpuSurfaceCapabilities.minImageCount + 1;
-                    std::set<uint32_t> queueIndicesSet = gpu.getQueueIndices();
+                    std::set<uint32_t> queueIndicesSet{gpu.getGraphicsQueue().getFamilyIndex(), gpu.getPresentQueue().getFamilyIndex()};
                     std::vector<uint32_t> queueIndicesVec(queueIndicesSet.begin(), queueIndicesSet.end());
                     vk::SwapchainCreateInfoKHR res;
                     res.setFlags({})

@@ -13,6 +13,7 @@
 
 #include "__private/__GPU.hpp"
 #include "__private/__SwapChain.hpp"
+#include "__private/__VertexBuffer.hpp"
 
 #include <memory>
 #include <optional>
@@ -29,7 +30,7 @@ namespace renderer {
                 std::optional<std::reference_wrapper<const vk::raii::Pipeline>> getPipeline(const std::string &name) const;
 
                 void updateUponSwapChainFormatChange(void);
-                const vk::raii::Buffer &getVertexBuffer(void) const;
+                const __VertexBuffer &getVertexBuffer(void) const;
     
             private:
                 class __Impl;
