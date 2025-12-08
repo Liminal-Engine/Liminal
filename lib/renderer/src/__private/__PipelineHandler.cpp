@@ -36,8 +36,6 @@ namespace renderer {
                 vk::raii::RenderPass __vkRenderPass;
                 std::unordered_map<std::string, vk::raii::Pipeline> __vkPipelines;
 
-                __VertexBuffer __vertexBuffer;
-
                 static vk::raii::PipelineLayout __createLayout(const __private::__GPU &gpu) {
                     logger::trace << "Creating graphics pipeline layout create info for GPU " << gpu.getName() << std::endl;
                     vk::PipelineLayoutCreateInfo createInfo(
@@ -299,19 +297,14 @@ namespace renderer {
                     return 0;
                 }
             
-                static __VertexBuffer __createVertexBuffer(const __GPU &gpu) {
-                    logger::trace << "PipelineHandler creating a vertex buffer for GPU " << gpu.getName() << std::endl;
-                    return __VertexBuffer(gpu, VERTICES);
-                    
-                }
+
             public:
                 __Impl(const __private::__GPU &gpu, const __private::__SwapChain &swapChain) :
                 __relatedGPU(gpu),
                 __relatedSwapChain(swapChain),
                 __vkLayout(__createLayout(this->__relatedGPU)),
                 __vkRenderPass(__createRenderPass(this->__relatedGPU, this->__relatedSwapChain)),
-                __vkPipelines(__createVKPipelines(this->__relatedGPU, this->__relatedSwapChain, this->__vkLayout, this->__vkRenderPass)),
-                __vertexBuffer(__createVertexBuffer(this->__relatedGPU))
+                __vkPipelines(__createVKPipelines(this->__relatedGPU, this->__relatedSwapChain, this->__vkLayout, this->__vkRenderPass))
                 {
                     // // We MAP the data
                     // // 1. Map
@@ -371,7 +364,6 @@ namespace renderer {
                     this->__vkPipelines = __createVKPipelines(this->__relatedGPU, this->__relatedSwapChain, this->__vkLayout, this->__vkRenderPass);
                 }
 
-                const __VertexBuffer &getVertexBuffer(void) const { return this->__vertexBuffer; }
         };
 
         __PipelineHandler::__PipelineHandler(const __private::__GPU &gpu,  const __private::__SwapChain &swapChain) : __impl(std::make_unique<__Impl>(gpu, swapChain)) {}
@@ -381,7 +373,6 @@ namespace renderer {
         std::optional<std::reference_wrapper<const vk::raii::Pipeline>> __PipelineHandler::getPipeline(const std::string &name) const { return this->__impl->getPipeline(name); }
         void __PipelineHandler::updateUponSwapChainFormatChange(void) { this->__impl->updateUponSwapChainFormatChange(); }
 
-        const __VertexBuffer &__PipelineHandler::getVertexBuffer(void) const { return this->__impl->getVertexBuffer(); }
     } // namespace __private
     
     

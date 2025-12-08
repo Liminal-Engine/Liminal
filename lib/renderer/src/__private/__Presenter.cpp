@@ -45,6 +45,9 @@ namespace renderer {
                 std::vector<vk::raii::Fence> __renderFinishedFences;
                 uint32_t __currentFrame;
 
+                __VertexBuffer __vertexBuffer;
+
+
 
 
                 static std::vector<vk::raii::Framebuffer> __createFrameBuffers(
@@ -131,6 +134,15 @@ namespace renderer {
                     return vk::raii::Fence(gpu.getVKLogicalDevice(), rawFence);
                 }
 
+                __Status __bindCurrentCommandBufferToVertexBuffer(const __VertexBuffer &vertexBuffer) const {
+                    if ( !vertexBuffer.isMapped() ) {
+                        logger::error << "Renderer cannot bind current command buffer to a buffer. The buffer is not mapped for GPU " << this->__relatedGPU.getName() << std::endl;
+                        return __Status::E_BUFFER_NOT_MAPPED;
+                    }
+                    this->__commandBuffers[this->__currentFrame].bindVertexBuffers(0, *vertexBuffer.getVKBuffer(), vk::DeviceSize(0));
+                    return __Status::E_OK;
+                }
+
                 __Status __recordCommandBuffer(const uint32_t &nextImage, const __SwapChain &swapChain, const __PipelineHandler &pipelineHandler) const {
                     // 0. Setup variables
                     const __SwapChain::__Settings &swapChainSettings = swapChain.getSettings();
@@ -157,7 +169,14 @@ namespace renderer {
                     // 2.3.2 Bind pipeline to the command buffer
                     this->__commandBuffers[this->__currentFrame].bindPipeline(vk::PipelineBindPoint::eGraphics, *pipeline->get());
                     // 2.3.3 Bind the vertex buffer to the current command buffer
-                    this->__commandBuffers[this->__currentFrame].bindVertexBuffers(0, *this->__relatedPipelineHandler.getVertexBuffer().getVKBuffer() , vk::DeviceSize(0));
+                    if (
+                        __Status bindVertexBufferStatus;
+                        (bindVertexBufferStatus = this->__bindCurrentCommandBufferToVertexBuffer(this->__vertexBuffer)) != __Status::E_OK
+                    ) {
+                        logger::error << "Presenter failed to bind current command buffer to vertex bufffer for GPU " << this->__relatedGPU.getName() << std::endl;
+                        return bindVertexBufferStatus;
+                    }
+                    
                     // 5. Since viewport and scissor are dynamic in graphics pipeline, we need to set them again here
                     // TODO : why make them dynamic ? Maybe undynamic them
                     vk::Viewport viewport(0.0f, 0.0f, swapChainSettings.getExtent().width, swapChainSettings.getExtent().height, 0.0f, 1.0f);
@@ -176,7 +195,16 @@ namespace renderer {
                     return __Status::E_OK;
                 }
 
-            public:
+                static __VertexBuffer __createVertexBuffer(
+                    const __GPU &gpu,
+                    const std::vector<VERTEX> &vertexData,
+                    const vk::raii::CommandPool &commandPool
+                ) {
+                    logger::trace << "Presenter creating a vertex buffer for GPU " << gpu.getName() << std::endl;
+                    return __VertexBuffer(gpu, vertexData, commandPool);                                        
+                }
+          
+                public:
                 __Impl(
                     __GPU &gpu,
                     __SwapChain &swapChain,
@@ -218,7 +246,8 @@ namespace renderer {
                     }
                     return res;
                 }()),
-                __currentFrame(0)
+                __currentFrame(0),
+                __vertexBuffer(__createVertexBuffer(this->__relatedGPU, VERTICES, this->__transferCommandPool))
                 {
                 }
 

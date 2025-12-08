@@ -30,7 +30,11 @@ namespace renderer {
             E_PRESENT_QUEUE_SUBOPTIMAL,
             E_WAIT_FENCE,
             E_NO_GRAPHICS_QUEUE_FAMILY,
-            E_NO_PRESENT_QUEUE_FAMILY
+            E_NO_PRESENT_QUEUE_FAMILY,
+            E_PTR_NULL,
+            E_BUFFER_MAPPING,
+            E_BUFFER_NOT_MAPPED,
+            E_ALLOC_BUFFER
         };
     } // namespace __private
 } // namespace renderer

@@ -9,11 +9,12 @@
  * 
 **/
 
-#ifndef __LIMINAL__LIB__RENDERER__INCLUDE__PRIVATE__BUFFER_HPP__
-#define __LIMINAL__LIB__RENDERER__INCLUDE__PRIVATE__BUFFER_HPP__
+#ifndef __LIMINAL__LIB__RENDERER__INCLUDE__PRIVATE__VERTEX_BUFFER_HPP__
+#define __LIMINAL__LIB__RENDERER__INCLUDE__PRIVATE__VERTEX_BUFFER_HPP__
 
 #include "__private/__GPU.hpp"
 #include "temp_consts_need_to_remove_this.hpp"
+#include "__private/__Buffer.hpp"
 
 #include <vulkan/vulkan_raii.hpp>
 
@@ -24,20 +25,26 @@ namespace renderer {
         class __VertexBuffer {
             public:
             // For now, we can only create VertexBuffer (from a primivite, e.g. an array of vertex)
-            __VertexBuffer(const __GPU &gpu, const std::vector<VERTEX> &vertices);
-                ~__VertexBuffer();
+            __VertexBuffer(
+                const __GPU &gpu,
+                const std::vector<VERTEX> &vertices,
+                const vk::raii::CommandPool &transferCommandPool
+            );
+            ~__VertexBuffer();
+            
+            __Status mapToGPU(const void *inputData);
+            const vk::raii::Buffer &getVKBuffer(void) const;
+            const __Buffer &getBuffer(void) const;
 
-                const vk::raii::Buffer &getVKBuffer(void) const;
+            const bool &isMapped(void) const;
 
             private:
                 class __Impl;
                 std::unique_ptr<__Impl> __impl;
-
-
         };
     } // namespace __private
     
     
 } // namespace renderer
 
-#endif // __LIMINAL__LIB__RENDERER__INCLUDE__PRIVATE__BUFFER_HPP__
+#endif // __LIMINAL__LIB__RENDERER__INCLUDE__PRIVATE__VERTEX_BUFFER_HPP__

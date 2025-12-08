@@ -30,7 +30,6 @@ namespace renderer {
                 std::optional<std::reference_wrapper<const vk::raii::Pipeline>> getPipeline(const std::string &name) const;
 
                 void updateUponSwapChainFormatChange(void);
-                const __VertexBuffer &getVertexBuffer(void) const;
     
             private:
                 class __Impl;

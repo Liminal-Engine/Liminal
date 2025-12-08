@@ -24,100 +24,88 @@ namespace renderer {
         class __VertexBuffer::__Impl {
             private:
                 const __GPU &__relatedGPU;
-                const vk::DeviceSize __vkGPUSize;
-                vk::raii::Buffer __vkBuffer;
-                vk::raii::DeviceMemory __vkGPUMemory;
-                void *__CPUBuffer;
+                const vk::raii::CommandPool &__relatedTransferCommandPool;
+                const size_t __size;
+                const std::set<uint32_t> __relatedQueueFamilies;
+                // it's better in terms of performance to use a __buffer with device local bit, so we have a staging buffer whose content is copied in device local buffer
+                __Buffer __stagingBuffer;
+                __Buffer __buffer;
 
-                static vk::raii::Buffer __createVKBuffer(const __GPU &gpu, const vk::DeviceSize &relatedGPUSize) {
-                    logger::trace << "Buffer creating VK buffer create info for GPU " << gpu.getName() << std::endl;
-
-                    std::set<uint32_t> queueIndicesSet{gpu.getGraphicsQueue().getFamilyIndex(), gpu.getPresentQueue().getFamilyIndex()};
-                    std::vector<uint32_t> queueIndicesVec(queueIndicesSet.begin(), queueIndicesSet.end());
-
-                    vk::BufferCreateInfo createInfo{};
-                    createInfo.setFlags({})
-                    .setSize(relatedGPUSize)
-                    .setUsage(vk::BufferUsageFlagBits::eVertexBuffer)
-                    .setSharingMode(queueIndicesVec.size() == 1 ? vk::SharingMode::eExclusive : vk::SharingMode::eConcurrent)
-                    .setQueueFamilyIndices(queueIndicesVec);
-
-                    logger::trace << "Buffer creating VK buffer for GPU " << gpu.getName() << std::endl;
-                    auto [result, rawBuffer] = gpu.getRawVKLogicalDevice().createBuffer(createInfo);
-                    if (result != vk::Result::eSuccess) {
-                        __LOG_VK_CREATE_ERROR(gpu, result, "Buffer failed to create VK buffer");
-                        return vk::raii::Buffer(nullptr);
-                    }
-                    return vk::raii::Buffer(gpu.getVKLogicalDevice(), rawBuffer);
-                }
-
-                // FIXME: this auto allocate and auto bind, have a custom mem handling and maybe keep auto bind
-                static vk::raii::DeviceMemory __createDeviceMemory(const __GPU &gpu, const vk::raii::Buffer &relatedBuffer) {
-                    logger::trace << "Buffer creating GPU memory alloc info for GPU " << gpu.getName() << std::endl;
-                    vk::MemoryRequirements memRequirements = relatedBuffer.getMemoryRequirements();
-                    vk::MemoryAllocateInfo allocInfo{};
-                    allocInfo.setAllocationSize(memRequirements.size)
-                    .setMemoryTypeIndex(gpu.getMemoryType(memRequirements.memoryTypeBits, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent));
-
-                    // auto allocate
-                    logger::trace << "Buffer allocatingVK Buffer GPU memory for GPU " << gpu.getName() << std::endl;
-                    auto [result, rawDeviceMemory] = gpu.getRawVKLogicalDevice().allocateMemory(allocInfo);
-                    if (result != vk::Result::eSuccess) {
-                        __LOG_VK_CREATE_ERROR(gpu, result, "Buffer failed to allocate GPU memory");
-                        return vk::raii::DeviceMemory(nullptr);
-                    }
-                    // auto bind as well
-                    vk::raii::DeviceMemory deviceMemory(gpu.getVKLogicalDevice(), rawDeviceMemory);
-                    if (gpu.getRawVKLogicalDevice().bindBufferMemory(*relatedBuffer, *deviceMemory, 0) != vk::Result::eSuccess) {
-                        __LOG_VK_CREATE_ERROR(gpu, result, "Buffer failed to bind device memory to buffer");
-                        return vk::raii::DeviceMemory(nullptr);
-                    }
-                    return deviceMemory;
-                }
-
-                static void *__createCPUBuffer(
+                static __Buffer __createBuffer(
                     const __GPU &gpu,
-                    const vk::raii::DeviceMemory &relatedGPUMemory,
-                    const vk::DeviceSize &relatedGPUSize,
-                    const std::vector<VERTEX> &relatedVerticies
+                    const size_t &size,
+                    const vk::BufferUsageFlags &bufferUsageFlags,
+                    const vk::MemoryPropertyFlags &memPropFlags,
+                    const std::set<uint32_t> &queueFamilyIndices,
+                    const void *inputData = nullptr
                 ) {
-                    // FIXME : this will write the memory (e.g., write it in the GPU, is it a good thing ?)                    
-                    auto [result, cpuBuffer] = gpu.getRawVKLogicalDevice().mapMemory(*relatedGPUMemory, 0, relatedGPUSize);
-                    if (result != vk::Result::eSuccess) {
-                        __LOG_VK_CREATE_ERROR(gpu, result, "Buffer failed to map GPU memory");
-                        return nullptr;                        
-                    }
-                    if (memcpy(cpuBuffer, relatedVerticies.data(), static_cast<size_t>(relatedGPUSize)) == NULL) {
-                        logger::error << "Failed to copy verticies data do CPU pointer for GPU: " << gpu.getName() << std::endl;
-                        return nullptr;
-                    }
-                    gpu.getRawVKLogicalDevice().unmapMemory(*relatedGPUMemory);
-                    return cpuBuffer;
+                    logger::trace << "VertexBuffer creating Buffer for GPU " << gpu.getName() << std::endl;
+                    return __Buffer(gpu, size, bufferUsageFlags, memPropFlags, queueFamilyIndices, inputData);
                 }
 
             public:
-                __Impl(const __GPU &gpu, const std::vector<VERTEX> &vertices) :
+                __Impl(
+                    const __GPU &gpu,
+                    const std::vector<VERTEX> &vertices,
+                    const vk::raii::CommandPool &transferCommandPool
+                ) :
                 __relatedGPU(gpu),
-                __vkGPUSize(vk::DeviceSize(sizeof(vertices[0]) * vertices.size())),
-                __vkBuffer(__createVKBuffer(this->__relatedGPU, this->__vkGPUSize)),
-                __vkGPUMemory(__createDeviceMemory(this->__relatedGPU, this->__vkBuffer)),
-                __CPUBuffer(__createCPUBuffer(this->__relatedGPU, this->__vkGPUMemory, this->__vkGPUSize, vertices))
+                __relatedTransferCommandPool(transferCommandPool),
+                __size(sizeof(vertices[0]) * vertices.size()),
+                __relatedQueueFamilies(std::set<uint32_t>{gpu.getPresentQueue().getFamilyIndex(), gpu.getGraphicsQueue().getFamilyIndex()}),
+                __stagingBuffer(
+                    __createBuffer(
+                        gpu,
+                        this->__size,
+                        vk::BufferUsageFlagBits::eTransferSrc,
+                        vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent,
+                        this->__relatedQueueFamilies,
+                        (void *)vertices.data()
+                    )
+                ),
+                __buffer(
+                    __createBuffer(
+                        gpu,
+                        this->__size,
+                        vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eVertexBuffer,
+                        vk::MemoryPropertyFlagBits::eDeviceLocal,
+                        this->__relatedQueueFamilies
+                    )
+                )
                 {
+                    logger::trace << "VertexBuffer copying VK staging buffer to VK buffer for GPU " << this->__relatedGPU.getName() << std::endl;
+                    if (
+                        __Status copyStatus;
+                        (copyStatus = this->__buffer.copy(this->__stagingBuffer, this->__relatedTransferCommandPool)) != __Status::E_OK
+                    ) {
+                        logger::error << "VertexBuffer failed to copy VK staging buffer to VK buffer for GPU " << this->__relatedGPU.getName() << std::endl;
+                    }
                 }
 
+                __Status mapToGPU(const void *inputData) { return this->__buffer.mapToGPU(inputData); }
 
-                const vk::raii::Buffer &getVKBuffer(void) const { return this->__vkBuffer; }
+                const vk::raii::Buffer &getVKBuffer(void) const { return this->__buffer.getVKBuffer(); }
 
+                const __Buffer &getBuffer(void) const { return this->__buffer; }
+
+                const bool &isMapped(void) const { return this->__buffer.isMapped(); }
 
         };
 
-        __VertexBuffer::__VertexBuffer(const __GPU &gpu, const std::vector<VERTEX> &vertices) :
-        __impl(std::make_unique<__Impl>(gpu, vertices))
+        __VertexBuffer::__VertexBuffer(
+            const __GPU &gpu,
+            const std::vector<VERTEX> &vertices,
+            const vk::raii::CommandPool &transferCommandPool
+        ) :
+        __impl(std::make_unique<__Impl>(gpu, vertices, transferCommandPool))
         {}
 
         __VertexBuffer::~__VertexBuffer() = default;
 
+        __Status __VertexBuffer::mapToGPU(const void *inputData) { return this->__impl->mapToGPU(inputData); }
         const vk::raii::Buffer &__VertexBuffer::getVKBuffer(void) const { return this->__impl->getVKBuffer(); }
+        const __Buffer & __VertexBuffer::getBuffer(void) const { return this->__impl->getBuffer(); }
+        const bool &__VertexBuffer::isMapped(void) const { return this->__impl->isMapped(); }
 
     } // namespace __private
 } // namespace renderer
