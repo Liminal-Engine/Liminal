@@ -14,6 +14,7 @@
 #include "__private/__Status.hpp"
 #include "__private/__errors.hpp"
 #include "temp_consts_need_to_remove_this.hpp"
+#include "__private/__IndexBuffer.hpp"
 
 #include <logger/logger.hpp>
 #include <parseop/parseop.hpp>
@@ -46,6 +47,7 @@ namespace renderer {
                 uint32_t __currentFrame;
 
                 __VertexBuffer __vertexBuffer;
+                __IndexBuffer __indexBuffer;
 
 
 
@@ -143,6 +145,15 @@ namespace renderer {
                     return __Status::E_OK;
                 }
 
+                __Status __bindCurrentCommandBufferToIndexBuffer(const __IndexBuffer &indexBuffer) const {
+                    if ( indexBuffer.isMapped() == false ) {
+                        logger::error << "Renderer cannot bind current command buffer to an index buffer. The index buffer is not mapped for GPU " << this->__relatedGPU.getName() << std::endl;
+                        return __Status::E_BUFFER_NOT_MAPPED;
+                    }
+                    this->__commandBuffers[this->__currentFrame].bindIndexBuffer(*indexBuffer.getVKBuffer(), vk::DeviceSize(0), vk::IndexType::eUint16);
+                    return __Status::E_OK;
+                }
+
                 __Status __recordCommandBuffer(const uint32_t &nextImage, const __SwapChain &swapChain, const __PipelineHandler &pipelineHandler) const {
                     // 0. Setup variables
                     const __SwapChain::__Settings &swapChainSettings = swapChain.getSettings();
@@ -173,8 +184,16 @@ namespace renderer {
                         __Status bindVertexBufferStatus;
                         (bindVertexBufferStatus = this->__bindCurrentCommandBufferToVertexBuffer(this->__vertexBuffer)) != __Status::E_OK
                     ) {
-                        logger::error << "Presenter failed to bind current command buffer to vertex bufffer for GPU " << this->__relatedGPU.getName() << std::endl;
+                        logger::error << "Presenter failed to bind current command buffer to vertex buffer for GPU " << this->__relatedGPU.getName() << std::endl;
                         return bindVertexBufferStatus;
+                    }
+                    // 2.3.4 Bind the index buffer to the current command buffer
+                    if (
+                        __Status bindIndexBufferStatus;
+                        (bindIndexBufferStatus = this->__bindCurrentCommandBufferToIndexBuffer(this->__indexBuffer)) != __Status::E_OK
+                    ) {
+                        logger::error << "Presenter failed to bnd the currend command buffer to an index buffer for GPU " << this->__relatedGPU.getName() << std::endl;
+                        return bindIndexBufferStatus;
                     }
                     
                     // 5. Since viewport and scissor are dynamic in graphics pipeline, we need to set them again here
@@ -184,7 +203,8 @@ namespace renderer {
                     this->__commandBuffers[this->__currentFrame].setViewport(0, viewport);
                     this->__commandBuffers[this->__currentFrame].setScissor(0, scissor);
                     // 6. Draw
-                    this->__commandBuffers[this->__currentFrame].draw(static_cast<uint32_t>(VERTICES.size()), 1, 0, 0);
+                    this->__commandBuffers[this->__currentFrame].drawIndexed(static_cast<uint32_t>(INDICES.size()), 1, 0, 0, 0);
+                    // this->__commandBuffers[this->__currentFrame].draw(static_cast<uint32_t>(VERTICES.size()), 1, 0, 0);
                     // 7. End render pass
                     this->__commandBuffers[this->__currentFrame].endRenderPass();
                     // 8. Finish command buffer recording
@@ -202,6 +222,15 @@ namespace renderer {
                 ) {
                     logger::trace << "Presenter creating a vertex buffer for GPU " << gpu.getName() << std::endl;
                     return __VertexBuffer(gpu, vertexData, commandPool);                                        
+                }
+
+                static __IndexBuffer __createIndexBuffer(
+                    const __GPU &gpu,
+                    const std::vector<uint16_t> &indices,
+                    const vk::raii::CommandPool &commandPool
+                ) {
+                    logger::trace << "Presenter creating an index buffer for GPU " << gpu.getName() << std::endl;
+                    return __IndexBuffer(gpu, indices, commandPool);
                 }
           
                 public:
@@ -247,7 +276,8 @@ namespace renderer {
                     return res;
                 }()),
                 __currentFrame(0),
-                __vertexBuffer(__createVertexBuffer(this->__relatedGPU, VERTICES, this->__transferCommandPool))
+                __vertexBuffer(__createVertexBuffer(this->__relatedGPU, VERTICES, this->__transferCommandPool)),
+                __indexBuffer(__createIndexBuffer(this->__relatedGPU, INDICES, this->__transferCommandPool))
                 {
                 }
 
