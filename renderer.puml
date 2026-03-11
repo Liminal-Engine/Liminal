@@ -1,6 +1,6 @@
 @startuml renderer_class_diagram
 
-namespace renderer {
+namespace renderer_vk_old_vk_old {
     class Context {
         --Constructeurs--
         + Context(const GPU &GPU)

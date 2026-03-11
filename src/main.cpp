@@ -35,7 +35,6 @@
 #include <fs/Permission.hpp>
 #include <time/Date.hpp>
 #include <fs/OutFile.hpp>
-#include <renderer/Renderer.hpp>
 
 #include <parseop/parseop.hpp>
 #include <error/error.hpp>
@@ -71,26 +70,26 @@ int main() {
     setupLoggerSignalHandlers();
     logger::Logger::startWorker();
     // ::jsonio::OutJson outJson;
-    // outJson.parse(fs::Path("/home/matteo/Projects/Liminal/basic.json"));
-    // outJson.insert();
-    glfwInit();
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-    GLFWwindow* window = glfwCreateWindow(800, 800, "Liminal Engine", nullptr, nullptr);
-    // glfwSetFramebufferSizeCallback(window, surfaceChangedCallback);
-    // renderer::Context context(window);
-    // renderer::SwapChain swapChain(window, context.getGPU(), context.getVKSurface());
-    // renderer::PipelineHandler pipelineHandler(context.getGPU(), swapChain);
-    // renderer::Presenter presenter(context.getGPU(), swapChain, pipelineHandler);
-    // renderer::Renderer renderer();
-    renderer::Renderer renderer(window);
+    // // outJson.parse(fs::Path("/home/matteo/Projects/Liminal/basic.json"));
+    // // outJson.insert();
+    // glfwInit();
+    // glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+    // glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+    // GLFWwindow* window = glfwCreateWindow(800, 800, "Liminal Engine", nullptr, nullptr);
+    // // glfwSetFramebufferSizeCallback(window, surfaceChangedCallback);
+    // // renderer::Context context(window);
+    // // renderer::SwapChain swapChain(window, context.getGPU(), context.getVKSurface());
+    // // renderer::PipelineHandler pipelineHandler(context.getGPU(), swapChain);
+    // // renderer::Presenter presenter(context.getGPU(), swapChain, pipelineHandler);
+    // // renderer::Renderer renderer();
+    // renderer::Renderer renderer(window);
 
-    while (!glfwWindowShouldClose(window)) {
-        glfwPollEvents();
-        renderer.draw();
-    }
-    renderer.waitForGPUToFinishJobs();
-    glfwDestroyWindow(window);
+    // while (!glfwWindowShouldClose(window)) {
+    //     glfwPollEvents();
+    //     renderer.draw();
+    // }
+    // renderer.waitForGPUToFinishJobs();
+    // glfwDestroyWindow(window);
     logger::Logger::stopWorker();
     // std::vector<std::string> tokPath = parseop::tokenize("", '.');
 

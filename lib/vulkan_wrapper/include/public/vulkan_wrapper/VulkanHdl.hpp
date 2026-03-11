@@ -83,7 +83,7 @@ namespace vulkan_wrapper {
             std::vector<VkImage> _swapChainImagesHandlers; ///< Handlers of the swap chain images each in the form of a VkImage
             std::vector<VkImageView> _swapChainImagesViewsHandlers; ///< A handler of a "view" into an image. Views are required to access images. It describes how ot access it and which par of the image to access
             VkRenderPass _renderPass; ///< Describes various infos about rendering operations in a coherant set (attachlents, subpasses, depandencies, etc...) 
-            VkPipelineLayout _pipelineLayout; ///< Describes tje set of ressources that can be accessible by a related pipeline
+            VkPipelineLayout _pipelineLayout; ///< Describes tje set of resources that can be accessible by a related pipeline
             VkPipeline _graphicsPipeline; ///< Describe the graphics pipeline
             std::vector<VkFramebuffer> _frameBuffers; ///< Ties the VkImages for a particular rendering operation e.g. collection of image attachments and the memory association between them.
             VkCommandPool _commandPool; ///< The commadn pool will manage allocation and memory of the commandBuffer;
