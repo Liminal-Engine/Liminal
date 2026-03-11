@@ -50,7 +50,7 @@
 #include <limits>
 #include <csignal>
 
-
+#include <host/Engine.hpp>
 
 void setupLoggerSignalHandlers() {
     std::signal(SIGSEGV, logger::Logger::flushOnCrash);
@@ -69,6 +69,7 @@ void setupLoggerSignalHandlers() {
 int main() {
     setupLoggerSignalHandlers();
     logger::Logger::startWorker();
+    int res = host::Engine().run();
     // ::jsonio::OutJson outJson;
     // // outJson.parse(fs::Path("/home/matteo/Projects/Liminal/basic.json"));
     // // outJson.insert();
@@ -91,6 +92,7 @@ int main() {
     // renderer.waitForGPUToFinishJobs();
     // glfwDestroyWindow(window);
     logger::Logger::stopWorker();
+    return res;
     // std::vector<std::string> tokPath = parseop::tokenize("", '.');
 
     // logger::error << true << ' ' << false << std::endl;

@@ -20,3 +20,11 @@ add_subdirectory(shaderc)
 set(GLM_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLM_BUILD_INSTALL OFF CACHE BOOL "" FORCE)
 add_subdirectory(glm)
+
+# 3. glad
+add_subdirectory(glad)
+
+# 4. glfw
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_INSTALL OFF CACHE BOOL "" FORCE)
+add_subdirectory(glfw)

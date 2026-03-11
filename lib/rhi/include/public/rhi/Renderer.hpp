@@ -17,6 +17,8 @@ namespace rhi {
             Renderer(Renderer&&) = delete;                 // No move
             Renderer& operator=(Renderer&&) = delete;      // No affectation by moving
 
+            void draw(void);
+
         private:
             Renderer(void);
             ~Renderer();
