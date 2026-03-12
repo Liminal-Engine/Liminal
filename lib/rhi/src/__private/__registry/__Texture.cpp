@@ -51,12 +51,22 @@ namespace rhi {
 
                     Status destroy(void) {
                         if (this->__initialized == false) {
-                            logger::error << "Failed to destory texture registry: not initliazed" << std::endl;
+                            logger::error << "Failed to destory texture registry: not initialized" << std::endl;
                             return Status::E_NOT_INIT;
                         }
                         this->__data.clear();
                         this->__initialized = false;
                         return Status::OK;
+                    }
+
+                    const resource::Texture *get(const std::string &name) const {
+                        auto it = this->__data.find(name);
+
+                        if (it == this->__data.end()) {
+                            logger::error << "Failed to find texture with name: " << name << std::endl;
+                            return nullptr; // FIXME: return default texture instead
+                        }
+                        return it->second.get();
                     }
             };
 
@@ -68,6 +78,7 @@ namespace rhi {
 
             Status __Texture::init(void) { return this->__impl->init(); }
             Status __Texture::destroy(void) { return this->__impl->destroy(); }
+            const resource::Texture *__Texture::get(const std::string &name) const { return this->__impl->get(name); }
         } // namespace __registry
     } // namespace __private
 } // namespace rhi

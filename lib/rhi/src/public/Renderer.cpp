@@ -50,9 +50,15 @@ namespace rhi {
         return __instance;
     }
 
-    void Renderer::draw(void) {
+    void Renderer::draw(const Registry &registry) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         // logger::info << "DRAWING" << std::endl;
+        const resource::Shader *shader = registry.getShader(ShaderCategory::CORE, "textured");
+        const resource::Texture *texture = registry.getTexture("ground_2K");
+        const resource::Mesh *mesh = registry.getMesh("TRIANGLE");
+        std::cout << "DRAWING" << std::endl;
+        shader->use();
+        mesh->draw_DELETE_ME_I_AM_NOT_SUPPOSED_TO_DRAW_MYSELF();
     }
 
     Renderer::Renderer(void) :

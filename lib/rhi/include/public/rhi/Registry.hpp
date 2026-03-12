@@ -1,8 +1,13 @@
 #ifndef __LIMINAL__LIB__RHI__REGISTRY_HPP__
 #define __LIMINAL__LIB__RHI__REGISTRY_HPP__
 
-#include <memory>
 #include "Status.hpp"
+#include "resource/Shader.hpp"
+#include "ShaderCategory.hpp"
+#include "resource/Texture.hpp"
+#include "resource/Mesh.hpp"
+
+#include <memory>
 
 namespace rhi {
     class Registry {
@@ -12,6 +17,10 @@ namespace rhi {
 
             Status init(void);
             Status destroy(void);
+
+            const resource::Shader *getShader(const ShaderCategory &category, const std::string &name) const;
+            const resource::Texture *getTexture(const std::string &name) const;
+            const resource::Mesh *getMesh(const std::string &name) const;
 
         private:
             class __Impl;

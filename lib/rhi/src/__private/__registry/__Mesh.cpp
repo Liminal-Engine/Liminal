@@ -33,9 +33,9 @@ namespace rhi {
                         v2.normal = glm::vec3(0.0f);
                         // bottom right
                         resource::Vertex v3;
-                        v2.position = glm::vec3(-0.5f, -0.5f, 0.0f);
-                        v2.uv = glm::vec2(0.0f);
-                        v2.normal = glm::vec3(0.0f);
+                        v3.position = glm::vec3(-0.5f, -0.5f, 0.0f);
+                        v3.uv = glm::vec2(0.0f);
+                        v3.normal = glm::vec3(0.0f);
 
                         std::vector<resource::Vertex> verices{v1, v2, v3};
                         std::vector<uint32_t> indices = {0, 1, 2};
@@ -47,13 +47,23 @@ namespace rhi {
 
                     Status destroy(void) {
                         if (this->__initialized == false) {
-                            logger::error << "Failed to destory mesh registry: not initliazed" << std::endl;
+                            logger::error << "Failed to destory mesh registry: not initialized" << std::endl;
                             return Status::E_NOT_INIT;
                         }
                         this->__data.clear();
                         this->__initialized = false;
                         return Status::OK;
                     };
+
+                    const resource::Mesh *get(const std::string &name) const {
+                        auto it = this->__data.find(name);
+
+                        if (it == this->__data.end()) {
+                            logger::error << "Failed to find mesh with name: " << name << std::endl;
+                            return nullptr; // FIXME: return default mesh instead ?
+                        }
+                        return it->second.get();
+                    }
             };
 
             __Mesh::__Mesh(void) :
@@ -64,6 +74,7 @@ namespace rhi {
 
             Status __Mesh::init(void) { return this->__impl->init(); }
             Status __Mesh::destroy(void) { return this->__impl->destroy(); }
+            const resource::Mesh *__Mesh::get(const std::string &name) const { return this->__impl->get(name); }
         } // namespace __registry
     } // namespace __private
 } // namespace rhi

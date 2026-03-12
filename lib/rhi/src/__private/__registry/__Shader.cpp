@@ -40,6 +40,17 @@ namespace rhi {
                         return ShaderCategory::UNKNOWN;
 
                     }
+
+                    static std::string __categoryToStr(const ShaderCategory &category) {
+                        switch (category) {
+                            case ShaderCategory::CORE: return "CORE";
+                            case ShaderCategory::DEBUG: return "DEBUG";
+                            case ShaderCategory::POST_PROCESS: return "POST_PROCESS";
+                            case ShaderCategory::UNKNOWN: return "UNKNOWN";
+                            default: return "UNKNOWN";
+                        }
+                        return "UNKNOWN";
+                    }
                     
                     std::unordered_map<__Key, std::unique_ptr<resource::Shader>, __Hasher> __data;
                     bool __initialized;
@@ -97,12 +108,23 @@ namespace rhi {
 
                     Status destroy(void) {
                         if (this->__initialized == false) {
-                            logger::error << "Failed to destory shader registry: not initliazed" << std::endl;
+                            logger::error << "Failed to destory shader registry: not initialized" << std::endl;
                             return Status::E_NOT_INIT;
                         }
                         this->__data.clear();
                         this->__initialized = false;
                         return Status::OK;
+                    }
+
+                    const resource::Shader *get(const ShaderCategory &category, const std::string &name) const {
+                        __Key key(category, name);
+                        auto it = this->__data.find(key);
+
+                        if (it == this->__data.end()) {
+                            logger::error << "Shader not found: CATEGORY=" << __categoryToStr(category) << ",NAME=" << name << std::endl;
+                            return nullptr; // FIXME : return default shader instead
+                        }
+                        return it->second.get();
                     }
             };
 
@@ -116,6 +138,7 @@ namespace rhi {
 
             Status __Shader::init(void) { return this->__impl->init(); }
             Status __Shader::destroy(void) { return this->__impl->destroy(); }
+            const resource::Shader *__Shader::get(const ShaderCategory &category, const std::string &name) const { return this->__impl->get(category, name); }
         } // namespace __registry
     } // namespace __private
 } // namespace rhi

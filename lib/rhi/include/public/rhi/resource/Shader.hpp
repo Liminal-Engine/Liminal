@@ -11,6 +11,8 @@ namespace rhi {
             public:
                 Shader(const fs::Path &path);
                 ~Shader();
+
+                void use(void) const;
     
                 Shader(const Shader&) = delete;            // No copy
                 Shader& operator=(const Shader&) = delete; // No affectation

@@ -17,7 +17,7 @@ namespace rhi {
 
                     Status init(void);
                     Status destroy(void);
-                    resource::Mesh *get(const std::string &name);
+                    const resource::Mesh *get(const std::string &name) const;
 
                 private:
                     class __Impl;

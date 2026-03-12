@@ -12,6 +12,8 @@ namespace rhi {
             public:
                 Mesh(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices);
                 ~Mesh();
+
+                void draw_DELETE_ME_I_AM_NOT_SUPPOSED_TO_DRAW_MYSELF(void) const;
     
                 Mesh(const Mesh&) = delete;            // No copy
                 Mesh& operator=(const Mesh&) = delete; // No affectation

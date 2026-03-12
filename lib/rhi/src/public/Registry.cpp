@@ -54,6 +54,18 @@ namespace rhi {
                 }
                 return Status::OK;
             }
+
+            const resource::Shader *getShader(const ShaderCategory &category, const std::string &name) const {
+                return this->__shaderRegistry.get(category, name);
+            }
+            
+            const resource::Texture *getTexture(const std::string &name) const {
+                return this->__textureRegistry.get(name);
+            }
+
+            const resource::Mesh *getMesh(const std::string &name) const {
+                return this->__meshRegistry.get(name);
+            }
     };
 
     Registry::Registry(void) :
@@ -64,4 +76,8 @@ namespace rhi {
 
     Status Registry::init(void) { return this->__impl->init(); }
     Status Registry::destroy(void) { return this->__impl->destroy(); }
+
+    const resource::Shader *Registry::getShader(const ShaderCategory &category, const std::string &name) const { return this->__impl->getShader(category, name); }
+    const resource::Texture *Registry::getTexture(const std::string &name) const { return this->__impl->getTexture(name); }
+    const resource::Mesh *Registry::getMesh(const std::string &name) const { return this->__impl->getMesh(name); }
 } // namespace rhi

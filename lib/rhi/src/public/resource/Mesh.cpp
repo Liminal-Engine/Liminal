@@ -55,6 +55,11 @@ namespace rhi {
                     if (this->__VBO) glDeleteBuffers(1, &this->__VBO);
                     if (this->__EBO) glDeleteBuffers(1, &this->__EBO);
                 };
+
+                void draw_DELETE_ME_I_AM_NOT_SUPPOSED_TO_DRAW_MYSELF(void) const {
+                    glBindVertexArray(this->__VAO);
+                    glDrawElements(GL_TRIANGLES, this->__count, GL_UNSIGNED_INT, nullptr);
+                }
         };
     
         
@@ -66,5 +71,7 @@ namespace rhi {
         }
     
         Mesh::~Mesh() = default;
+
+        void Mesh::draw_DELETE_ME_I_AM_NOT_SUPPOSED_TO_DRAW_MYSELF(void) const { this->__impl->draw_DELETE_ME_I_AM_NOT_SUPPOSED_TO_DRAW_MYSELF();}
     } // namespace resource
 } // namespace rhi

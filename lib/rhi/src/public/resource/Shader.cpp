@@ -141,6 +141,10 @@ namespace rhi {
                 ~__Impl() {
                     if (this->__handle) glDeleteProgram(this->__handle);
                 }
+
+                void use(void) const {
+                    glUseProgram(this->__handle);
+                }
         };
     
         Shader::Shader(const fs::Path &path) :
@@ -150,5 +154,7 @@ namespace rhi {
         }
     
         Shader::~Shader() = default;
+
+        void Shader::use(void) const { this->__impl->use(); }
     } // namespace resource
 } // namespace rhi

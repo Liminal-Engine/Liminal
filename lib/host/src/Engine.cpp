@@ -49,7 +49,7 @@ namespace host {
             int run(void) {
                 while (glfwWindowShouldClose(this->__window) == false) {
                     glfwPollEvents();
-                    this->__renderer->draw();
+                    this->__renderer->draw(this->__ressourceRegistry);
                     glfwSwapBuffers(this->__window);
                 }
                 return 0;
