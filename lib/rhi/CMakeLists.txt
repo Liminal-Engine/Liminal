@@ -6,6 +6,7 @@ link_internal_libs(PUBLIC logger fs)
 
 # FIXME : create macro for vendors
 target_include_directories(rhi PRIVATE ${CMAKE_SOURCE_DIR}/vendors/glad/include)
-target_link_libraries(rhi PUBLIC ${CMAKE_SOURCE_DIR}/vendors/build/glad/libglad.a)
+target_link_libraries(rhi PRIVATE ${CMAKE_SOURCE_DIR}/vendors/build/glad/libglad.a)
 
 target_include_directories(rhi PRIVATE ${CMAKE_SOURCE_DIR}/vendors/stb_image/include)
+target_include_directories(rhi PRIVATE ${CMAKE_SOURCE_DIR}/vendors/glm)

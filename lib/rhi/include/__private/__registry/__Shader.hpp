@@ -1,5 +1,5 @@
-#ifndef __LIMINAL__LIB__RHI__PRIVATE__REGISTR__SHADER_HPP__
-#define __LIMINAL__LIB__RHI__PRIVATE__REGISTR__SHADER_HPP__
+#ifndef __LIMINAL__LIB__RHI__PRIVATE__REGISTRY__SHADER_HPP__
+#define __LIMINAL__LIB__RHI__PRIVATE__REGISTRY__SHADER_HPP__
 
 #include "Status.hpp"
 #include "resource/Shader.hpp"
@@ -28,4 +28,4 @@ namespace rhi {
 } // namespace rhi
 
 
-#endif // __LIMINAL__LIB__RHI__PRIVATE__REGISTR__SHADER_HPP__
+#endif // __LIMINAL__LIB__RHI__PRIVATE__REGISTRY__SHADER_HPP__

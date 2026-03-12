@@ -84,6 +84,10 @@ namespace rhi {
                 {
                     
                 }
+
+                ~__Impl() {
+                    glDeleteTextures(1, &this->__handle);
+                }
         };
     
         Texture::Texture(const fs::Path &path) :

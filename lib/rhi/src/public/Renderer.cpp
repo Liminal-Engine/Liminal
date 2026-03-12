@@ -52,7 +52,7 @@ namespace rhi {
 
     void Renderer::draw(void) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        logger::info << "DRAWING" << std::endl;
+        // logger::info << "DRAWING" << std::endl;
     }
 
     Renderer::Renderer(void) :

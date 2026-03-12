@@ -1,13 +1,16 @@
 #ifndef __LIMINAL__LIB__RHI__INCLUDE__PUBLIC__RESOURCE__MESH_HPP__
 #define __LIMINAL__LIB__RHI__INCLUDE__PUBLIC__RESOURCE__MESH_HPP__
 
+#include "Vertex.hpp"
+
+#include <vector>
 #include <memory>
 
 namespace rhi {
     namespace resource {
         class Mesh {
             public:
-                Mesh(void);
+                Mesh(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices);
                 ~Mesh();
     
                 Mesh(const Mesh&) = delete;            // No copy

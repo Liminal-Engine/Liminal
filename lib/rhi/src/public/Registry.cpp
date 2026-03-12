@@ -1,6 +1,7 @@
 #include "Registry.hpp"
 #include "__private/__registry/__Shader.hpp"
 #include "__private/__registry/__Texture.hpp"
+#include "__private/__registry/__Mesh.hpp"
 
 #include <logger/logger.hpp>
 
@@ -9,6 +10,7 @@ namespace rhi {
         private:
             __private::__registry::__Shader __shaderRegistry;
             __private::__registry::__Texture __textureRegistry;
+            __private::__registry::__Mesh __meshRegistry;
 
         public:
             __Impl(void) {
@@ -30,7 +32,11 @@ namespace rhi {
                     logger::error << "Failed to initialize texture registry" << std::endl;
                     return tmpStatus;
                 }
-
+                tmpStatus = this->__meshRegistry.init();
+                if (tmpStatus != Status::OK) {
+                    logger::error << "Failed to initialize mesh registry" << std::endl;
+                    return tmpStatus;
+                }
                 return Status::OK;
             }
     };

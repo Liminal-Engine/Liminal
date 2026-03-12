@@ -38,8 +38,9 @@ namespace host {
             }
             
             ~__Impl() {
-                glfwTerminate();
                 this->__renderer->destroy();
+                // glfwDestroyWindow(this->__window);
+                // glfwTerminate();
             }
 
             int run(void) {

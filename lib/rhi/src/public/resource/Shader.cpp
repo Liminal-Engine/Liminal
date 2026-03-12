@@ -137,6 +137,10 @@ namespace rhi {
                 {
                     
                 }
+
+                ~__Impl() {
+                    if (this->__handle) glDeleteProgram(this->__handle);
+                }
         };
     
         Shader::Shader(const fs::Path &path) :
