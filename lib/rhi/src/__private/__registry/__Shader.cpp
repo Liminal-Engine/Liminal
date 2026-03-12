@@ -1,0 +1,110 @@
+#include "__private/__registry/Shader.hpp"
+
+#include <logger/logger.hpp>
+#include <fs/Path.hpp>
+
+#include <unordered_map>
+#include <tuple>
+
+namespace rhi {
+    namespace __private {
+        namespace __registry {
+            class Shader::__Impl {
+                private:
+                    struct __Key {
+                        ShaderCategory category;
+                        std::string name;
+
+                        __Key(const ShaderCategory &category, const std::string &name) :
+                        category(category),
+                        name(name)
+                        {}
+                        bool operator==(const __Key& other) const { return this->category == other.category && this->name == other.name; }
+                    };
+
+                    struct __Hasher {
+                        size_t operator()(const __Key &key) const {
+                            size_t h1 = std::hash<int>{}(static_cast<int>(key.category));
+                            size_t h2 = std::hash<std::string>{}(key.name);
+                            return h1 ^ (h2 << 1);
+                        }
+                    };
+
+                    static ShaderCategory __strToShaderCategory(const std::string &str) {
+                        std::string upperStr = str;
+                        for (char &c : upperStr) c = ::toupper(c);
+                        if (upperStr == "CORE") return ShaderCategory::CORE;
+                        if (upperStr == "DEBUG") return ShaderCategory::DEBUG;
+                        if (upperStr == "POST_PROCESS") return ShaderCategory::POST_PROCESS;
+                        return ShaderCategory::UNKNOWN;
+
+                    }
+                    
+                    std::unordered_map<__Key, std::unique_ptr<resource::Shader>, __Hasher> __data;
+                    bool __initialized;
+
+                public:
+                    __Impl(void) :
+                    __data{},
+                    __initialized(false)
+                    {
+
+                    }
+
+                    ~__Impl() = default;
+
+
+                    Status init(void) {
+                        if (this->__initialized == true) {
+                            logger::warn << "Shader ressource registry already initialized" << std::endl;
+                            return Status::E_ALREADY_INIT;
+                        }
+                        // 1. Get all sub entries (e.g. children) of the shader dir
+                        std::vector<fs::Path> children = fs::Path("../assets/shaders").getChildren();
+                        // 2. Filter with only directories that are not include
+                        std::vector<fs::Path> categoryDirs{};
+                        for (const fs::Path &child : children) {
+                            fs::Entry tmpEntry(child.getEntry());
+                            if (
+                                tmpEntry.getType() == fs::Entry::Type::DIRECTORY &&
+                                tmpEntry.getName() != "include"
+                            ) {
+                                categoryDirs.push_back(child);
+                            }
+                        }
+                        // Create categories, names and shaders
+                        for (const fs::Path &categoryDir : categoryDirs) {
+                            std::string categoryStr = categoryDir.getEntry().getName();
+                            ShaderCategory category = __strToShaderCategory(categoryStr);
+                            children = categoryDir.getChildren();
+                            for (const fs::Path &child : children) {
+                                fs::Entry tmpEntry(child.getEntry());
+                                if (
+                                    tmpEntry.getType() == fs::Entry::Type::REGULAR_FILE &&
+                                    tmpEntry.getExtension() == "glsl"
+                                ) {
+                                    std::string name(tmpEntry.getName());
+                                    logger::debug << "Creating shader ressource CATGORY=" << categoryStr << ",NAME=" << name << std::endl;
+                                    this->__data.emplace(__Key(category, name), std::make_unique<resource::Shader>(child));
+                                }
+                            }
+                        }
+                        this->__initialized = true;
+                        return Status::OK;
+                    }
+            };
+
+            Shader::Shader(void) :
+            __impl(std::make_unique<__Impl>())
+            {
+
+            }
+
+            Shader::~Shader() = default;
+
+            Status Shader::init(void) { return this->__impl->init(); }
+        } // namespace __registry
+    } // namespace __private
+} // namespace rhi
+
+

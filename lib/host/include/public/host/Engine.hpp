@@ -1,12 +1,14 @@
 #ifndef __LIMINAL__LIB__HOST__INCLUDE__PUBLIC__ENGINE_HPP__
 #define __LIMINAL__LIB__HOST__INCLUDE__PUBLIC__ENGINE_HPP__
 
+#include "Application.hpp"
+
 #include <memory>
 
 namespace host {
     class Engine {
         public:
-            Engine(void);
+            Engine(const Application &application);
             ~Engine();
 
             int run(void);

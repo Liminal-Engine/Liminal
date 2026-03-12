@@ -29,6 +29,7 @@ namespace fs {
 
         private:
             std::string _name;
+            std::string _fullName;
             Type _type;
             Size _size; // in bytes
             bool _isHidden;
@@ -69,6 +70,14 @@ namespace fs {
 
             static bool __loadIsHidden(const std::string &name) { return parseop::startsWith(name, "."); }
 
+            static std::string _loadName(const std::string &fullName) {
+                if (fullName.empty()) return "";
+
+                const std::size_t dotPos = fullName.find_last_of('.');
+                if (dotPos == std::string::npos || dotPos == 0) return fullName;
+                return fullName.substr(0, dotPos);
+            }
+
             static std::optional<std::string> __loadExtension(const std::string &name) {
                 std::vector<std::string> vec = parseop::tokenize(name, ".");
                 if (vec.empty()) return std::optional<std::string>(std::nullopt);
@@ -99,17 +108,18 @@ namespace fs {
                 );
             }
 
-            _EntryImpl(const std::string &name, const Type &type, const struct stat &c_stat) noexcept:
-            _name(name),
+            _EntryImpl(const std::string &fullName, const Type &type, const struct stat &c_stat) noexcept:
+            _name(_loadName(fullName)),
+            _fullName(fullName),
             _type(type),
             _size(static_cast<unsigned int>(c_stat.st_size)),
-            _isHidden(__loadIsHidden(name)),
+            _isHidden(__loadIsHidden(fullName)),
             _lastModif(c_stat.st_mtim.tv_sec), // FIXME : check if I can use tv_nsec here. Edit : nano second is available since linux 2.6
             _lastAccess(c_stat.st_atim.tv_sec),
             _lastStatusChange(c_stat.st_ctim.tv_sec),
             _owner(c_stat.st_uid),
             _perms(c_stat.st_mode),
-            _extension(__loadExtension(name))
+            _extension(__loadExtension(fullName))
             {}
 
         public:
@@ -120,6 +130,7 @@ namespace fs {
             
             _EntryImpl(const Entry::_EntryImpl &other) noexcept:
             _name(other._name),
+            _fullName(other._fullName),
             _type(other._type),
             _size(other._size),
             _isHidden(other._isHidden),
@@ -131,21 +142,22 @@ namespace fs {
             _extension(other._extension)
             {}
 
-            _EntryImpl(const std::string &name = "") noexcept: // equivalent to void also
-            _name(name),
+            _EntryImpl(const std::string &fullName = "") noexcept: // equivalent to void also
+            _name(_loadName(fullName)),
+            _fullName(fullName),
             _type(Entry::Type::UNKNOWN),
             _size(),
-            _isHidden(__loadIsHidden(name)),
+            _isHidden(__loadIsHidden(fullName)),
             _lastModif(),
             _lastAccess(),
             _lastStatusChange(),
             _owner(),
             _perms(),
-            _extension(__loadExtension(name))
+            _extension(__loadExtension(fullName))
             {}
 
             _EntryImpl(
-                const std::string &name,
+                const std::string &fullName,
                 const Entry::Type &type,
                 const Size &size,
                 const bool &isHidden,
@@ -156,7 +168,8 @@ namespace fs {
                 const Permission &perms,
                 const std::optional<std::string> &extension
             ):
-            _name(name),
+            _name(_loadName(fullName)),
+            _fullName(fullName),
             _type{type},
             _size(size),
             _isHidden(isHidden),
@@ -172,6 +185,7 @@ namespace fs {
             bool operator==(const _EntryImpl &other) const noexcept {
                 return (
                     this->_name == other._name &&
+                    this->_fullName == other._fullName &&
                     this->_type == other._type &&
                     this->_size == other._size &&
                     this->_isHidden == other._isHidden &&
@@ -189,12 +203,12 @@ namespace fs {
             Permission getPermissions(void) const noexcept { return this->_perms; }
         
             std::optional<std::string> getExtension(void) const noexcept { // FIXME : value is returned even if "        "
-                if (this->_name.empty()) return std::optional<std::string>();
-                std::size_t dotPos{this->_name.find(".")};
+                if (this->_fullName.empty()) return std::optional<std::string>();
+                std::size_t dotPos{this->_fullName.find(".")};
                 
-                if (dotPos == std::string::npos || dotPos + 1 >= this->_name.size()) 
+                if (dotPos == std::string::npos || dotPos + 1 >= this->_fullName.size()) 
                     return std::optional<std::string>(std::nullopt);
-                return this->_name.substr(dotPos + 1, this->_name.size());
+                return this->_fullName.substr(dotPos + 1, this->_fullName.size());
             }
 
             ~_EntryImpl() = default;

@@ -51,6 +51,7 @@
 #include <csignal>
 
 #include <host/Engine.hpp>
+#include <host/Application.hpp>
 
 void setupLoggerSignalHandlers() {
     std::signal(SIGSEGV, logger::Logger::flushOnCrash);
@@ -69,7 +70,7 @@ void setupLoggerSignalHandlers() {
 int main() {
     setupLoggerSignalHandlers();
     logger::Logger::startWorker();
-    int res = host::Engine().run();
+    int res = host::Engine(host::Application()).run();
     // ::jsonio::OutJson outJson;
     // // outJson.parse(fs::Path("/home/matteo/Projects/Liminal/basic.json"));
     // // outJson.insert();

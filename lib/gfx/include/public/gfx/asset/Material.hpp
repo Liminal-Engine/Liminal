@@ -1,7 +1,11 @@
 #ifndef __LIMINAL__LIB__GFX__INCLUDE__PUBLIC__ASSET__MATERIAL_HPP__
 #define __LIMINAL__LIB__GFX__INCLUDE__PUBLIC__ASSET__MATERIAL_HPP__
 
+#include "Status.hpp"
+
 #include <memory>
+
+#include <glm/glm.hpp>
 
 namespace gfx {
     namespace asset {
@@ -9,6 +13,8 @@ namespace gfx {
             public:
                 Material(void);
                 ~Material();
+
+                [[nodiscard]] Status setColor(const glm::vec3 &color);
 
             private:
                 class __Impl;

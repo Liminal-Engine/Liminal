@@ -20,6 +20,11 @@ namespace gfx {
                 {
 
                 }
+
+                Status setColor(const glm::vec3 &color) {
+                    this->__color = color;
+                    return Status::OK;
+                }
         };
 
         Material::Material(void) :
@@ -27,5 +32,7 @@ namespace gfx {
         {}
 
         Material::~Material() = default;
+
+        Status Material::setColor(const glm::vec3 &color) { return this->__impl->setColor(color); }
     } // namespace asset
 } // namespace gfx

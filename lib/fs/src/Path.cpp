@@ -250,7 +250,7 @@ namespace fs {
 
             if ( (c_dir = opendir(thisStr.c_str())) == NULL) {
                 logger::error << "ERROR: " << std::string(strerror(errno)) << std::endl;
-                return res; // FIXME : log returned error with errno () (and strerr ?) error here
+                return res;
             }
             while ( (c_entry = readdir(c_dir)) ) {
                 buf = c_entry->d_name;

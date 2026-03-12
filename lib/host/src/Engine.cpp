@@ -1,6 +1,7 @@
 #include "Engine.hpp"
 
 #include <rhi/Renderer.hpp>
+#include <rhi/Registry.hpp>
 #include <logger/logger.hpp>
 
 #include <GLFW/glfw3.h>
@@ -10,9 +11,10 @@ namespace host {
         private:
             GLFWwindow *__window;
             rhi::Renderer *__renderer;
+            rhi::Registry __ressourceRegistry;
         public:
             
-            __Impl(void) :
+            __Impl(const Application &application) :
             __window([&](void) -> GLFWwindow * {
                 glfwInit();
                 // FIXME : see if safe to put 4.5 instead
@@ -32,6 +34,7 @@ namespace host {
                 return rhi::Renderer::get();
             }())
             {
+                this->__ressourceRegistry.init();
             }
             
             ~__Impl() {
@@ -49,8 +52,8 @@ namespace host {
             }
     };
 
-    Engine::Engine(void) :
-    __impl(std::make_unique<__Impl>())
+    Engine::Engine(const Application &application) :
+    __impl(std::make_unique<__Impl>(application))
     {
 
     }
