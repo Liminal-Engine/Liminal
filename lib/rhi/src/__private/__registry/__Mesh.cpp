@@ -21,6 +21,7 @@ namespace rhi {
                     ~__Impl() = default;
 
                     Status init(void) {
+                        logger::info << "Initializing mesh registry" << std::endl;
                         // top
                         resource::Vertex v1;
                         v1.position = glm::vec3(0.0f, 0.5f, 0.0f);

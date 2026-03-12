@@ -1,5 +1,7 @@
 #include "Application.hpp"
 
+#include "gfx/asset/Mesh.hpp"
+
 namespace host {
     class Application::__Impl {
         private:

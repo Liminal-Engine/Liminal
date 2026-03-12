@@ -56,7 +56,6 @@ namespace rhi {
         const resource::Shader *shader = registry.getShader(ShaderCategory::CORE, "textured");
         const resource::Texture *texture = registry.getTexture("ground_2K");
         const resource::Mesh *mesh = registry.getMesh("TRIANGLE");
-        std::cout << "DRAWING" << std::endl;
         shader->use();
         mesh->draw_DELETE_ME_I_AM_NOT_SUPPOSED_TO_DRAW_MYSELF();
     }
