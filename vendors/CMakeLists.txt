@@ -28,3 +28,6 @@ add_subdirectory(glad)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_INSTALL OFF CACHE BOOL "" FORCE)
 add_subdirectory(glfw)
+
+# 5. stb image
+# nothing to do here since stb_image is a header only library

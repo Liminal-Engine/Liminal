@@ -1,13 +1,15 @@
 #ifndef __LIMINAL__LIB_RHI__INCLUDE__PUBLIC__RESOURCE__TEXTURE_HPP__
 #define __LIMINAL__LIB_RHI__INCLUDE__PUBLIC__RESOURCE__TEXTURE_HPP__
 
+#include <fs/Path.hpp>
+
 #include <memory>
 
 namespace rhi {
     namespace resource {
         class Texture {
             public:
-                Texture(void);
+                Texture(const fs::Path &path);
                 ~Texture();
 
                 Texture(const Texture&) = delete;            // No copy

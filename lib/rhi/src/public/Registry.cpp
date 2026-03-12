@@ -1,11 +1,14 @@
 #include "Registry.hpp"
-#include "__private/__registry/Shader.hpp"
+#include "__private/__registry/__Shader.hpp"
+#include "__private/__registry/__Texture.hpp"
 
+#include <logger/logger.hpp>
 
 namespace rhi {
     class Registry::__Impl {
         private:
-            __private::__registry::Shader __shaderRegistry;
+            __private::__registry::__Shader __shaderRegistry;
+            __private::__registry::__Texture __textureRegistry;
 
         public:
             __Impl(void) {
@@ -15,7 +18,20 @@ namespace rhi {
             ~__Impl() = default;
             
             Status init(void) {
-                this->__shaderRegistry.init();
+                Status tmpStatus = Status::OK;
+
+                tmpStatus = this->__shaderRegistry.init();
+                if (tmpStatus != Status::OK) {
+                    logger::error << "Failed to initialize shader registry" << std::endl;
+                    return tmpStatus;
+                }
+                tmpStatus = this->__textureRegistry.init();
+                if (tmpStatus != Status::OK) {
+                    logger::error << "Failed to initialize texture registry" << std::endl;
+                    return tmpStatus;
+                }
+
+                return Status::OK;
             }
     };
 

@@ -11,10 +11,10 @@
 namespace rhi {
     namespace __private {
         namespace __registry {
-            class Shader {
+            class __Shader {
                 public:
-                    Shader(void);
-                    ~Shader(void);
+                    __Shader(void);
+                    ~__Shader(void);
 
                     Status init(void);
                     resource::Shader *get(const ShaderCategory &category, const std::string &name);

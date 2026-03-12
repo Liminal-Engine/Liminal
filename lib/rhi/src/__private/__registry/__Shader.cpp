@@ -1,4 +1,5 @@
-#include "__private/__registry/Shader.hpp"
+#include "__private/__registry/__Shader.hpp"
+#include "__private/__config.hpp"
 
 #include <logger/logger.hpp>
 #include <fs/Path.hpp>
@@ -9,7 +10,7 @@
 namespace rhi {
     namespace __private {
         namespace __registry {
-            class Shader::__Impl {
+            class __Shader::__Impl {
                 private:
                     struct __Key {
                         ShaderCategory category;
@@ -59,8 +60,9 @@ namespace rhi {
                             logger::warn << "Shader ressource registry already initialized" << std::endl;
                             return Status::E_ALREADY_INIT;
                         }
+                        logger::info << "Initializing shader registry" << std::endl;
                         // 1. Get all sub entries (e.g. children) of the shader dir
-                        std::vector<fs::Path> children = fs::Path("../assets/shaders").getChildren();
+                        std::vector<fs::Path> children = __private::__config::DEFAULT_SHADER_PATH.getChildren();
                         // 2. Filter with only directories that are not include
                         std::vector<fs::Path> categoryDirs{};
                         for (const fs::Path &child : children) {
@@ -94,15 +96,15 @@ namespace rhi {
                     }
             };
 
-            Shader::Shader(void) :
+            __Shader::__Shader(void) :
             __impl(std::make_unique<__Impl>())
             {
 
             }
 
-            Shader::~Shader() = default;
+            __Shader::~__Shader() = default;
 
-            Status Shader::init(void) { return this->__impl->init(); }
+            Status __Shader::init(void) { return this->__impl->init(); }
         } // namespace __registry
     } // namespace __private
 } // namespace rhi
