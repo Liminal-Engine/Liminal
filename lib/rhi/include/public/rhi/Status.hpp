@@ -5,7 +5,8 @@ namespace rhi {
     enum class Status {
         OK,
         N_OK,
-        E_ALREADY_INIT
+        E_ALREADY_INIT,
+        E_NOT_INIT
     };
 } // namespace rhi
 

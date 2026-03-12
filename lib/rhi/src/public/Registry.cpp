@@ -22,19 +22,34 @@ namespace rhi {
             Status init(void) {
                 Status tmpStatus = Status::OK;
 
-                tmpStatus = this->__shaderRegistry.init();
-                if (tmpStatus != Status::OK) {
-                    logger::error << "Failed to initialize shader registry" << std::endl;
+                if ((tmpStatus = this->__meshRegistry.init()) != Status::OK) {
+                    logger::error << "Failed to initialize mesh registry" << std::endl;
                     return tmpStatus;
                 }
-                tmpStatus = this->__textureRegistry.init();
-                if (tmpStatus != Status::OK) {
+                if ((tmpStatus = this->__textureRegistry.init()) != Status::OK) {
                     logger::error << "Failed to initialize texture registry" << std::endl;
                     return tmpStatus;
                 }
-                tmpStatus = this->__meshRegistry.init();
-                if (tmpStatus != Status::OK) {
-                    logger::error << "Failed to initialize mesh registry" << std::endl;
+                if ((tmpStatus = this->__shaderRegistry.init()) != Status::OK) {
+                    logger::error << "Failed to initialize shader registry" << std::endl;
+                    return tmpStatus;
+                }
+                return Status::OK;
+            }
+
+            Status destroy(void) {
+                logger::debug << "Destroying RHI registries" << std::endl;
+                Status tmpStatus = Status::OK;
+                if ((tmpStatus = this->__meshRegistry.destroy()) != Status::OK) {
+                    logger::error << "Failed to destroy mesh registry" << std::endl;
+                    return tmpStatus;
+                }
+                if ((tmpStatus = this->__textureRegistry.destroy()) != Status::OK) {
+                    logger::error << "Failed to destroy texture registry" << std::endl;
+                    return tmpStatus;
+                }
+                if ((tmpStatus = this->__shaderRegistry.destroy()) != Status::OK) {
+                    logger::error << "Failed to destroy shader registry" << std::endl;
                     return tmpStatus;
                 }
                 return Status::OK;
@@ -48,4 +63,5 @@ namespace rhi {
     Registry::~Registry() = default;
 
     Status Registry::init(void) { return this->__impl->init(); }
+    Status Registry::destroy(void) { return this->__impl->destroy(); }
 } // namespace rhi

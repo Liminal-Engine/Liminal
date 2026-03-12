@@ -38,9 +38,12 @@ namespace host {
             }
             
             ~__Impl() {
+                if (rhi::Status rhiStatus; (rhiStatus = this->__ressourceRegistry.destroy()) != rhi::Status::OK) {
+                    logger::error << "Failed to destroy RHI registry" << std::endl;
+                }
                 this->__renderer->destroy();
-                // glfwDestroyWindow(this->__window);
-                // glfwTerminate();
+                glfwDestroyWindow(this->__window);
+                glfwTerminate();
             }
 
             int run(void) {

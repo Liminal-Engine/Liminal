@@ -15,6 +15,7 @@ namespace rhi {
                     ~__Texture();
 
                     Status init(void);
+                    Status destroy(void);
                     resource::Texture *get(const std::string &name);
 
                 private:

@@ -17,6 +17,7 @@ namespace rhi {
                     ~__Shader(void);
 
                     Status init(void);
+                    Status destroy(void);
                     resource::Shader *get(const ShaderCategory &category, const std::string &name);
 
                 private:

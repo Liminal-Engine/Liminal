@@ -11,6 +11,7 @@ namespace rhi {
             ~Registry();
 
             Status init(void);
+            Status destroy(void);
 
         private:
             class __Impl;

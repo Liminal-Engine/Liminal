@@ -48,6 +48,16 @@ namespace rhi {
                         return Status::OK;
 
                     }
+
+                    Status destroy(void) {
+                        if (this->__initialized == false) {
+                            logger::error << "Failed to destory texture registry: not initliazed" << std::endl;
+                            return Status::E_NOT_INIT;
+                        }
+                        this->__data.clear();
+                        this->__initialized = false;
+                        return Status::OK;
+                    }
             };
 
             __Texture::__Texture(void) :
@@ -57,6 +67,7 @@ namespace rhi {
             __Texture::~__Texture() = default;
 
             Status __Texture::init(void) { return this->__impl->init(); }
+            Status __Texture::destroy(void) { return this->__impl->destroy(); }
         } // namespace __registry
     } // namespace __private
 } // namespace rhi

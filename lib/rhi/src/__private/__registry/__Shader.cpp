@@ -94,6 +94,16 @@ namespace rhi {
                         this->__initialized = true;
                         return Status::OK;
                     }
+
+                    Status destroy(void) {
+                        if (this->__initialized == false) {
+                            logger::error << "Failed to destory shader registry: not initliazed" << std::endl;
+                            return Status::E_NOT_INIT;
+                        }
+                        this->__data.clear();
+                        this->__initialized = false;
+                        return Status::OK;
+                    }
             };
 
             __Shader::__Shader(void) :
@@ -105,6 +115,7 @@ namespace rhi {
             __Shader::~__Shader() = default;
 
             Status __Shader::init(void) { return this->__impl->init(); }
+            Status __Shader::destroy(void) { return this->__impl->destroy(); }
         } // namespace __registry
     } // namespace __private
 } // namespace rhi

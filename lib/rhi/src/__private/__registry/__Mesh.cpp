@@ -1,5 +1,7 @@
 #include "__private/__registry/__Mesh.hpp"
 
+#include <logger/logger.hpp>
+
 #include <unordered_map>
 
 namespace rhi {
@@ -8,10 +10,12 @@ namespace rhi {
             class __Mesh::__Impl {
                 private:
                     std::unordered_map<std::string, std::unique_ptr<resource::Mesh>> __data;
+                    bool __initialized;
 
                 public:
                     __Impl(void) :
-                    __data{}
+                    __data{},
+                    __initialized(false)
                     {}
 
                     ~__Impl() = default;
@@ -37,8 +41,19 @@ namespace rhi {
                         std::vector<uint32_t> indices = {0, 1, 2};
 
                         this->__data.emplace("TRIANGLE", std::make_unique<resource::Mesh>(verices, indices));
+                        this->__initialized = true;
                         return Status::OK;
                     }
+
+                    Status destroy(void) {
+                        if (this->__initialized == false) {
+                            logger::error << "Failed to destory mesh registry: not initliazed" << std::endl;
+                            return Status::E_NOT_INIT;
+                        }
+                        this->__data.clear();
+                        this->__initialized = false;
+                        return Status::OK;
+                    };
             };
 
             __Mesh::__Mesh(void) :
@@ -48,6 +63,7 @@ namespace rhi {
             __Mesh::~__Mesh() = default;
 
             Status __Mesh::init(void) { return this->__impl->init(); }
+            Status __Mesh::destroy(void) { return this->__impl->destroy(); }
         } // namespace __registry
     } // namespace __private
 } // namespace rhi
