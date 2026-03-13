@@ -1,8 +1,9 @@
 #ifndef __LIMINAL__LIB__RHI__INCLUDE__RENDERER_HPP__
 #define __LIMINAL__LIB__RHI__INCLUDE__RENDERER_HPP__
 
-#include "Registry.hpp"
+#include "entity/Registry.hpp"
 
+#include <vector>
 #include <memory>
 
 namespace rhi {
@@ -19,7 +20,7 @@ namespace rhi {
             Renderer(Renderer&&) = delete;                 // No move
             Renderer& operator=(Renderer&&) = delete;      // No affectation by moving
 
-            void draw(const Registry &registry);
+            void draw(const entity::Registry &entityRegistry);
 
         private:
             Renderer(void);

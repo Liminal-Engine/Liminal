@@ -1,7 +1,7 @@
 #ifndef __LIMINAL__LIB__GFX__INCLUDE__PUBLIC__ASSET__MATERIAL_HPP__
 #define __LIMINAL__LIB__GFX__INCLUDE__PUBLIC__ASSET__MATERIAL_HPP__
 
-#include "Status.hpp"
+#include "../Status.hpp" // FIXME
 
 #include <memory>
 
@@ -13,6 +13,11 @@ namespace gfx {
             public:
                 Material(void);
                 ~Material();
+
+                Material(const Material &) = delete;
+                Material &operator=(const Material &) = delete;
+                Material(Material &&) noexcept;
+                Material &operator=(Material &&) noexcept;
 
                 [[nodiscard]] Status setColor(const glm::vec3 &color);
 

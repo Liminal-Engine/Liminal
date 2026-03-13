@@ -1,4 +1,6 @@
 #include "Renderer.hpp"
+#include "resource/Shader.hpp"
+
 #include <logger/logger.hpp>
 
 #include <glad/glad.h>
@@ -50,14 +52,14 @@ namespace rhi {
         return __instance;
     }
 
-    void Renderer::draw(const Registry &registry) {
+    void Renderer::draw(const entity::Registry &entityRegistry) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         // logger::info << "DRAWING" << std::endl;
-        const resource::Shader *shader = registry.getShader(ShaderCategory::CORE, "textured");
-        const resource::Texture *texture = registry.getTexture("ground_2K");
-        const resource::Mesh *mesh = registry.getMesh("TRIANGLE");
-        shader->use();
-        mesh->draw_DELETE_ME_I_AM_NOT_SUPPOSED_TO_DRAW_MYSELF();
+        // const resource::Shader *shader = registry.getShader(ShaderCategory::CORE, "textured");
+        // const resource::Texture *texture = registry.getTexture("ground_2K");
+        // const resource::Mesh *mesh = registry.getMesh("TRIANGLE");
+        // shader->use();
+        // mesh->draw_DELETE_ME_I_AM_NOT_SUPPOSED_TO_DRAW_MYSELF();
     }
 
     Renderer::Renderer(void) :

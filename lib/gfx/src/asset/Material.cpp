@@ -33,6 +33,10 @@ namespace gfx {
 
         Material::~Material() = default;
 
+        Material::Material(Material &&) noexcept = default;
+
+        Material &Material::operator=(Material &&) noexcept = default;
+
         Status Material::setColor(const glm::vec3 &color) { return this->__impl->setColor(color); }
     } // namespace asset
 } // namespace gfx

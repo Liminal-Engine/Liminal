@@ -1,14 +1,29 @@
 #include "Application.hpp"
 
-#include "gfx/asset/Mesh.hpp"
+#include <logger/logger.hpp>
+
+#include <vector>
 
 namespace host {
     class Application::__Impl {
         private:
 
         public:
-            __Impl(void) {
+            __Impl(void)
+            {
+                // entity::AEntity entity;
+                // entity.setMesh("toto");
+                // entity.setMaterial("tata");
+            }
 
+            Status init(gfx::Registry &assetRegistry, entity::Registry &entityRegistry) const {
+                // 1. On load les assets qu'il faut pour faire tourner le jeu
+                assetRegistry.loadMesh("famous_triangle", fs::Path("./assets/this_is_the_famous_triangle_path.obj"));
+                entity::AEntity myTriangle;
+                myTriangle.setMesh("famous_triangle");
+                entityRegistry.add("triangleEntity", std::move(myTriangle));
+                
+                return Status::OK;
             }
     };
 
@@ -19,4 +34,6 @@ namespace host {
     }
 
     Application::~Application() = default;
+
+    Status Application::init(gfx::Registry &assetRegistry, entity::Registry &entityRegistry) const { return this->__impl->init(assetRegistry, entityRegistry); }
 } // namespace host

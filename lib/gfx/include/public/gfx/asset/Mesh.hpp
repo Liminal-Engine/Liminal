@@ -1,6 +1,11 @@
 #ifndef __LIMINAL__LIB__GFX__INCLUDE__ASSET__MESH_HPP__
 #define __LIMINAL__LIB__GFX__INCLUDE__ASSET__MESH_HPP__
 
+#include "../Status.hpp" // FIXME
+
+#include <fs/Path.hpp>
+#include <rhi/resource/Mesh.hpp>
+
 #include <memory>
 
 namespace gfx {
@@ -8,7 +13,22 @@ namespace gfx {
         class Mesh {
             public:
                 Mesh(void);
+                Mesh(const fs::Path &path);
                 ~Mesh();
+
+                const std::vector<rhi::resource::Vertex> &getVertices(void) const;
+                const std::vector<uint32_t> &getIndices(void) const;
+                const fs::Path &getPath(void) const;
+
+                
+                Status copy(const Mesh &other);
+                Status load(const fs::Path &path);
+                Status setResource(const rhi::resource::Mesh *meshResource);
+
+                Mesh(const Mesh &) = delete;
+                Mesh &operator=(const Mesh &) = delete;
+                Mesh(Mesh &&) noexcept;
+                Mesh &operator=(Mesh &&) noexcept;
             
             private:
                 class __Impl;

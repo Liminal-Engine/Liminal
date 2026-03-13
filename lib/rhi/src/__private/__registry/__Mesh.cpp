@@ -41,7 +41,7 @@ namespace rhi {
                         std::vector<resource::Vertex> verices{v1, v2, v3};
                         std::vector<uint32_t> indices = {0, 1, 2};
 
-                        this->__data.emplace("TRIANGLE", std::make_unique<resource::Mesh>(verices, indices));
+                        this->__data.emplace("TRIANGLE_MESH", std::make_unique<resource::Mesh>(verices, indices));
                         this->__initialized = true;
                         return Status::OK;
                     }
@@ -65,6 +65,20 @@ namespace rhi {
                         }
                         return it->second.get();
                     }
+
+                    bool exists(const std::string &name) const {
+                        return this->__data.find(name) != this->__data.end();
+                    }
+
+                    Status add(const std::string &name, const std::vector<resource::Vertex> &vertices, const std::vector<uint32_t> &indices) {
+                        if (this->exists(name)) {
+                            logger::error << "\"" << name << "\" already exists in RHI mesh registry" << std::endl;
+                            return Status::E_ALREADY_EXISTS;
+                        }
+                        this->__data[name] = std::make_unique<resource::Mesh>(vertices, indices);
+                        return Status::OK;
+                    }
+
             };
 
             __Mesh::__Mesh(void) :
@@ -76,6 +90,8 @@ namespace rhi {
             Status __Mesh::init(void) { return this->__impl->init(); }
             Status __Mesh::destroy(void) { return this->__impl->destroy(); }
             const resource::Mesh *__Mesh::get(const std::string &name) const { return this->__impl->get(name); }
+            bool __Mesh::exists(const std::string &name) const { return this->__impl->exists(name); }
+            Status __Mesh::add(const std::string &name, const std::vector<resource::Vertex> &vertices, const std::vector<uint32_t> &indices) { return this->__impl->add(name, vertices, indices); }
         } // namespace __registry
     } // namespace __private
 } // namespace rhi

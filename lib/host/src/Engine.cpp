@@ -2,7 +2,9 @@
 
 #include <rhi/Renderer.hpp>
 #include <rhi/Registry.hpp>
+#include <gfx/Registry.hpp>
 #include <logger/logger.hpp>
+#include <entity/Registry.hpp>
 
 #include <GLFW/glfw3.h>
 
@@ -11,7 +13,11 @@ namespace host {
         private:
             GLFWwindow *__window;
             rhi::Renderer *__renderer;
-            rhi::Registry __ressourceRegistry;
+            rhi::Registry __resourceRegistry;
+            gfx::Registry __assetRegistry;
+            entity::Registry __entityRegistry;
+            const Application &__application;
+
         public:
             
             __Impl(const Application &application) :
@@ -32,13 +38,17 @@ namespace host {
             __renderer([&](void) -> rhi::Renderer * {
                 rhi::Renderer::init();
                 return rhi::Renderer::get();
-            }())
+            }()),
+            __resourceRegistry(),
+            __assetRegistry(this->__resourceRegistry),
+            __entityRegistry(),
+            __application(application)
             {
-                this->__ressourceRegistry.init();
+                this->__resourceRegistry.init();
             }
             
             ~__Impl() {
-                if (rhi::Status rhiStatus; (rhiStatus = this->__ressourceRegistry.destroy()) != rhi::Status::OK) {
+                if (rhi::Status rhiStatus; (rhiStatus = this->__resourceRegistry.destroy()) != rhi::Status::OK) {
                     logger::error << "Failed to destroy RHI registry" << std::endl;
                 }
                 this->__renderer->destroy();
@@ -47,9 +57,14 @@ namespace host {
             }
 
             int run(void) {
+                if (this->__application.init(this->__assetRegistry, this->__entityRegistry) != host::Status::OK) {
+                    logger::fatal << "Failed to initialize application" << std::endl;
+                    return EXIT_FAILURE;
+                }
+
                 while (glfwWindowShouldClose(this->__window) == false) {
                     glfwPollEvents();
-                    this->__renderer->draw(this->__ressourceRegistry);
+                    this->__renderer->draw(this->__entityRegistry);
                     glfwSwapBuffers(this->__window);
                 }
                 return 0;

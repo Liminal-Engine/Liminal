@@ -66,6 +66,14 @@ namespace rhi {
             const resource::Mesh *getMesh(const std::string &name) const {
                 return this->__meshRegistry.get(name);
             }
+
+            Status addMesh(                
+                const std::string &name,
+                const std::vector<resource::Vertex> &vertices,
+                const std::vector<uint32_t> indices
+            ) {
+                return this->__meshRegistry.add(name, vertices, indices);
+            }
     };
 
     Registry::Registry(void) :
@@ -80,4 +88,5 @@ namespace rhi {
     const resource::Shader *Registry::getShader(const ShaderCategory &category, const std::string &name) const { return this->__impl->getShader(category, name); }
     const resource::Texture *Registry::getTexture(const std::string &name) const { return this->__impl->getTexture(name); }
     const resource::Mesh *Registry::getMesh(const std::string &name) const { return this->__impl->getMesh(name); }
+    Status Registry::addMesh(const std::string &name, const std::vector<resource::Vertex> &vertices, const std::vector<uint32_t> indices) { return this->__impl->addMesh(name, vertices, indices); }
 } // namespace rhi

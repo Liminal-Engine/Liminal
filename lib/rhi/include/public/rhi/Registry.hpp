@@ -6,6 +6,7 @@
 #include "ShaderCategory.hpp"
 #include "resource/Texture.hpp"
 #include "resource/Mesh.hpp"
+#include "resource/Vertex.hpp"
 
 #include <memory>
 
@@ -21,6 +22,12 @@ namespace rhi {
             const resource::Shader *getShader(const ShaderCategory &category, const std::string &name) const;
             const resource::Texture *getTexture(const std::string &name) const;
             const resource::Mesh *getMesh(const std::string &name) const;
+
+            Status addMesh(
+                const std::string &name,
+                const std::vector<resource::Vertex> &vertices,
+                const std::vector<uint32_t> indices
+            );
 
         private:
             class __Impl;
