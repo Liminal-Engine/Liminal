@@ -20,6 +20,11 @@ namespace gfx {
                     {
 
                     }
+
+                    Status copy(const __Impl &other) {
+                        this->__resource = other.__resource;
+                        this->__uniformLocations = other.__uniformLocations;
+                    }
             };
 
 
@@ -29,6 +34,7 @@ namespace gfx {
 
             __Shader::~__Shader() = default;
 
+            Status __Shader::copy(const __Shader &other) { return this->__impl->copy(*other.__impl); }
             
         } // namespace __aset
     } // namespace __private

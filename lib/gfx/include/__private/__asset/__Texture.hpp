@@ -1,6 +1,13 @@
 #ifndef __LIMINAL__LIB__GFX__INCLUDE__PRIVATE__ASSET__TEXTURE_HPP__
 #define __LIMINAL__LIB__GFX__INCLUDE__PRIVATE__ASSET__TEXTURE_HPP__
 
+#include "Status.hpp"
+
+#include <fs/Path.hpp>
+#include <rhi/resource/Texture.hpp>
+
+#include <glm/glm.hpp>
+
 #include <memory>
 
 namespace gfx {
@@ -10,6 +17,15 @@ namespace gfx {
                 public:
                     __Texture(void);
                     ~__Texture();
+
+                    Status load(const fs::Path &path);
+                    const unsigned char *getData(void) const;
+                    const glm::ivec2 &getSize(void) const;
+                    const int &getNChannels(void) const;
+
+                    Status setResource(const rhi::resource::Texture *resource);
+
+                    Status copy(const __Texture &other);
 
                 private:
                     class __Impl;

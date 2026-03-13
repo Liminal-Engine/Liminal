@@ -6,6 +6,8 @@
 
 #include <fs/Path.hpp>
 
+#include <glm/glm.hpp>
+
 namespace rhi {
     namespace __private {
         namespace __registry {
@@ -17,6 +19,9 @@ namespace rhi {
                     Status init(void);
                     Status destroy(void);
                     const resource::Texture *get(const std::string &name) const;
+                    bool exists(const std::string &name) const;
+                    
+                    Status add(const std::string &name, const unsigned char* data, const glm::ivec2 &size, const int &nChannels);
 
                 private:
                     class __Impl;

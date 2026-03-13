@@ -5,11 +5,17 @@
 
 #include <memory>
 
+#include <glm/glm.hpp>
+
 namespace rhi {
     namespace resource {
         class Texture {
             public:
-                Texture(const fs::Path &path);
+                Texture(                    
+                    const unsigned char *data,
+                    const glm::ivec2 &size,
+                    const int &nChannels
+                );
                 ~Texture();
 
                 Texture(const Texture&) = delete;            // No copy

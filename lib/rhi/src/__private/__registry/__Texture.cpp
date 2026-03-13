@@ -41,7 +41,7 @@ namespace rhi {
                                     entry.getExtension() == "jpeg"
                                 )
                             ) {
-                                this->__data.emplace(entry.getName(), std::make_unique<resource::Texture>(child));
+                                // this->__data.emplace(entry.getName(), std::make_unique<resource::Texture>(child));
                             }
                         }
                         this->__initialized = true;
@@ -68,6 +68,23 @@ namespace rhi {
                         }
                         return it->second.get();
                     }
+
+                    bool exists(const std::string &name) const {
+                        return this->__data.find(name) != this->__data.end();
+                    }
+
+                    Status add(const std::string &name, const unsigned char* data, const glm::ivec2 &size, const int &nChannels) {
+                        if (this->exists(name)) {
+                            logger::error << "Failed to add texture ressource: \"" << name << "\" already exists" << std::endl;
+                            return Status::E_ALREADY_EXISTS;
+                        }
+                        if (data == nullptr || size.x <= 0 || size.y <= 0 || nChannels <= 0) {
+                            logger::error << "Failed to add texture resource: invalid image data for \"" << name << "\"" << std::endl;
+                            return Status::N_OK;
+                        }
+                        this->__data[name] = std::make_unique<resource::Texture>(data, size, nChannels);
+                        return Status::OK;
+                    }
             };
 
             __Texture::__Texture(void) :
@@ -79,6 +96,7 @@ namespace rhi {
             Status __Texture::init(void) { return this->__impl->init(); }
             Status __Texture::destroy(void) { return this->__impl->destroy(); }
             const resource::Texture *__Texture::get(const std::string &name) const { return this->__impl->get(name); }
+            Status __Texture::add(const std::string &name, const unsigned char* data, const glm::ivec2 &size, const int &nChannels) { return this->__impl->add(name, data, size, nChannels); }
         } // namespace __registry
     } // namespace __private
 } // namespace rhi

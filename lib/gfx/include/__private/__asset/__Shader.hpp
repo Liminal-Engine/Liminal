@@ -1,6 +1,8 @@
 #ifndef __LIMINAL__LIB__GFX__INCLUDE__PRIVATE__ASSET__SHADER_HPP__
 #define __LIMINAL__LIB__GFX__INCLUDE__PRIVATE__ASSET__SHADER_HPP__
 
+#include "Status.hpp"
+
 #include <memory>
 
 namespace gfx {
@@ -10,6 +12,8 @@ namespace gfx {
                 public:
                     __Shader(void);
                     ~__Shader();
+
+                    Status copy(const __Shader &other);
 
                 private:
                     class __Impl;

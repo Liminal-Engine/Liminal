@@ -74,6 +74,10 @@ namespace rhi {
             ) {
                 return this->__meshRegistry.add(name, vertices, indices);
             }
+
+            Status addTexture(const std::string &name, const unsigned char* data, const glm::ivec2 &size, const int &nChannels) {
+                return this->__textureRegistry.add(name, data, size, nChannels);
+            }
     };
 
     Registry::Registry(void) :
@@ -89,4 +93,5 @@ namespace rhi {
     const resource::Texture *Registry::getTexture(const std::string &name) const { return this->__impl->getTexture(name); }
     const resource::Mesh *Registry::getMesh(const std::string &name) const { return this->__impl->getMesh(name); }
     Status Registry::addMesh(const std::string &name, const std::vector<resource::Vertex> &vertices, const std::vector<uint32_t> indices) { return this->__impl->addMesh(name, vertices, indices); }
+    Status Registry::addTexture(const std::string &name, const unsigned char* data, const glm::ivec2 &size, const int &nChannels) { return this->__impl->addTexture(name, data, size, nChannels); }
 } // namespace rhi

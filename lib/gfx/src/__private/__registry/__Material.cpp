@@ -31,6 +31,17 @@ namespace gfx {
                         this->__data[name] = std::make_unique<asset::Material>(std::move(material));
                         return Status::OK;
                     }
+
+                    bool exists(const std::string &name) const {
+                        return this->__data.find(name) != this->__data.end();
+                    }
+
+                    const asset::Material *getByResourceKey(const std::string &resourceKey) {
+                        for (auto &materialAsset : this->__data) {
+                            if (materialAsset.second->getRessourceKey() == resourceKey) return materialAsset.second.get();
+                        }
+                        return nullptr;
+                    }
             };
 
             __Material::__Material(void) :
@@ -40,6 +51,8 @@ namespace gfx {
             __Material::~__Material() = default;
 
             Status __Material::add(const std::string &name, asset::Material &&material) { return this->__impl->add(name, std::move(material)); }
+            bool __Material::exists(const std::string &name) const { return this->__impl->exists(name); }
+            const asset::Material *__Material::getByResourceKey(const std::string &resourceKey) { return this->__impl->getByResourceKey(resourceKey); }
         } // namespace __registry
     } // namespace __private
 } // namespace gfx

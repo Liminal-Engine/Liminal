@@ -17,6 +17,7 @@ namespace gfx {
             ~Registry();
 
             [[nodiscard]] Status loadMesh(const std::string &name, const fs::Path &path);
+            [[nodiscard]] Status loadMaterial(const std::string &name, const fs::Path &texturePath);
             // [[nodiscard]] Status add(const std::string &name, asset::Mesh &&mesh);
             // [[nodiscard]] Status add(const std::string &name, asset::Material &&material);
 

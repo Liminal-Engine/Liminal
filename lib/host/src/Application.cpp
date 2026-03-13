@@ -18,7 +18,8 @@ namespace host {
 
             Status init(gfx::Registry &assetRegistry, entity::Registry &entityRegistry) const {
                 // 1. On load les assets qu'il faut pour faire tourner le jeu
-                assetRegistry.loadMesh("famous_triangle", fs::Path("./assets/this_is_the_famous_triangle_path.obj"));
+                assetRegistry.loadMesh("famous_triangle", fs::Path("./assets/this_is_the_famous_triangle_path.obj"));                
+                assetRegistry.loadMaterial("brick", fs::Path("/home/matteo/Projects/Liminal/assets/textures/platform_0_2K.jpg"));
                 entity::AEntity myTriangle;
                 myTriangle.setMesh("famous_triangle");
                 entityRegistry.add("triangleEntity", std::move(myTriangle));

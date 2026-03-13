@@ -10,6 +10,8 @@
 
 #include <memory>
 
+#include <glm/glm.hpp>
+
 namespace rhi {
     class Registry {
         public:
@@ -28,6 +30,8 @@ namespace rhi {
                 const std::vector<resource::Vertex> &vertices,
                 const std::vector<uint32_t> indices
             );
+
+            Status addTexture(const std::string &name, const unsigned char* data, const glm::ivec2 &size, const int &nChannels);
 
         private:
             class __Impl;
