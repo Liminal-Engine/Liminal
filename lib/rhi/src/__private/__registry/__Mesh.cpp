@@ -10,12 +10,10 @@ namespace rhi {
             class __Mesh::__Impl {
                 private:
                     std::unordered_map<std::string, std::unique_ptr<resource::Mesh>> __data;
-                    bool __initialized;
 
                 public:
                     __Impl(void) :
-                    __data{},
-                    __initialized(false)
+                    __data{}
                     {}
 
                     ~__Impl() = default;
@@ -42,17 +40,11 @@ namespace rhi {
                         std::vector<uint32_t> indices = {0, 1, 2};
 
                         this->__data.emplace("TRIANGLE_MESH", std::make_unique<resource::Mesh>(verices, indices));
-                        this->__initialized = true;
                         return Status::OK;
                     }
 
                     Status destroy(void) {
-                        if (this->__initialized == false) {
-                            logger::error << "Failed to destory mesh registry: not initialized" << std::endl;
-                            return Status::E_NOT_INIT;
-                        }
                         this->__data.clear();
-                        this->__initialized = false;
                         return Status::OK;
                     };
 

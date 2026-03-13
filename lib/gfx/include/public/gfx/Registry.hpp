@@ -18,6 +18,14 @@ namespace gfx {
 
             [[nodiscard]] Status loadMesh(const std::string &name, const fs::Path &path);
             [[nodiscard]] Status loadMaterial(const std::string &name, const fs::Path &texturePath);
+
+            bool meshExists(const std::string &name) const;
+            bool materialExists(const std::string &name) const;
+
+            const asset::Mesh *getMesh(const std::string &name) const;
+            const asset::Material *getMaterial(const std::string &name) const;
+
+
             // [[nodiscard]] Status add(const std::string &name, asset::Mesh &&mesh);
             // [[nodiscard]] Status add(const std::string &name, asset::Material &&material);
 

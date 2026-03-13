@@ -3,6 +3,9 @@
 
 #include "Status.hpp"
 
+#include <gfx/asset/Mesh.hpp>
+#include <gfx/asset/Material.hpp>
+
 #include <string>
 #include <memory>
 
@@ -18,8 +21,11 @@ namespace entity {
             AEntity &operator=(AEntity &&other) noexcept;
 
             
-            [[nodiscard]] Status setMesh(const std::string &name);
-            [[nodiscard]] Status setMaterial(const std::string &name);
+            [[nodiscard]] Status setMesh(const gfx::asset::Mesh *mesh);
+            [[nodiscard]] Status setMaterial(const gfx::asset::Material *material);
+
+            
+
 
 
         private:

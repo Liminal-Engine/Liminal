@@ -1,6 +1,6 @@
 #include "resource/Shader.hpp"
-#include "ShaderType.hpp"
 #include "__private/__config.hpp"
+#include "ShaderType.hpp"
 
 #include <logger/logger.hpp>
 #include <fs/InFile.hpp>
@@ -12,45 +12,24 @@ namespace rhi {
         
         class Shader::__Impl {
             private:
-                uint32_t __handle;                
+                uint32_t __handle;        
 
-                static std::string __shaderTypeToStr(const ShaderType &type) {
-                    switch (type) {
-                        case ShaderType::VERTEX: return "VERTEX";
-                        case ShaderType::GEOMETRY: return "GEOMETRY";
-                        case ShaderType::FRAGMENT: return "FRAGMENT";
-                        case ShaderType::COMPUTE: return "COMPUTE";
-                        default: return "UNKNOWN";
-                    }
-                    return "UNKNOWN";
-                }
 
-                static GLenum __shaderTypeToGLenum(const ShaderType &type) {
-                    switch (type) {
-                        case ShaderType::VERTEX: return GL_VERTEX_SHADER;
-                        case ShaderType::GEOMETRY: return GL_GEOMETRY_SHADER;
-                        case ShaderType::FRAGMENT: return GL_FRAGMENT_SHADER;
-                        case ShaderType::COMPUTE: return GL_COMPUTE_SHADER;            
-                        default: return GL_ZERO;
-                    }
-                    return GL_ZERO;
-                }
-
-                static std::string __getShaderSource(const fs::Path &path) {
-                    fs::InFile shaderFile(path);
-                    if (shaderFile.open() != fs::Status::OK) {
-                        logger::error << "Failed to open shader file: " << path.asStr() << std::endl;
-                        return "";
-                    }
-                    if (shaderFile.read() != fs::Status::OK) {
-                        logger::error << "Failed to read shader file: " << path.asStr() << std::endl;
-                        return "";
-                    }
-                    if (shaderFile.close() != fs::Status::OK) {
-                        logger::error << "Failed to close shader file: " << path.asStr() << std::endl;
-                    }
-                    return shaderFile.getContent();
-                }
+                // static std::string __getShaderSource(const fs::Path &path) {
+                //     fs::InFile shaderFile(path);
+                //     if (shaderFile.open() != fs::Status::OK) {
+                //         logger::error << "Failed to open shader file: " << path.asStr() << std::endl;
+                //         return "";
+                //     }
+                //     if (shaderFile.read() != fs::Status::OK) {
+                //         logger::error << "Failed to read shader file: " << path.asStr() << std::endl;
+                //         return "";
+                //     }
+                //     if (shaderFile.close() != fs::Status::OK) {
+                //         logger::error << "Failed to close shader file: " << path.asStr() << std::endl;
+                //     }
+                //     return shaderFile.getContent();
+                // }
 
                 static uint32_t __compileShaderSource(const std::string &source, const ShaderType &type) {
                     // 1. Check if source is empty
@@ -58,60 +37,38 @@ namespace rhi {
                         logger::error << "Source is empty, nothing to compile" << std::endl;
                         return 0;
                     }
-                    // 2. Check if source contains the wanted shader type, most shaders does not contains all categories
-                    std::string typeStr(__shaderTypeToStr(type));
-                    if (source.find("#ifdef " + typeStr) == std::string::npos) {
-                        logger::debug << typeStr << " not defined in shader source, nothing to compile for the shader type: " << typeStr << std::endl;
-                        return 0;
-                    }
-                    // 3. Find the #version definition in the source
-                    std::string sourceCpy(source); // create a modifyable copy
-                    size_t versionPos = sourceCpy.find("#version");
-                    if (versionPos == std::string::npos) {
-                        logger::error << "Version definition not find in source, aborting compilation..." << std::endl;
-                        return 0;
-                    }
-                    size_t endOfVersionLine = sourceCpy.find('\n', versionPos);
-                    if (endOfVersionLine == std::string::npos) {
-                        logger::error << "No new line found after version definition, aborting comilation..." << std::endl;
-                        return 0;
-                    }
-                    // 4. Insert the shader type definition in the source modifyable copy
-                    sourceCpy.insert(endOfVersionLine + 1, "#define " + typeStr + "\n");
-                    // 5. Compile
-                    const char *sourceCpyCStr = sourceCpy.c_str();
-                    uint32_t shader = glCreateShader(__shaderTypeToGLenum(type));
-                    glShaderSource(shader, 1, &sourceCpyCStr, NULL);
+                    const char *sourceCStr = source.c_str();
+                    uint32_t shader = glCreateShader(toGLenum(type));
+                    glShaderSource(shader, 1, &sourceCStr, NULL);
                     glCompileShader(shader);
                     int success = 0;
                     glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
                     if (!success) {
                         char infoLog[__private::__config::OPENGL_INFO_LOG_LENGTH];
                         glGetShaderInfoLog(shader, __private::__config::OPENGL_INFO_LOG_LENGTH, NULL, infoLog);
-                        logger::error << "Failed to compile " << typeStr << " shader:\n" <<
+                        logger::error << "Failed to compile " << toStr(type) << " shader:\n" <<
                         std::string(infoLog) << std::endl;
+                        glDeleteShader(shader);
                         return 0;
                     }
                     return shader;
                 }
 
-                static uint32_t __loadProgram(const fs::Path &path) {
+                static uint32_t __loadProgram(
+                    const std::string &vertexSource,
+                    const std::string &geometrySource,
+                    const std::string &fragmentSource,
+                    const std::string &computeSource
+                ) {
                     // 1. Create cleaned absolute path
-                    fs::Path absolutePath(path);
-                    absolutePath.toAbsolute();
-                    absolutePath.clean();
-                    std::string absolutePathStr(absolutePath.asStr());
-                    // 2. Read shader file source
-                    std::string source = __getShaderSource(absolutePath);
-                    // 3. Compile
-                    logger::debug << "Compiling VERTEX shader for " << absolutePathStr << std::endl;
-                    uint32_t vertexShader = __compileShaderSource(source, ShaderType::VERTEX);
-                    logger::debug << "Compiling GEOMETRY shader for " << absolutePathStr << std::endl;
-                    uint32_t geometryShader = __compileShaderSource(source, ShaderType::GEOMETRY);
-                    logger::debug << "Compiling FRAGMENT shader for " << absolutePathStr << std::endl;
-                    uint32_t fragmentShader = __compileShaderSource(source, ShaderType::FRAGMENT);
-                    logger::debug << "Compiling COMPUTE shader for " << absolutePathStr << std::endl;
-                    uint32_t computeShader = __compileShaderSource(source, ShaderType::COMPUTE);
+                    logger::debug << "Compiling VERTEX shader" << std::endl;
+                    uint32_t vertexShader = __compileShaderSource(vertexSource, ShaderType::VERTEX);
+                    logger::debug << "Compiling GEOMETRY shader" << std::endl;
+                    uint32_t geometryShader = __compileShaderSource(geometrySource, ShaderType::GEOMETRY);
+                    logger::debug << "Compiling FRAGMENT shader" << std::endl;
+                    uint32_t fragmentShader = __compileShaderSource(fragmentSource, ShaderType::FRAGMENT);
+                    logger::debug << "Compiling COMPUTE shader" << std::endl;
+                    uint32_t computeShader = __compileShaderSource(computeSource, ShaderType::COMPUTE);
                     // 4. Link
                     const uint32_t program = glCreateProgram();
                     if (vertexShader != 0) glAttachShader(program, vertexShader);
@@ -119,21 +76,33 @@ namespace rhi {
                     if (fragmentShader != 0) glAttachShader(program, fragmentShader);
                     if (computeShader != 0) glAttachShader(program, computeShader);
                     glLinkProgram(program);
+
+                    // Shader objects are only needed for linking; free them afterwards.
+                    if (vertexShader != 0) glDeleteShader(vertexShader);
+                    if (geometryShader != 0) glDeleteShader(geometryShader);
+                    if (fragmentShader != 0) glDeleteShader(fragmentShader);
+                    if (computeShader != 0) glDeleteShader(computeShader);
+
                     int success = 0;
                     glGetProgramiv(program, GL_LINK_STATUS, &success);
                     if (!success) {
                         char infoLog[__private::__config::OPENGL_INFO_LOG_LENGTH];
                         glGetProgramInfoLog(program, __private::__config::OPENGL_INFO_LOG_LENGTH, NULL, infoLog);
-                        logger::error << "Failed to link program for shader " << absolutePathStr << " :\n" <<
-                        std::string(infoLog) << std::endl;
+                        logger::error << "Failed to link program:\n" << std::string(infoLog) << std::endl;
+                        glDeleteProgram(program);
                         return 0;
                     }
                     return program;
                 }
     
             public:
-                __Impl(const fs::Path &path) :
-                __handle(__loadProgram(path))
+                __Impl(
+                    const std::string &vertexSource,
+                    const std::string &geometrySource,
+                    const std::string &fragmentSource,
+                    const std::string &computeSource
+                ) :
+                __handle(__loadProgram(vertexSource, geometrySource, fragmentSource, computeSource))
                 {
                     
                 }
@@ -147,8 +116,13 @@ namespace rhi {
                 }
         };
     
-        Shader::Shader(const fs::Path &path) :
-        __impl(std::make_unique<__Impl>(path))
+        Shader::Shader(
+            const std::string &vertexSource,
+            const std::string &geometrySource,
+            const std::string &fragmentSource,
+            const std::string &computeSource
+        ) :
+        __impl(std::make_unique<__Impl>(vertexSource, geometrySource, fragmentSource, computeSource))
         {
     
         }

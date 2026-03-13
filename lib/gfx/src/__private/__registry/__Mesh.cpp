@@ -39,6 +39,14 @@ namespace gfx {
                         }
                         return nullptr;
                     }
+
+                    const gfx::asset::Mesh *get(const std::string &name) const {
+                        if (this->exists(name) == false) {
+                            logger::error << "Mesh asset registry cannot find asset with name: " << name << std::endl;
+                            return nullptr;
+                        }
+                        return this->__data.at(name).get();
+                    }
             };
 
             __Mesh::__Mesh(void) :
@@ -50,6 +58,7 @@ namespace gfx {
             bool __Mesh::exists(const std::string &name) const { return this->__impl->exists(name); }
             Status __Mesh::add(const std::string &name, asset::Mesh &&mesh) { return this->__impl->add(name, std::move(mesh)); }
             const gfx::asset::Mesh *__Mesh::getByPath(const fs::Path &path) { return this->__impl->getByPath(path); }
+            const gfx::asset::Mesh *__Mesh::get(const std::string &name) const { return this->__impl->get(name); }
 
         } // namespace __registry
     } // namespace __private

@@ -44,14 +44,14 @@ namespace host {
             __entityRegistry(),
             __application(application)
             {
-                this->__resourceRegistry.init();
+                // this->__resourceRegistry.init();
             }
             
             ~__Impl() {
                 if (rhi::Status rhiStatus; (rhiStatus = this->__resourceRegistry.destroy()) != rhi::Status::OK) {
                     logger::error << "Failed to destroy RHI registry" << std::endl;
                 }
-                this->__renderer->destroy();
+                rhi::Renderer::destroy();
                 glfwDestroyWindow(this->__window);
                 glfwTerminate();
             }

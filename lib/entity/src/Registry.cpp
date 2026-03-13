@@ -31,8 +31,8 @@ namespace entity {
                 return Status::OK;
             }
 
-            std::vector<AEntity *> getAll(void) const {
-                std::vector<AEntity *> entities;
+            std::vector<const AEntity *> getAll(void) const {
+                std::vector<const AEntity *> entities;
                 entities.reserve(this->__data.size());
                 for (auto const & [name, entity] : this->__data) {
                     entities.push_back(entity.get());
@@ -49,5 +49,5 @@ namespace entity {
 
     bool Registry::exists(const std::string &name) const { return this->__impl->exists(name); }
     Status Registry::add(const std::string &name, AEntity &&entity) { return this->__impl->add(name, std::move(entity)); }
-    std::vector<AEntity *> Registry::getAll(void) const { return this->__impl->getAll(); }
+    std::vector<const AEntity *> Registry::getAll(void) const { return this->__impl->getAll(); }
 } // namespace entity

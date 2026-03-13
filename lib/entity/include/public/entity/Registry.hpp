@@ -15,7 +15,7 @@ namespace entity {
 
             Status add(const std::string &name, AEntity &&entity);
             bool exists(const std::string &name) const;
-            std::vector<AEntity *> getAll(void) const; // FIXME: this must absolutly disapear later
+            std::vector<const AEntity *> getAll(void) const; // FIXME: this must absolutly disapear later
         
         private:
             class __Impl;

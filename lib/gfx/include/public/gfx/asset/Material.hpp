@@ -5,6 +5,7 @@
 
 #include <fs/Path.hpp>
 #include <rhi/resource/Texture.hpp>
+#include <rhi/resource/Shader.hpp>
 
 #include <memory>
 
@@ -33,6 +34,12 @@ namespace gfx {
                 const int &getTextureNChannels(void) const;
 
                 Status setTextureResource(const rhi::resource::Texture *resource);
+                Status setShaderResource(const rhi::resource::Shader *resource);
+
+                const std::string &getShaderVertexSource(void) const;
+                const std::string &getShaderGeometrySource(void) const;
+                const std::string &getShaderFragmentSource(void) const;
+                const std::string &getShaderComputeSource(void) const;
 
             private:
                 class __Impl;

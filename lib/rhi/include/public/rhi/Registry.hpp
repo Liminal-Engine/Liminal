@@ -3,7 +3,6 @@
 
 #include "Status.hpp"
 #include "resource/Shader.hpp"
-#include "ShaderCategory.hpp"
 #include "resource/Texture.hpp"
 #include "resource/Mesh.hpp"
 #include "resource/Vertex.hpp"
@@ -21,7 +20,7 @@ namespace rhi {
             Status init(void);
             Status destroy(void);
 
-            const resource::Shader *getShader(const ShaderCategory &category, const std::string &name) const;
+            const resource::Shader *getShader(const std::string &name) const;
             const resource::Texture *getTexture(const std::string &name) const;
             const resource::Mesh *getMesh(const std::string &name) const;
 
@@ -32,6 +31,14 @@ namespace rhi {
             );
 
             Status addTexture(const std::string &name, const unsigned char* data, const glm::ivec2 &size, const int &nChannels);
+
+            Status addShader(
+                const std::string name,
+                const std::string &vertexSource,
+                const std::string &geometrySource,
+                const std::string &fragmentSource,
+                const std::string &computeSource
+            );
 
         private:
             class __Impl;

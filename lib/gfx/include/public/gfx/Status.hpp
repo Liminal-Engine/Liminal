@@ -5,7 +5,9 @@ namespace gfx {
     enum class Status {
         OK,
         N_OK,
-        E_ALREADY_EXISTS
+        E_ALREADY_EXISTS,
+        E_FILE_EMPTY,
+        E_FILE_CONTENT
     };
 } // namespace gfx
 

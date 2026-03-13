@@ -3,7 +3,6 @@
 
 #include "Status.hpp"
 #include "resource/Shader.hpp"
-#include "ShaderCategory.hpp"
 #include <string>
 
 #include <memory>
@@ -18,7 +17,16 @@ namespace rhi {
 
                     Status init(void);
                     Status destroy(void);
-                    const resource::Shader *get(const ShaderCategory &category, const std::string &name)  const;
+                    const resource::Shader *get(const std::string &name) const;
+                    bool exists(const std::string &name) const;
+
+                    Status add(
+                        const std::string &name,
+                        const std::string &vertexSource,
+                        const std::string &geometrySource,
+                        const std::string &fragmentSource,
+                        const std::string &computeSource
+                    );
 
                 private:
                     class __Impl;

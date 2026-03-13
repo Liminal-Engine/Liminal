@@ -18,6 +18,7 @@ namespace gfx {
                     [[nodiscard]] Status add(const std::string &name, asset::Mesh &&mesh);
                     bool exists(const std::string &name) const;
                     const gfx::asset::Mesh *getByPath(const fs::Path &path);
+                    const gfx::asset::Mesh *get(const std::string &name) const;
 
                 private:
                     class __Impl;

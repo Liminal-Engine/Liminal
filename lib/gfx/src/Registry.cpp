@@ -23,14 +23,6 @@ namespace gfx {
 
             ~__Impl() = default;
 
-            // Status add(const std::string &name, asset::Mesh &&mesh) {
-            //     return this->__meshRegistry.add(name, std::move(mesh));
-            // }
-
-            // Status add(const std::string &name, asset::Material &&material) {
-            //     return this->__materialRegistry.add(name, std::move(material));
-            // }
-
             Status loadMaterial(const std::string &name, const fs::Path &texturePath) {
                 // 1. If already exists, do nothing
                 if (this->__materialRegistry.exists(name)) {
@@ -38,7 +30,7 @@ namespace gfx {
                     return Status::E_ALREADY_EXISTS;
                 }
                 logger::debug << "Loading material asset with name: \"" << name << "\", texture path: " << texturePath.asStr() << std::endl;
-                // 2. We alwaays identify resources by their keys, since material has a shader and a texture resrouce, the resource key is the 2 combined
+                // 2. We always identify resources by their keys, since material has a shader and a texture resrouce, the resource key is the 2 combined
                 fs::Path shaderPath("/home/matteo/Projects/Liminal/assets/shaders/core/textured.glsl");
                 std::string resourceKey = shaderPath.asStr() + "|" + texturePath.asStr();
                 // 3. We create the new asset
@@ -51,15 +43,25 @@ namespace gfx {
                 } else { // 6. If it don't exists, then we must load it from files and add data to gfx and resource registries
                     // 6.1 Load from file
                     newMaterialAsset.load(texturePath);
+                    // --- TEXTURE ---
                     // 6.2 Create the corresponding rhi resource if it don't exists
                     const rhi::resource::Texture *rhiTextureResource = this->__rhiRegistry.getTexture(texturePath.asStr());
-                    if (rhiTextureResource == nullptr) { // if the texture rhi resource does not exists, create it
+                    if (rhiTextureResource == nullptr) { // if the texture rhi resource does not exist, create it
                         this->__rhiRegistry.addTexture(texturePath.asStr(), newMaterialAsset.getTextureData(), newMaterialAsset.getTextureSize(), newMaterialAsset.getTextureNChannels());
                         // 6.3 update the local rhi texture resource by retrieving it again now that it is created
                         rhiTextureResource = this->__rhiRegistry.getTexture(texturePath.asStr());
                     }
                     // 6.4 Update the new material asset by setting it's rhi resource
                     newMaterialAsset.setTextureResource(rhiTextureResource);
+                    // --- SHADER ---
+                    const rhi::resource::Shader *rhiShaderResource = this->__rhiRegistry.getShader(shaderPath.asStr());
+                    if (rhiShaderResource == nullptr) { // if the shader rhi resource does not exist, create it
+                        this->__rhiRegistry.addShader(shaderPath.asStr(), newMaterialAsset.getShaderVertexSource(), newMaterialAsset.getShaderGeometrySource(), newMaterialAsset.getShaderFragmentSource(), newMaterialAsset.getShaderComputeSource());
+                        // update the local rhi shader by retreiving it
+                        rhiShaderResource = this->__rhiRegistry.getShader(shaderPath.asStr());
+                    }
+                    // Update new material asset with shader
+                    newMaterialAsset.setShaderResource(rhiShaderResource);
                 }
                 //7. Add the new material to the gfx registry
                 this->__materialRegistry.add(name, std::move(newMaterialAsset));
@@ -99,6 +101,31 @@ namespace gfx {
                 this->__meshRegistry.add(name, std::move(newMeshAsset));
                 return Status::OK;
             }
+
+            bool meshExists(const std::string &name) const {
+                return this->__meshRegistry.exists(name);
+            }
+
+            bool materialExists(const std::string &name) const {
+                return this->__materialRegistry.exists(name);
+            }
+
+            const asset::Mesh *getMesh(const std::string &name) const {
+                if (this->meshExists(name) == false) {
+                    logger::error << "Failed to find mesh asset \"" << name << "\"" << std::endl;
+                    return nullptr;
+                }
+                return this->__meshRegistry.get(name);
+            }
+
+            const asset::Material *getMaterial(const std::string &name) const {
+                if (this->materialExists(name) == false) {
+                    logger::error << "Failed to find material asset \"" << name << "\"" << std::endl;
+                    return nullptr;
+                }
+                return this->__materialRegistry.get(name);
+            }
+
     };
 
     Registry::Registry(rhi::Registry &rhiRegistry) :
@@ -107,8 +134,12 @@ namespace gfx {
 
     Registry::~Registry() = default;
 
-    // Status Registry::add(const std::string &name, asset::Mesh &&mesh) { return this->__impl->add(name, std::move(mesh)); }
-    // Status Registry::add(const std::string &name, asset::Material &&material) { return this->__impl->add(name, std::move(material)); }
     Status Registry::loadMesh(const std::string &name, const fs::Path &path) { return this->__impl->loadMesh(name, path); }
     Status Registry::loadMaterial(const std::string &name, const fs::Path &texturePath) { return this->__impl->loadMaterial(name, texturePath); }
+
+    bool Registry::meshExists(const std::string &name) const { return this->__impl->meshExists(name); }
+    bool Registry::materialExists(const std::string &name) const { return this->__impl->materialExists(name); }
+
+    const asset::Mesh *Registry::getMesh(const std::string &name) const { return this->__impl->getMesh(name); }
+    const asset::Material *Registry::getMaterial(const std::string &name) const { return this->__impl->getMaterial(name); }
 } // namespace gfx

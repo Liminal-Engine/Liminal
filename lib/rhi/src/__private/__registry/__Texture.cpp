@@ -12,12 +12,10 @@ namespace rhi {
             class __Texture::__Impl {
                 private:
                     std::unordered_map<std::string, std::unique_ptr<resource::Texture>> __data;
-                    bool __initialized;
 
                 public:
                     __Impl(void) :
-                    __data{},
-                    __initialized(false)
+                    __data{}
                     {
 
                     }
@@ -25,10 +23,6 @@ namespace rhi {
                     ~__Impl() = default;
 
                     Status init(void) {
-                        if (this->__initialized == true) {
-                            logger::warn << "Texture registry already initialized" << std::endl;
-                            return Status::E_ALREADY_INIT;
-                        }
                         logger::info << "Initializing texture registry" << std::endl;
                         std::vector<fs::Path> children = __private::__config::DEFAULT_TEXTURE_PATH.getChildren();
                         for (const fs::Path &child : children) {
@@ -44,18 +38,12 @@ namespace rhi {
                                 // this->__data.emplace(entry.getName(), std::make_unique<resource::Texture>(child));
                             }
                         }
-                        this->__initialized = true;
                         return Status::OK;
 
                     }
 
                     Status destroy(void) {
-                        if (this->__initialized == false) {
-                            logger::error << "Failed to destory texture registry: not initialized" << std::endl;
-                            return Status::E_NOT_INIT;
-                        }
                         this->__data.clear();
-                        this->__initialized = false;
                         return Status::OK;
                     }
 

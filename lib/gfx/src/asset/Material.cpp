@@ -43,7 +43,7 @@ namespace gfx {
 
                 Status load(const fs::Path &texturePath) {
                     this->__texture->load(texturePath);
-
+                    this->__shader->load(fs::Path("/home/matteo/Projects/Liminal/assets/shaders/core/textured.glsl")); //  FIXME: this is one of the place where shader selection should happen, should be someting like "default.glsl" by default
                     return Status::OK;
                 }
 
@@ -54,6 +54,15 @@ namespace gfx {
                 Status setTextureResource(const rhi::resource::Texture *resource) {
                     return this->__texture->setResource(resource);
                 }
+
+                Status setShaderResource(const rhi::resource::Shader *resource) {
+                    return this->__shader->setResource(resource);
+                }
+
+                const std::string &getShaderVertexSource(void) const { return this->__shader->getVertexSource(); }
+                const std::string &getShaderGeometrySource(void) const { return this->__shader->getGeometrySource(); }
+                const std::string &getShaderFragmentSource(void) const { return this->__shader->getFragmentSource(); }
+                const std::string &getShaderComputeSource(void) const { return this->__shader->getComputeSource(); }
         };
 
         Material::Material(void) :
@@ -79,5 +88,11 @@ namespace gfx {
         const int &Material::getTextureNChannels(void) const { return this->__impl->getTextureNChannels(); }
 
         Status Material::setTextureResource(const rhi::resource::Texture *resource) { return this->__impl->setTextureResource(resource); }
+        Status Material::setShaderResource(const rhi::resource::Shader *resource) { return this->__impl->setShaderResource(resource); }
+
+        const std::string &Material::getShaderVertexSource(void) const { return this->__impl->getShaderVertexSource(); }
+        const std::string &Material::getShaderGeometrySource(void) const { return this->__impl->getShaderGeometrySource(); }
+        const std::string &Material::getShaderFragmentSource(void) const { return this->__impl->getShaderFragmentSource(); }
+        const std::string &Material::getShaderComputeSource(void) const { return this->__impl->getShaderComputeSource(); }
     } // namespace asset
 } // namespace gfx

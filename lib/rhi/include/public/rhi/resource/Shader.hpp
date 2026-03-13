@@ -9,7 +9,12 @@ namespace rhi {
     namespace resource {
         class Shader {
             public:
-                Shader(const fs::Path &path);
+                Shader(
+                    const std::string &vertexSource,
+                    const std::string &geometrySource,
+                    const std::string &fragmentSource,
+                    const std::string &computeSource
+                );
                 ~Shader();
 
                 void use(void) const;

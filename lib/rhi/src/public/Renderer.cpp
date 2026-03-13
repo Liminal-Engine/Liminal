@@ -54,6 +54,10 @@ namespace rhi {
 
     void Renderer::draw(const entity::Registry &entityRegistry) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        auto allEntities = entityRegistry.getAll();
+        for (auto &entity : allEntities) {
+            
+        }
         // logger::info << "DRAWING" << std::endl;
         // const resource::Shader *shader = registry.getShader(ShaderCategory::CORE, "textured");
         // const resource::Texture *texture = registry.getTexture("ground_2K");

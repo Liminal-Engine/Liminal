@@ -1,24 +1,41 @@
 #include "AEntity.hpp"
 
+#include <gfx/asset/Material.hpp>
+#include <gfx/asset/Mesh.hpp>
+#include <logger/logger.hpp>
+
 namespace entity {
     class AEntity::__Impl {
         private:
+            const gfx::asset::Mesh *__mesh;
+            const gfx::asset::Material *__material;
+
             
         public:
-            __Impl(void)
+            __Impl(void) :
+            __mesh(nullptr),
+            __material(nullptr)
             {
                 
             }
 
             ~__Impl() = default;
 
-            Status setMesh(const std::string &name) {
-                (void)name;
+            Status setMesh(const gfx::asset::Mesh *mesh) {
+                if (mesh == nullptr) {
+                    logger::error << "Failed to assign mesh to entity: mesh is NULL" << std::endl;
+                    return Status::E_NO_EXISTS;
+                }
+                this->__mesh = mesh;
                 return Status::OK;
             }
 
-            Status setMaterial(const std::string &name) {
-                (void)name;
+            Status setMaterial(const gfx::asset::Material *material) {
+                if (material == nullptr) {
+                    logger::error << "Failed to assign material to entity: material is NULL" << std::endl;
+                    return Status::E_NO_EXISTS;
+                }
+                this->__material = material;
                 return Status::OK;
             }
     };
@@ -33,8 +50,8 @@ namespace entity {
 
     AEntity::~AEntity() =  default;
 
-    Status AEntity::setMesh(const std::string &name) { return this->__impl->setMesh(name); }
-    Status AEntity::setMaterial(const std::string &name) { return this->__impl->setMaterial(name); }
+    Status AEntity::setMesh(const gfx::asset::Mesh *mesh) { return this->__impl->setMesh(mesh); }
+    Status AEntity::setMaterial(const gfx::asset::Material *material) { return this->__impl->setMaterial(material); }
 
 
 } // namespace entity
