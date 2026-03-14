@@ -6,6 +6,7 @@
 #include "resource/Texture.hpp"
 #include "resource/Mesh.hpp"
 #include "resource/Vertex.hpp"
+#include "resource/Handle.hpp"
 
 #include <memory>
 
@@ -20,9 +21,13 @@ namespace rhi {
             Status init(void);
             Status destroy(void);
 
-            const resource::Shader *getShader(const std::string &name) const;
-            const resource::Texture *getTexture(const std::string &name) const;
-            const resource::Mesh *getMesh(const std::string &name) const;
+            const resource::Handle getShaderHandle(const std::string &name) const;
+            const resource::Handle getTextureHandle(const std::string &name) const;
+            const resource::Handle getMeshHandle(const std::string &name) const;
+
+            const resource::Shader *getShaderResource(resource::Handle handle) const;
+            const resource::Texture *getTextureResource(resource::Handle handle) const;
+            const resource::Mesh *getMeshResource(resource::Handle handle) const;
 
             Status addMesh(
                 const std::string &name,

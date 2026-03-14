@@ -2,9 +2,11 @@
 #define __LIMINAL__LIB__RHI__PRIVATE__REGISTRY__SHADER_HPP__
 
 #include "Status.hpp"
+#include "resource/Handle.hpp"
 #include "resource/Shader.hpp"
-#include <string>
 
+
+#include <string>
 #include <memory>
 
 namespace rhi {
@@ -17,7 +19,8 @@ namespace rhi {
 
                     Status init(void);
                     Status destroy(void);
-                    const resource::Shader *get(const std::string &name) const;
+                    const resource::Handle getHandle(const std::string &name) const;
+                    const resource::Shader *getResource(resource::Handle handle) const;
                     bool exists(const std::string &name) const;
 
                     Status add(

@@ -11,54 +11,66 @@ namespace rhi {
         namespace __registry {
             class __Texture::__Impl {
                 private:
-                    std::unordered_map<std::string, std::unique_ptr<resource::Texture>> __data;
+                    std::vector<std::unique_ptr<resource::Texture>> __data;
+                    std::unordered_map<std::string, resource::Handle> __lookupTable;
 
                 public:
                     __Impl(void) :
-                    __data{}
+                    __data{},
+                    __lookupTable{}
                     {
 
                     }
 
-                    ~__Impl() = default;
+                    ~__Impl() {
+                        this->__data.clear();
+                        this->__lookupTable.clear();
+                    }
 
                     Status init(void) {
-                        logger::info << "Initializing texture registry" << std::endl;
-                        std::vector<fs::Path> children = __private::__config::DEFAULT_TEXTURE_PATH.getChildren();
-                        for (const fs::Path &child : children) {
-                            fs::Entry entry = child.getEntry();
-                            if (
-                                entry.getType() == fs::Entry::Type::REGULAR_FILE &&
-                                (
-                                    entry.getExtension() == "png" ||
-                                    entry.getExtension() == "jpg" ||
-                                    entry.getExtension() == "jpeg"
-                                )
-                            ) {
-                                // this->__data.emplace(entry.getName(), std::make_unique<resource::Texture>(child));
-                            }
-                        }
+                        // logger::info << "Initializing texture registry" << std::endl;
+                        // std::vector<fs::Path> children = __private::__config::DEFAULT_TEXTURE_PATH.getChildren();
+                        // for (const fs::Path &child : children) {
+                        //     fs::Entry entry = child.getEntry();
+                        //     if (
+                        //         entry.getType() == fs::Entry::Type::REGULAR_FILE &&
+                        //         (
+                        //             entry.getExtension() == "png" ||
+                        //             entry.getExtension() == "jpg" ||
+                        //             entry.getExtension() == "jpeg"
+                        //         )
+                        //     ) {
+                        //         // this->__data.emplace(entry.getName(), std::make_unique<resource::Texture>(child));
+                        //     }
+                        // }
                         return Status::OK;
 
                     }
 
                     Status destroy(void) {
                         this->__data.clear();
+                        this->__lookupTable.clear();
                         return Status::OK;
                     }
 
-                    const resource::Texture *get(const std::string &name) const {
-                        auto it = this->__data.find(name);
-
-                        if (it == this->__data.end()) {
-                            logger::error << "Failed to find texture with name: " << name << std::endl;
-                            return nullptr; // FIXME: return default texture instead
+                    const resource::Handle getHandle(const std::string &name) const {
+                        if (this->exists(name) == false) {
+                            logger::error << "Failed to find RHI texture with name: " << name << std::endl;
+                            return resource::NULL_HANDLE;
                         }
-                        return it->second.get();
+                        return this->__lookupTable.at(name);
+                    }
+
+                    const resource::Texture *getResource(resource::Handle handle) const {
+                        if (handle >= this->__data.size()) [[unlikely]] {
+                            logger::error << "Failed to find RHI texture with handle: " << handle << std::endl;
+                            return nullptr;
+                        }
+                        return this->__data[handle].get();
                     }
 
                     bool exists(const std::string &name) const {
-                        return this->__data.find(name) != this->__data.end();
+                        return this->__lookupTable.find(name) != this->__lookupTable.end();
                     }
 
                     Status add(const std::string &name, const unsigned char* data, const glm::ivec2 &size, const int &nChannels) {
@@ -70,7 +82,8 @@ namespace rhi {
                             logger::error << "Failed to add texture resource: invalid image data for \"" << name << "\"" << std::endl;
                             return Status::N_OK;
                         }
-                        this->__data[name] = std::make_unique<resource::Texture>(data, size, nChannels);
+                        this->__data.push_back(std::make_unique<resource::Texture>(data, size, nChannels));
+                        this->__lookupTable[name] = static_cast<resource::Handle>(this->__data.size()) - 1;
                         return Status::OK;
                     }
             };
@@ -83,7 +96,8 @@ namespace rhi {
 
             Status __Texture::init(void) { return this->__impl->init(); }
             Status __Texture::destroy(void) { return this->__impl->destroy(); }
-            const resource::Texture *__Texture::get(const std::string &name) const { return this->__impl->get(name); }
+            const resource::Handle __Texture::getHandle(const std::string &name) const { return this->__impl->getHandle(name); }
+            const resource::Texture *__Texture::getResource(resource::Handle handle) const { return this->__impl->getResource(handle); }
             Status __Texture::add(const std::string &name, const unsigned char* data, const glm::ivec2 &size, const int &nChannels) { return this->__impl->add(name, data, size, nChannels); }
         } // namespace __registry
     } // namespace __private

@@ -4,7 +4,7 @@
 #include "Status.hpp"
 
 #include <fs/Path.hpp>
-#include <rhi/resource/Texture.hpp>
+#include <rhi/resource/Handle.hpp>
 
 #include <glm/glm.hpp>
 
@@ -23,7 +23,8 @@ namespace gfx {
                     const glm::ivec2 &getSize(void) const;
                     const int &getNChannels(void) const;
 
-                    Status setResource(const rhi::resource::Texture *resource);
+                    Status setRHIHandle(const rhi::resource::Handle &RHIHandle);
+                    const rhi::resource::Handle &getRHIHandle(void) const;
 
                     Status copy(const __Texture &other);
 

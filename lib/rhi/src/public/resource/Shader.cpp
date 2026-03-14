@@ -34,7 +34,7 @@ namespace rhi {
                 static uint32_t __compileShaderSource(const std::string &source, const ShaderType &type) {
                     // 1. Check if source is empty
                     if (source.empty()) {
-                        logger::error << "Source is empty, nothing to compile" << std::endl;
+                        logger::debug << "Source is empty for this shader type, nothing to compile" << std::endl;
                         return 0;
                     }
                     const char *sourceCStr = source.c_str();

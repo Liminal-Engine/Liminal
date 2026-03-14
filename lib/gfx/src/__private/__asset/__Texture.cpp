@@ -1,6 +1,5 @@
 #include "__private/__asset/__Texture.hpp"
 
-#include <rhi/resource/Texture.hpp>
 #include <rhi/sampler/TextureFiltering.hpp>
 #include <rhi/sampler/TextureWrapping.hpp>
 #include <fs/Path.hpp>
@@ -21,7 +20,7 @@ namespace gfx {
         namespace __asset {
             class __Texture::__Impl {
                 private:
-                    const rhi::resource::Texture *__resource;
+                    rhi::resource::Handle __RHIHandle;
                     fs::Path __path;
                     unsigned char *__data;
                     glm::ivec2 __size;
@@ -32,7 +31,7 @@ namespace gfx {
 
                 public:
                     __Impl(void) :
-                    __resource(nullptr),
+                    __RHIHandle(rhi::resource::NULL_HANDLE),
                     __path(),
                     __data(nullptr),
                     __size(0.0f),
@@ -71,13 +70,15 @@ namespace gfx {
                     const glm::ivec2 &getSize(void) const { return this->__size; }
                     const int &getNChannels(void) const { return this->__nChannels; }
 
-                    Status setResource(const rhi::resource::Texture *resource) {
-                        this->__resource = resource;
+                    Status setRHIHandle(const rhi::resource::Handle &RHIHandle) {
+                        this->__RHIHandle = RHIHandle;
                         return Status::OK;
                     }
 
+                    const rhi::resource::Handle &getRHIHandle(void) const { return this->__RHIHandle; }
+
                     Status copy(const __Impl &other) {
-                        this->__resource = other.__resource;
+                        this->__RHIHandle = other.__RHIHandle;
                         this->__path = other.__path;
                         this->__size = other.__size;
                         this->__nChannels = other.__nChannels;
@@ -115,7 +116,8 @@ namespace gfx {
             const glm::ivec2 &__Texture::getSize(void) const { return this->__impl->getSize(); }
             const int &__Texture::getNChannels(void) const { return this->__impl->getNChannels(); }
 
-            Status __Texture::setResource(const rhi::resource::Texture *resource) { return this->__impl->setResource(resource); }
+            Status __Texture::setRHIHandle(const rhi::resource::Handle &RHIHandle) { return this->__impl->setRHIHandle(RHIHandle); }
+            const rhi::resource::Handle &__Texture::getRHIHandle(void) const { return this->__impl->getRHIHandle(); }
 
             Status __Texture::copy(const __Texture &other) { return this->__impl->copy(*other.__impl); }
         } // namespace __aset

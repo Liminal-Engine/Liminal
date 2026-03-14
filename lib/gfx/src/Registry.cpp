@@ -45,23 +45,23 @@ namespace gfx {
                     newMaterialAsset.load(texturePath);
                     // --- TEXTURE ---
                     // 6.2 Create the corresponding rhi resource if it don't exists
-                    const rhi::resource::Texture *rhiTextureResource = this->__rhiRegistry.getTexture(texturePath.asStr());
-                    if (rhiTextureResource == nullptr) { // if the texture rhi resource does not exist, create it
+                    rhi::resource::Handle rhiTextureHandle = this->__rhiRegistry.getTextureHandle(texturePath.asStr());
+                    if (rhiTextureHandle == rhi::resource::NULL_HANDLE) { // if the texture rhi resource does not exist, create it
                         this->__rhiRegistry.addTexture(texturePath.asStr(), newMaterialAsset.getTextureData(), newMaterialAsset.getTextureSize(), newMaterialAsset.getTextureNChannels());
                         // 6.3 update the local rhi texture resource by retrieving it again now that it is created
-                        rhiTextureResource = this->__rhiRegistry.getTexture(texturePath.asStr());
+                        rhiTextureHandle = this->__rhiRegistry.getTextureHandle(texturePath.asStr());
                     }
                     // 6.4 Update the new material asset by setting it's rhi resource
-                    newMaterialAsset.setTextureResource(rhiTextureResource);
+                    newMaterialAsset.setTextureRHIHandle(rhiTextureHandle);
                     // --- SHADER ---
-                    const rhi::resource::Shader *rhiShaderResource = this->__rhiRegistry.getShader(shaderPath.asStr());
-                    if (rhiShaderResource == nullptr) { // if the shader rhi resource does not exist, create it
+                    rhi::resource::Handle rhiShaderHandle = this->__rhiRegistry.getShaderHandle(shaderPath.asStr());
+                    if (rhiShaderHandle == rhi::resource::NULL_HANDLE) { // if the shader rhi resource does not exist, create it
                         this->__rhiRegistry.addShader(shaderPath.asStr(), newMaterialAsset.getShaderVertexSource(), newMaterialAsset.getShaderGeometrySource(), newMaterialAsset.getShaderFragmentSource(), newMaterialAsset.getShaderComputeSource());
                         // update the local rhi shader by retreiving it
-                        rhiShaderResource = this->__rhiRegistry.getShader(shaderPath.asStr());
+                        rhiShaderHandle = this->__rhiRegistry.getShaderHandle(shaderPath.asStr());
                     }
                     // Update new material asset with shader
-                    newMaterialAsset.setShaderResource(rhiShaderResource);
+                    newMaterialAsset.setShaderRHIHandle(rhiShaderHandle);
                 }
                 //7. Add the new material to the gfx registry
                 this->__materialRegistry.add(name, std::move(newMaterialAsset));
@@ -88,14 +88,14 @@ namespace gfx {
                     // 6.1 Load from file
                     newMeshAsset.load(path);
                     // 6.2 Create the corresponding rhi resource if it don't exists
-                    const rhi::resource::Mesh *rhiMeshResource = this->__rhiRegistry.getMesh(resourceKey);
-                    if (rhiMeshResource == nullptr) { // if the rhi mesh resource don't exists, create it
+                    rhi::resource::Handle rhiMeshHandle = this->__rhiRegistry.getMeshHandle(resourceKey);
+                    if (rhiMeshHandle == rhi::resource::NULL_HANDLE) { // if the rhi mesh resource don't exists, create it
                         this->__rhiRegistry.addMesh(resourceKey, newMeshAsset.getVertices(), newMeshAsset.getIndices());                        
                         // 6.3 Update the local rhi mesh resource by retrieving it again now that it is created
-                        rhiMeshResource = this->__rhiRegistry.getMesh(resourceKey);
+                        rhiMeshHandle = this->__rhiRegistry.getMeshHandle(resourceKey);
                     }
                     // 6.4 Update the new mesh asset by setting it's rhi resource
-                    newMeshAsset.setResource(rhiMeshResource);
+                    newMeshAsset.setRHIHandle(rhiMeshHandle);
                 }
                 // 7. Add the gfx mesh asset to the gfx mesh asset registry
                 this->__meshRegistry.add(name, std::move(newMeshAsset));

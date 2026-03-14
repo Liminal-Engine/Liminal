@@ -1,6 +1,5 @@
 #include "__private/__asset/__Shader.hpp"
 
-#include <rhi/resource/Shader.hpp>
 #include <rhi/ShaderType.hpp>
 #include <logger/logger.hpp>
 #include <fs/InFile.hpp>
@@ -59,7 +58,7 @@ namespace gfx {
                         return parseop::join(rawRes, "\n");
                     }
 
-                    const rhi::resource::Shader *__resource;
+                    rhi::resource::Handle __RHIHandle;
                     std::unordered_map<std::string, int> __uniformLocations;
                     std::string __vertexSource;
                     std::string __geometrySource;
@@ -68,7 +67,7 @@ namespace gfx {
 
                 public:
                     __Impl(void) :
-                    __resource(nullptr),
+                    __RHIHandle(rhi::resource::NULL_HANDLE),
                     __uniformLocations(),
                     __vertexSource(""),
                     __geometrySource(""),
@@ -79,7 +78,7 @@ namespace gfx {
                     }
 
                     Status copy(const __Impl &other) {
-                        this->__resource = other.__resource;
+                        this->__RHIHandle = other.__RHIHandle;
                         this->__uniformLocations = other.__uniformLocations;
                         return Status::OK;
                     }
@@ -111,10 +110,12 @@ namespace gfx {
                         return Status::OK;
                     }
 
-                    Status setResource(const rhi::resource::Shader *resource) {
-                        this->__resource = resource;
+                    Status setRHIHandle(const rhi::resource::Handle &RHIHandle) {
+                        this->__RHIHandle = RHIHandle;
                         return Status::OK;
                     }
+
+                    const rhi::resource::Handle &getRHIHandle(void) const { return this->__RHIHandle; }
 
                     const std::string &getVertexSource(void) const { return this->__vertexSource; }
                     const std::string &getGeometrySource(void) const { return this->__geometrySource; }
@@ -133,7 +134,8 @@ namespace gfx {
 
             Status __Shader::load(const fs::Path &path) { return this->__impl->load(path); }
 
-            Status __Shader::setResource(const rhi::resource::Shader *resource) { return this->__impl->setResource(resource); }
+            Status __Shader::setRHIHandle(const rhi::resource::Handle &RHIHandle) { return this->__impl->setRHIHandle(RHIHandle); }
+            const rhi::resource::Handle &__Shader::getRHIHandle(void) const { return this->__impl->getRHIHandle(); }
 
             const std::string &__Shader::getVertexSource(void) const { return this->__impl->getVertexSource(); }
             const std::string &__Shader::getGeometrySource(void) const { return this->__impl->getGeometrySource(); }

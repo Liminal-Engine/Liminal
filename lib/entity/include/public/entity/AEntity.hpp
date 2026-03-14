@@ -8,8 +8,12 @@
 
 #include <string>
 #include <memory>
+#include <cstdint>
 
 namespace entity {
+
+    using RessourceHandle = uint32_t;
+
     class AEntity {
         public:
             AEntity(void);
@@ -24,7 +28,9 @@ namespace entity {
             [[nodiscard]] Status setMesh(const gfx::asset::Mesh *mesh);
             [[nodiscard]] Status setMaterial(const gfx::asset::Material *material);
 
-            
+            RessourceHandle getShaderHandle(void) const;
+            RessourceHandle getTexureHandle(void) const;
+            RessourceHandle getMeshHandle(void) const;
 
 
 

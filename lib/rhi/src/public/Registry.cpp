@@ -55,17 +55,31 @@ namespace rhi {
                 return Status::OK;
             }
 
-            const resource::Shader *getShader(const std::string &name) const {
-                return this->__shaderRegistry.get(name);
+            const resource::Handle getShaderHandle(const std::string &name) const {
+                return this->__shaderRegistry.getHandle(name);
             }
             
-            const resource::Texture *getTexture(const std::string &name) const {
-                return this->__textureRegistry.get(name);
+            const resource::Handle getTextureHandle(const std::string &name) const {
+                return this->__textureRegistry.getHandle(name);
             }
 
-            const resource::Mesh *getMesh(const std::string &name) const {
-                return this->__meshRegistry.get(name);
+            const resource::Handle getMeshHandle(const std::string &name) const {
+                return this->__meshRegistry.getHandle(name);
             }
+
+
+            const resource::Shader *getShaderResource(resource::Handle handle) const {
+                return this->__shaderRegistry.getResource(handle);
+            }
+
+            const resource::Texture *getTextureResource(resource::Handle handle) const {
+                return this->__textureRegistry.getResource(handle);
+            }
+
+            const resource::Mesh *getMeshResource(resource::Handle handle) const {
+                return this->__meshRegistry.getResource(handle);
+            }
+
 
             Status addMesh(                
                 const std::string &name,
@@ -99,9 +113,12 @@ namespace rhi {
     Status Registry::init(void) { return this->__impl->init(); }
     Status Registry::destroy(void) { return this->__impl->destroy(); }
 
-    const resource::Shader *Registry::getShader(const std::string &name) const { return this->__impl->getShader(name); }
-    const resource::Texture *Registry::getTexture(const std::string &name) const { return this->__impl->getTexture(name); }
-    const resource::Mesh *Registry::getMesh(const std::string &name) const { return this->__impl->getMesh(name); }
+    const resource::Handle Registry::getShaderHandle(const std::string &name) const { return this->__impl->getShaderHandle(name); }
+    const resource::Handle Registry::getTextureHandle(const std::string &name) const { return this->__impl->getTextureHandle(name); }
+    const resource::Handle Registry::getMeshHandle(const std::string &name) const { return this->__impl->getMeshHandle(name); }
+    const resource::Shader *Registry::getShaderResource(resource::Handle handle) const { return this->__impl->getShaderResource(handle); }
+    const resource::Texture *Registry::getTextureResource(resource::Handle handle) const { return this->__impl->getTextureResource(handle); }
+    const resource::Mesh *Registry::getMeshResource(resource::Handle handle) const { return this->__impl->getMeshResource(handle); }
     Status Registry::addMesh(const std::string &name, const std::vector<resource::Vertex> &vertices, const std::vector<uint32_t> indices) { return this->__impl->addMesh(name, vertices, indices); }
     Status Registry::addTexture(const std::string &name, const unsigned char* data, const glm::ivec2 &size, const int &nChannels) { return this->__impl->addTexture(name, data, size, nChannels); }
     Status Registry::addShader(const std::string name, const std::string &vertexSource, const std::string &geometrySource, const std::string &fragmentSource, const std::string &computeSource) { return this->__impl->addShader(name, vertexSource, geometrySource, fragmentSource, computeSource); }

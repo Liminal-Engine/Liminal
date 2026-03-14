@@ -51,13 +51,16 @@ namespace gfx {
                 const glm::ivec2 &getTextureSize(void) const { return this->__texture->getSize(); }
                 const int &getTextureNChannels(void) const { return this->__texture->getNChannels(); }
 
-                Status setTextureResource(const rhi::resource::Texture *resource) {
-                    return this->__texture->setResource(resource);
+                Status setTextureRHIHandle(const rhi::resource::Handle &RHIHandle) {
+                    return this->__texture->setRHIHandle(RHIHandle);
                 }
 
-                Status setShaderResource(const rhi::resource::Shader *resource) {
-                    return this->__shader->setResource(resource);
+                Status setShaderRHIHandle(const rhi::resource::Handle &RHIHandle) {
+                    return this->__shader->setRHIHandle(RHIHandle);
                 }
+
+                rhi::resource::Handle getTextureRHIHandle(void) const { return this->__texture->getRHIHandle(); }
+                rhi::resource::Handle getShaderRHIHandle(void) const { return this->__shader->getRHIHandle(); }
 
                 const std::string &getShaderVertexSource(void) const { return this->__shader->getVertexSource(); }
                 const std::string &getShaderGeometrySource(void) const { return this->__shader->getGeometrySource(); }
@@ -87,8 +90,10 @@ namespace gfx {
         const glm::ivec2 &Material::getTextureSize(void) const { return this->__impl->getTextureSize(); }
         const int &Material::getTextureNChannels(void) const { return this->__impl->getTextureNChannels(); }
 
-        Status Material::setTextureResource(const rhi::resource::Texture *resource) { return this->__impl->setTextureResource(resource); }
-        Status Material::setShaderResource(const rhi::resource::Shader *resource) { return this->__impl->setShaderResource(resource); }
+        Status Material::setTextureRHIHandle(const rhi::resource::Handle &RHIHandle) { return this->__impl->setTextureRHIHandle(RHIHandle); }
+        Status Material::setShaderRHIHandle(const rhi::resource::Handle &RHIHandle) { return this->__impl->setShaderRHIHandle(RHIHandle); }
+        rhi::resource::Handle Material::getTextureRHIHandle(void) const { return this->__impl->getTextureRHIHandle(); }
+        rhi::resource::Handle Material::getShaderRHIHandle(void) const { return this->__impl->getShaderRHIHandle(); }
 
         const std::string &Material::getShaderVertexSource(void) const { return this->__impl->getShaderVertexSource(); }
         const std::string &Material::getShaderGeometrySource(void) const { return this->__impl->getShaderGeometrySource(); }

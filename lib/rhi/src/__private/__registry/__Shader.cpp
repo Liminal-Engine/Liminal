@@ -13,75 +13,51 @@ namespace rhi {
         namespace __registry {
             class __Shader::__Impl {
                 private:
-                    std::unordered_map<std::string, std::unique_ptr<resource::Shader>> __data;
+                    std::vector<std::unique_ptr<resource::Shader>> __data;
+                    std::unordered_map<std::string, resource::Handle> __lookupTable;
 
                 public:
                     __Impl(void) :
-                    __data{}
+                    __data{},
+                    __lookupTable{}
                     {
 
                     }
 
                     ~__Impl() {
                         this->__data.clear();
+                        this->__lookupTable.clear();
                     }
 
 
                     Status init(void) {
-                        // if (this->__initialized == true) {
-                        //     logger::warn << "Shader ressource registry already initialized" << std::endl;
-                        //     return Status::E_ALREADY_INIT;
-                        // }
-                        // logger::info << "Initializing shader registry" << std::endl;
-                        // // 1. Get all sub entries (e.g. children) of the shader dir
-                        // std::vector<fs::Path> children = __private::__config::DEFAULT_SHADER_PATH.getChildren();
-                        // // 2. Filter with only directories that are not include
-                        // std::vector<fs::Path> categoryDirs{};
-                        // for (const fs::Path &child : children) {
-                        //     fs::Entry tmpEntry(child.getEntry());
-                        //     if (
-                        //         tmpEntry.getType() == fs::Entry::Type::DIRECTORY &&
-                        //         tmpEntry.getName() != "include"
-                        //     ) {
-                        //         categoryDirs.push_back(child);
-                        //     }
-                        // }
-                        // // Create categories, names and shaders
-                        // for (const fs::Path &categoryDir : categoryDirs) {
-                        //     std::string categoryStr = categoryDir.getEntry().getName();
-                        //     ShaderCategory category = __strToShaderCategory(categoryStr);
-                        //     children = categoryDir.getChildren();
-                        //     for (const fs::Path &child : children) {
-                        //         fs::Entry tmpEntry(child.getEntry());
-                        //         if (
-                        //             tmpEntry.getType() == fs::Entry::Type::REGULAR_FILE &&
-                        //             tmpEntry.getExtension() == "glsl"
-                        //         ) {
-                        //             std::string name(tmpEntry.getName());
-                        //             logger::debug << "Creating shader ressource CATGORY=" << categoryStr << ",NAME=" << name << std::endl;
-                        //             this->__data.emplace(__Key(category, name), std::make_unique<resource::Shader>(child));
-                        //         }
-                        //     }
-                        // }
-                        // this->__initialized = true;
-                        // return Status::OK;
+                        return Status::OK;
                     }
 
                     Status destroy(void) {
                         this->__data.clear();
+                        this->__lookupTable.clear();
                         return Status::OK;
                     }
 
                     bool exists(const std::string &name) const {
-                        return this->__data.find(name) != this->__data.end();
+                        return this->__lookupTable.find(name) != this->__lookupTable.end();
                     }
 
-                    const resource::Shader *get(const std::string &name) const {
+                    const resource::Handle getHandle(const std::string &name) const {
                        if (this->exists(name) == false) {
-                            logger::error << "Failed to find shader with name: " << name << std::endl;
+                            logger::error << "Failed to find RHI shader with name: " << name << std::endl;
+                            return resource::NULL_HANDLE;
+                        }                        
+                        return this->__lookupTable.at(name);
+                    }
+
+                    const resource::Shader *getResource(resource::Handle handle) const {
+                        if (handle >= this->__data.size()) [[unlikely]] {
+                            logger::error << "Failed to find RHI shader with handle: " << handle << std::endl;
                             return nullptr;
                         }
-                        return this->__data.at(name).get();
+                        return this->__data[handle].get();
                     }
 
                     Status add(
@@ -95,7 +71,8 @@ namespace rhi {
                             logger::error << "RHI shader \"" << name << "\" already exists" << std::endl;
                             return Status::E_ALREADY_EXISTS;
                         }
-                        this->__data[name] = std::make_unique<resource::Shader>(vertexSource, geometrySource, fragmentSource, computeSource);
+                        this->__data.push_back(std::make_unique<resource::Shader>(vertexSource, geometrySource, fragmentSource, computeSource));
+                        this->__lookupTable[name] = static_cast<resource::Handle>(this->__data.size()) - 1;
                         return Status::OK;
                     }
             };
@@ -110,8 +87,9 @@ namespace rhi {
 
             Status __Shader::init(void) { return this->__impl->init(); }
             Status __Shader::destroy(void) { return this->__impl->destroy(); }
-            const resource::Shader *__Shader::get(const std::string &name) const { return this->__impl->get(name); }
-            bool __Shader::exists(const std::string &name) const { return this->exists(name); }
+            const resource::Handle __Shader::getHandle(const std::string &name) const { return this->__impl->getHandle(name); }
+            const resource::Shader *__Shader::getResource(resource::Handle handle) const { return this->__impl->getResource(handle); }
+            bool __Shader::exists(const std::string &name) const { return this->__impl->exists(name); }
             Status __Shader::add(const std::string &name, const std::string &vertexSource, const std::string &geometrySource, const std::string &fragmentSource, const std::string &computeSource) { return this->__impl->add(name, vertexSource, geometrySource, fragmentSource, computeSource); }
         } // namespace __registry
     } // namespace __private

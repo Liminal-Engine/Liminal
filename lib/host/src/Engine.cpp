@@ -12,11 +12,11 @@ namespace host {
     class Engine::__Impl {
         private:
             GLFWwindow *__window;
-            rhi::Renderer *__renderer;
-            rhi::Registry __resourceRegistry;
+            rhi::Registry __RHIRegistry;
             gfx::Registry __assetRegistry;
             entity::Registry __entityRegistry;
             const Application &__application;
+            rhi::Renderer *__renderer;
 
         public:
             
@@ -35,20 +35,20 @@ namespace host {
                 glfwMakeContextCurrent(window);
                 return window;
             }()),
-            __renderer([&](void) -> rhi::Renderer * {
-                rhi::Renderer::init();
-                return rhi::Renderer::get();
-            }()),
-            __resourceRegistry(),
-            __assetRegistry(this->__resourceRegistry),
+            __RHIRegistry(),
+            __assetRegistry(this->__RHIRegistry),
             __entityRegistry(),
-            __application(application)
+            __application(application),
+            __renderer([&](void) -> rhi::Renderer * {
+                rhi::Renderer::init(this->__RHIRegistry);
+                return rhi::Renderer::get();
+            }())
             {
                 // this->__resourceRegistry.init();
             }
             
             ~__Impl() {
-                if (rhi::Status rhiStatus; (rhiStatus = this->__resourceRegistry.destroy()) != rhi::Status::OK) {
+                if (rhi::Status rhiStatus; (rhiStatus = this->__RHIRegistry.destroy()) != rhi::Status::OK) {
                     logger::error << "Failed to destroy RHI registry" << std::endl;
                 }
                 rhi::Renderer::destroy();

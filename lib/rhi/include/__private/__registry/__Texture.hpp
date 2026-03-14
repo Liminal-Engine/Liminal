@@ -2,6 +2,7 @@
 #define __LIMINAL__LIB__RHI__PRIVATE__REGISTR__TEXTURE_HPP__
 
 #include "Status.hpp"
+#include "resource/Handle.hpp"
 #include "resource/Texture.hpp"
 
 #include <fs/Path.hpp>
@@ -18,7 +19,8 @@ namespace rhi {
 
                     Status init(void);
                     Status destroy(void);
-                    const resource::Texture *get(const std::string &name) const;
+                    const resource::Handle getHandle(const std::string &name) const;
+                    const resource::Texture *getResource(resource::Handle handle) const;
                     bool exists(const std::string &name) const;
                     
                     Status add(const std::string &name, const unsigned char* data, const glm::ivec2 &size, const int &nChannels);

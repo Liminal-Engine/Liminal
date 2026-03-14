@@ -1,7 +1,6 @@
 #include "asset/Mesh.hpp"
 
 #include <rhi/resource/Vertex.hpp>
-#include <rhi/resource/Mesh.hpp>
 #include <fs/Path.hpp>
 
 #include <vector>
@@ -10,7 +9,7 @@ namespace gfx {
     namespace asset {
         class Mesh::__Impl {
             private:
-                const rhi::resource::Mesh *__resource;
+                rhi::resource::Handle __RHIHandle;
                 std::vector<rhi::resource::Vertex> __vertices;
                 std::vector<uint32_t> __indices;
                 int __BOUDING_BOX; // this is for later, type will change
@@ -18,7 +17,7 @@ namespace gfx {
 
             public:
                 __Impl(const fs::Path &path) :
-                __resource(nullptr),
+                __RHIHandle(rhi::resource::NULL_HANDLE),
                 __vertices{},
                 __indices{},
                 __BOUDING_BOX(-1),
@@ -28,7 +27,7 @@ namespace gfx {
                 }
 
                 __Impl(void) :
-                __resource(nullptr),
+                __RHIHandle(rhi::resource::NULL_HANDLE),
                 __vertices{},
                 __indices{},
                 __BOUDING_BOX(-1),
@@ -41,7 +40,7 @@ namespace gfx {
          
 
                 Status copy(const __Impl &other) {
-                    this->__resource = other.__resource;
+                    this->__RHIHandle = other.__RHIHandle;
                     this->__vertices = other.__vertices;
                     this->__indices = other.__indices;
                     this->__BOUDING_BOX = other.__BOUDING_BOX;
@@ -68,10 +67,12 @@ namespace gfx {
                     return Status::OK;
                 }
 
-                Status setResource(const rhi::resource::Mesh *meshResource) {
-                    this->__resource = meshResource;
+                Status setRHIHandle(const rhi::resource::Handle &RHIHandle) {
+                    this->__RHIHandle = RHIHandle;
                     return Status::OK;
                 }
+
+                rhi::resource::Handle getRHIHandle(void) const { return this->__RHIHandle; }
         };
 
         Mesh::Mesh(const fs::Path &path) :
@@ -91,7 +92,8 @@ namespace gfx {
         const std::vector<rhi::resource::Vertex> &Mesh::getVertices(void) const { return this->__impl->getVertices(); }
         const std::vector<uint32_t> &Mesh::getIndices(void) const { return this->__impl->getIndices(); }
         Status Mesh::load(const fs::Path &path) { return this->__impl->load(path); }
-        Status Mesh::setResource(const rhi::resource::Mesh *meshResource) { return this->__impl->setResource(meshResource); }
+        Status Mesh::setRHIHandle(const rhi::resource::Handle &RHIHandle) { return this->__impl->setRHIHandle(RHIHandle); }
+        rhi::resource::Handle Mesh::getRHIHandle(void) const { return this->__impl->getRHIHandle(); }
         const fs::Path &Mesh::getPath(void) const { return this->__impl->getPath(); }
         Status Mesh::copy(const Mesh &other) { return this->__impl->copy(*other.__impl); }
 

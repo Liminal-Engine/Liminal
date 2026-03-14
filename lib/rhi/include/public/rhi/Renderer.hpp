@@ -1,7 +1,9 @@
 #ifndef __LIMINAL__LIB__RHI__INCLUDE__RENDERER_HPP__
 #define __LIMINAL__LIB__RHI__INCLUDE__RENDERER_HPP__
 
-#include "entity/Registry.hpp"
+#include "Registry.hpp"
+
+#include <entity/Registry.hpp>
 
 #include <vector>
 #include <memory>
@@ -10,7 +12,7 @@ namespace rhi {
     class Renderer {
         public:
 
-            static void init(void);
+            static void init(const Registry &RHIRegistry);
             static void destroy(void);
         
             static Renderer *get(void);            
@@ -23,7 +25,7 @@ namespace rhi {
             void draw(const entity::Registry &entityRegistry);
 
         private:
-            Renderer(void);
+            Renderer(const Registry &RHIRegistry);
             ~Renderer();
 
             static Renderer *__instance;

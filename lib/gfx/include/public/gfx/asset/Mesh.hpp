@@ -4,7 +4,8 @@
 #include "../Status.hpp" // FIXME
 
 #include <fs/Path.hpp>
-#include <rhi/resource/Mesh.hpp>
+#include <rhi/resource/Handle.hpp>
+#include <rhi/resource/Vertex.hpp>
 
 #include <memory>
 
@@ -23,7 +24,9 @@ namespace gfx {
                 
                 Status copy(const Mesh &other);
                 Status load(const fs::Path &path);
-                Status setResource(const rhi::resource::Mesh *meshResource);
+
+                Status setRHIHandle(const rhi::resource::Handle &RHIHandle);
+                rhi::resource::Handle getRHIHandle(void) const;
 
                 Mesh(const Mesh &) = delete;
                 Mesh &operator=(const Mesh &) = delete;
