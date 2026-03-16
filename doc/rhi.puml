@@ -3,12 +3,48 @@ namespace rhi {
     namespace __private {
         namespace __registry {
             class __Mesh {
+                # !!!FIXME: delte init and destroy method and make sure destructors are correct
                 .. Constructors/Destructors ..
                 + __Mesh(void)
                 + ~__Mesh()
                 .. Methods ..
-                + getHandle(const std::string &name) const: const resource::Handle
+                + getHandle(const std::string &name) const: const def::Handle
                 + getResource(resource::Handle handle) const: const resource::Mesh *
+                + exists(const std::string &name) const: bool
+                + add(const std::string &name, const std::vector<def::Vertex> &vertices, const std::vector<uint32_t> &indices): Status
+                .. Members ..
+                - __data: std::vector<std::unique_ptr<resource::Mesh>>
+                - __lookupTable: std::unordered_map<std::string, def::Handle>
+            }
+
+            class __Shader {
+                # !!!FIXME: delte init and destroy method and make sure destructors are correct
+                .. Constructors/Destructors ..
+                + __Shader(void)
+                + ~__Shader()
+                .. Methods ..
+                + exists(const std::string &name) const: bool
+                + getHandle(const std::string &name) const: const def::Handle
+                + getResource(def::Handle handle) const: const resource::Shader *
+                + add(const std::string &name, const std::string &vertexSource, const std::string &geometrySource, const std::string &fragmentSource, const std::string &computeSource): Status
+                .. Members ..
+                - __data: std::vector<std::unique_ptr<resource::Shader>>
+                - __lookupTable: std::unordered_map<std::string, def::Handle>
+            }
+
+            class __Texture {
+                # !!!FIXME: delte init and destroy method and make sure destructors are correct
+                .. Constructors/Destructors ..
+                + __Texture(void)
+                + ~__Texture()
+                .. Methods ..
+                + getHandle(const std::string &name) const: const def::Handle
+                + getResource(def::Handle handle) const: const resource::Texture *
+                + exists(const std::string &name) const: bool
+                + add(const std::string &name, const unsigned char* data, const glm::ivec2 &size, const int &nChannels): Status
+                .. Members ..
+                - __data: std::vector<std::unique_ptr<resource::Texture>>
+                - __lookupTable: std::unordered_map<std::string, def::Handle> 
             }
         }
 
@@ -71,7 +107,7 @@ namespace rhi {
     namespace def {
         class "uint32_t" as u32 <<primitive>>
         class Handle <<using>>
-        Handle -up.> u32 : type alias
+        Handle ..> u32 : type alias
 
         struct Vertex {
             .. Members ..

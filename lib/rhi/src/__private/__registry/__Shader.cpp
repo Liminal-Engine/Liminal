@@ -30,16 +30,6 @@ namespace rhi {
                     }
 
 
-                    Status init(void) {
-                        return Status::OK;
-                    }
-
-                    Status destroy(void) {
-                        this->__data.clear();
-                        this->__lookupTable.clear();
-                        return Status::OK;
-                    }
-
                     bool exists(const std::string &name) const {
                         return this->__lookupTable.find(name) != this->__lookupTable.end();
                     }
@@ -85,8 +75,6 @@ namespace rhi {
 
             __Shader::~__Shader() = default;
 
-            Status __Shader::init(void) { return this->__impl->init(); }
-            Status __Shader::destroy(void) { return this->__impl->destroy(); }
             const def::Handle __Shader::getHandle(const std::string &name) const { return this->__impl->getHandle(name); }
             const resource::Shader *__Shader::getResource(def::Handle handle) const { return this->__impl->getResource(handle); }
             bool __Shader::exists(const std::string &name) const { return this->__impl->exists(name); }

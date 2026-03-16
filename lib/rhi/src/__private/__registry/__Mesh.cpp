@@ -15,40 +15,14 @@ namespace rhi {
 
                 public:
                     __Impl(void) :
-                    __data{}
+                    __data{},
+                    __lookupTable{}
                     {}
 
-                    ~__Impl() = default;
-
-                    Status init(void) {
-                        // logger::info << "Initializing mesh registry" << std::endl;
-                        // // top
-                        // resource::Vertex v1;
-                        // v1.position = glm::vec3(0.0f, 0.5f, 0.0f);
-                        // v1.uv = glm::vec2(0.0f);
-                        // v1.normal = glm::vec3(0.0f);
-                        // // bottom left
-                        // resource::Vertex v2;
-                        // v2.position = glm::vec3(0.5f, -0.5f, 0.0f);
-                        // v2.uv = glm::vec2(0.0f);
-                        // v2.normal = glm::vec3(0.0f);
-                        // // bottom right
-                        // resource::Vertex v3;
-                        // v3.position = glm::vec3(-0.5f, -0.5f, 0.0f);
-                        // v3.uv = glm::vec2(0.0f);
-                        // v3.normal = glm::vec3(0.0f);
-
-                        // std::vector<resource::Vertex> verices{v1, v2, v3};
-                        // std::vector<uint32_t> indices = {0, 1, 2};
-
-                        // this->__data.emplace("TRIANGLE_MESH", std::make_unique<resource::Mesh>(verices, indices));
-                        return Status::OK;
-                    }
-
-                    Status destroy(void) {
+                    ~__Impl() {
                         this->__data.clear();
-                        return Status::OK;
-                    };
+                        this->__lookupTable.clear();
+                    }
 
                     const def::Handle getHandle(const std::string &name) const {
                         if (this->exists(name) == false) {
@@ -88,8 +62,6 @@ namespace rhi {
 
             __Mesh::~__Mesh() = default;
 
-            Status __Mesh::init(void) { return this->__impl->init(); }
-            Status __Mesh::destroy(void) { return this->__impl->destroy(); }
             const def::Handle __Mesh::getHandle(const std::string &name) const { return this->__impl->getHandle(name); }
             const resource::Mesh *__Mesh::getResource(def::Handle handle) const { return this->__impl->getResource(handle); }
             bool __Mesh::exists(const std::string &name) const { return this->__impl->exists(name); }

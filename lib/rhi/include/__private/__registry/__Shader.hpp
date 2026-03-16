@@ -17,8 +17,6 @@ namespace rhi {
                     __Shader(void);
                     ~__Shader(void);
 
-                    Status init(void);
-                    Status destroy(void);
                     const def::Handle getHandle(const std::string &name) const;
                     const resource::Shader *getResource(def::Handle handle) const;
                     bool exists(const std::string &name) const;

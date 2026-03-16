@@ -18,9 +18,6 @@ namespace rhi {
             Registry(void);
             ~Registry();
 
-            Status init(void);
-            Status destroy(void);
-
             const def::Handle getShaderHandle(const std::string &name) const;
             const def::Handle getTextureHandle(const std::string &name) const;
             const def::Handle getMeshHandle(const std::string &name) const;

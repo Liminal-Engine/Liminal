@@ -27,32 +27,6 @@ namespace rhi {
                         this->__lookupTable.clear();
                     }
 
-                    Status init(void) {
-                        // logger::info << "Initializing texture registry" << std::endl;
-                        // std::vector<fs::Path> children = __private::__config::DEFAULT_TEXTURE_PATH.getChildren();
-                        // for (const fs::Path &child : children) {
-                        //     fs::Entry entry = child.getEntry();
-                        //     if (
-                        //         entry.getType() == fs::Entry::Type::REGULAR_FILE &&
-                        //         (
-                        //             entry.getExtension() == "png" ||
-                        //             entry.getExtension() == "jpg" ||
-                        //             entry.getExtension() == "jpeg"
-                        //         )
-                        //     ) {
-                        //         // this->__data.emplace(entry.getName(), std::make_unique<resource::Texture>(child));
-                        //     }
-                        // }
-                        return Status::OK;
-
-                    }
-
-                    Status destroy(void) {
-                        this->__data.clear();
-                        this->__lookupTable.clear();
-                        return Status::OK;
-                    }
-
                     const def::Handle getHandle(const std::string &name) const {
                         if (this->exists(name) == false) {
                             logger::error << "Failed to find RHI texture with name: " << name << std::endl;
@@ -94,8 +68,6 @@ namespace rhi {
 
             __Texture::~__Texture() = default;
 
-            Status __Texture::init(void) { return this->__impl->init(); }
-            Status __Texture::destroy(void) { return this->__impl->destroy(); }
             const def::Handle __Texture::getHandle(const std::string &name) const { return this->__impl->getHandle(name); }
             const resource::Texture *__Texture::getResource(def::Handle handle) const { return this->__impl->getResource(handle); }
             Status __Texture::add(const std::string &name, const unsigned char* data, const glm::ivec2 &size, const int &nChannels) { return this->__impl->add(name, data, size, nChannels); }

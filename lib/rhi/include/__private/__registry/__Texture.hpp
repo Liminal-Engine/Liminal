@@ -17,8 +17,6 @@ namespace rhi {
                     __Texture(void);
                     ~__Texture();
 
-                    Status init(void);
-                    Status destroy(void);
                     const def::Handle getHandle(const std::string &name) const;
                     const resource::Texture *getResource(def::Handle handle) const;
                     bool exists(const std::string &name) const;
