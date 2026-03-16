@@ -1,5 +1,47 @@
 @startuml rhi
 namespace rhi {
+
+
+    class Renderer {
+        .. Constructors/Destructors ..
+        + {static} init(const Registry &RHIRegistry): void
+        + {static} destroy(void): void
+        + Renderer(const Renderer&) = delete
+        + Renderer& operator=(const Renderer&) = delete
+        + Renderer(Renderer&&) = delete
+        + Renderer& operator=(Renderer&&) = delete
+        - Renderer(const Registry &RHIRegistry)
+        - ~Renderer()
+        .. Methods ..
+        + draw(const entity::Registry::entityRegistry): void
+        .. Members ..
+        - {static} __instance: Renderer *
+    }
+
+    note left of Renderer
+    rhi::Renderer is a singleton class
+    end note
+
+    class Registry {
+        .. Constructors/Destructors ..
+        + Registry(void)
+        + ~Registry()
+        .. Methods ..
+        + getShaderHandle(const std::string &name) const: def::Handle
+        + getTextureHandle(const std::string &name) const: def::Handle
+        + getMeshHandle(const std::string &name) const: def::Handle
+        + getShaderResource(def::Handle handle) const: const resource::Shader *
+        + getTextureResource(def::Handle handle) const: const resource::Texture *
+        + getMeshResource(def::Handle handle) const: const resource::Mesh *
+        + addMesh(const std::string &name, const std::vector<def::Vertex> &vertices, const std::vector<uint32_t> &indices): Status
+        + addTexture(const std::string &name, const unsigned char* data, const glm::ivec2 &size, const int nChannels): Status
+        + addShader(const std::string name, const std::string &vertexSource, const std::string &geometrySource, const std::string &fragmentSource, const std::string &computeSource): Status
+        .. Members ..
+        - __shaderRegistry: __private::__registry::__Shader
+        - __textureRegistry: __private::__registry::__Texture
+        - __meshRegistry: __private::__registry::__Mesh
+    }
+
     namespace __private {
         namespace __registry {
             class __Mesh {
@@ -44,13 +86,9 @@ namespace rhi {
                 - __lookupTable: std::unordered_map<std::string, def::Handle> 
             }
         }
-
-        
     }
 
     namespace resource {
-        
-
         class Mesh {
             .. Constructors/Destructors ..
             + Mesh(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices)
@@ -66,7 +104,7 @@ namespace rhi {
             - __EBO: uint32_t
             - __VBO: uint32_t
             - __count: uint32_t
-        }
+        }        
 
         class Shader {
             .. Constructors/Destructors ..
@@ -137,4 +175,35 @@ namespace rhi {
         E_ALREADY_EXISTS
     }
 }
+
+rhi.resource.Mesh ..> rhi.def.Vertex : uses >
+
+rhi.resource.Shader ..> rhi.def.ShaderType : uses >
+rhi.resource.Shader ..> rhi.def.Uniform : uses >
+
+rhi.__private.__registry.__Mesh ..> rhi.def.Vertex : uses >
+rhi.__private.__registry.__Mesh ..> rhi.Status : uses >
+rhi.__private.__registry.__Mesh --> rhi.def.Handle : stores >
+rhi.__private.__registry.__Mesh *.. rhi.resource.Mesh : owns >
+
+rhi.__private.__registry.__Shader ..> rhi.Status : uses >
+rhi.__private.__registry.__Shader --> rhi.def.Handle : stores >
+rhi.__private.__registry.__Shader *.. rhi.resource.Shader : owns >
+
+rhi.__private.__registry.__Texture ..> rhi.Status : uses >
+rhi.__private.__registry.__Texture --> rhi.def.Handle : stores >
+rhi.__private.__registry.__Texture *.. rhi.resource.Texture : owns >
+
+rhi.Registry ..> rhi.Status : uses >
+rhi.Registry ..> rhi.def.Vertex : uses >
+rhi.Registry --> rhi.def.Handle : stores >
+rhi.Registry *.. rhi.resource.Shader : owns
+rhi.Registry *.. rhi.resource.Texture : owns
+rhi.Registry *.. rhi.resource.Mesh : owns
+rhi.Registry *.. rhi.__private.__registry.__Shader : owns
+rhi.Registry *.. rhi.__private.__registry.__Texture : owns
+rhi.Registry *.. rhi.__private.__registry.__Mesh : owns
+
+rhi.Renderer ..> entity.Registry : uses >
+rhi.Renderer --> rhi.Registry : stores >
 @enduml

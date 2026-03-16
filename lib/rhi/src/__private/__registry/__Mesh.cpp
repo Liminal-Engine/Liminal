@@ -9,7 +9,6 @@ namespace rhi {
         namespace __registry {
             class __Mesh::__Impl {
                 private:
-                    // std::unordered_map<std::string, std::unique_ptr<resource::Mesh>> __data;
                     std::vector<std::unique_ptr<resource::Mesh>> __data;
                     std::unordered_map<std::string, def::Handle> __lookupTable;
 

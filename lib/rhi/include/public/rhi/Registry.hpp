@@ -18,9 +18,9 @@ namespace rhi {
             Registry(void);
             ~Registry();
 
-            const def::Handle getShaderHandle(const std::string &name) const;
-            const def::Handle getTextureHandle(const std::string &name) const;
-            const def::Handle getMeshHandle(const std::string &name) const;
+            def::Handle getShaderHandle(const std::string &name) const;
+            def::Handle getTextureHandle(const std::string &name) const;
+            def::Handle getMeshHandle(const std::string &name) const;
 
             const resource::Shader *getShaderResource(def::Handle handle) const;
             const resource::Texture *getTextureResource(def::Handle handle) const;
@@ -29,10 +29,10 @@ namespace rhi {
             Status addMesh(
                 const std::string &name,
                 const std::vector<def::Vertex> &vertices,
-                const std::vector<uint32_t> indices
+                const std::vector<uint32_t> &indices
             );
 
-            Status addTexture(const std::string &name, const unsigned char* data, const glm::ivec2 &size, const int &nChannels);
+            Status addTexture(const std::string &name, const unsigned char* data, const glm::ivec2 &size, const int nChannels);
 
             Status addShader(
                 const std::string name,

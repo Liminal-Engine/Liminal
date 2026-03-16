@@ -54,7 +54,7 @@ namespace rhi {
             logger::fatal << "Failed to initialize GLAD" << std::endl;
             return;
         }
-        __instance = new Renderer(RHIRegistry);
+        __instance = new Renderer(RHIRegistry); // FIXME: make sur it cannot be init twice !! (wiht an "isInit" static member)
     }
 
     void Renderer::destroy(void) {

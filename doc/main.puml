@@ -1,0 +1,5 @@
+@startuml main
+!include_once rhi.puml
+!include_once gfx.puml
+
+@enduml
