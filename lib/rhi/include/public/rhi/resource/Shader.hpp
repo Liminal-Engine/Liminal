@@ -1,6 +1,8 @@
 #ifndef __LIMINAL__LIB__RHI__INCLUDE__PUBLIC__RESOURCE__SHADER_HPP__
 #define __LIMINAL__LIB__RHI__INCLUDE__PUBLIC__RESOURCE__SHADER_HPP__
 
+#include "../def/Uniform.hpp" // FIXME
+
 #include <fs/Path.hpp>
 
 #include <memory>
@@ -18,6 +20,8 @@ namespace rhi {
                 ~Shader();
 
                 void use(void) const;
+
+                const std::vector<def::Uniform> &getUniforms(void) const;
     
                 Shader(const Shader&) = delete;            // No copy
                 Shader& operator=(const Shader&) = delete; // No affectation

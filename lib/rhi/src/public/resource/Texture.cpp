@@ -48,7 +48,7 @@ namespace rhi {
                     return glTexture;
                 }
                 
-                uint32_t __handle;
+                uint32_t __handle; // FIXME: this should be a handle for all rhi resource, not a uint32_t
 
             public:
                 __Impl(

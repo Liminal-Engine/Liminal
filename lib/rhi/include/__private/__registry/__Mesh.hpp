@@ -16,7 +16,7 @@ namespace rhi {
             class __Mesh {
                 public:
                     __Mesh(void);
-                    ~__Mesh(void);
+                    ~__Mesh();
 
                     Status init(void);
                     Status destroy(void);

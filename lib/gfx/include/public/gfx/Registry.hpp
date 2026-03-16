@@ -25,6 +25,7 @@ namespace gfx {
             const asset::Mesh *getMesh(const std::string &name) const;
             const asset::Material *getMaterial(const std::string &name) const;
 
+            // Status setMaterialProperty(const std::string &name, const std::string &property, float value);
 
             // [[nodiscard]] Status add(const std::string &name, asset::Mesh &&mesh);
             // [[nodiscard]] Status add(const std::string &name, asset::Material &&material);

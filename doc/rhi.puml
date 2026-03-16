@@ -1,0 +1,108 @@
+@startuml rhi
+namespace rhi {
+    namespace __private {
+        namespace __registry {
+            class __Mesh {
+                .. Constructors/Destructors ..
+                + __Mesh(void)
+                + ~__Mesh()
+                .. Methods ..
+                + getHandle(const std::string &name) const: const resource::Handle
+                + getResource(resource::Handle handle) const: const resource::Mesh *
+            }
+        }
+
+        
+    }
+
+    namespace resource {
+        namespace rhi::resource {
+        class "uint32_t" as u32 <<primitive>>
+        class Handle <<using>>
+
+        u32 <.. Handle  : type alias
+}
+
+        struct Vertex {
+            - !!! THIS SHOULD BE MOVED TO DEF !!!
+            .. Members ..
+            + position: glm::vec3
+            + uv: glm::vec2
+            + normal: glm::vec3
+        } 
+
+        class Mesh {
+            .. Constructors/Destructors ..
+            + Mesh(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices)
+            + ~Mesh()
+            + Mesh(const Mesh &) = delete
+            + Mesh& operator=(const Mesh &) = delete
+            + Mesh(Mesh &&) = delete
+            + Mesh& operator=(Mesh &&) = delete
+            .. Methods ..
+            + draw_DELETE_ME_I_AM_NOT_SUPPOSED_TO_DRAW_MYSELF(void) const: void
+            .. Members ..
+            - __VAO: uint32_t
+            - __EBO: uint32_t
+            - __VBO: uint32_t
+            - __count: uint32_t
+        }
+
+        class Shader {
+            .. Constructors/Destructors ..
+            + Shader(const std::string &vertexSource, const std::string &geometrySource, const std::string &fragmentSource, const std::string &computeSource)
+            + ~Shader()
+            + Shader(const Shader &) = delete
+            + Shader& operator=(const Shader &) = delete
+            + Shader(Shader &&) = delete
+            + Shader& operator=(Shader &&) = delete
+            .. Methods ..
+            + use(void) const: void
+            + getUniforms(void) const: const std::vector<def::Uniform> &
+            - {static} __compileShaderSource(const std::string &source, const def::ShaderType &type): uint32_t
+            - {static} __loadProgram(const std::string &vertexSource, const std::string &geometrySource, const std::string &fragmentSource, const std::string &computeSource): uint32_t
+            .. Members ..
+            - __handle: uint32_t !!! THIS SHOULD BE A HANDLE !!!
+            - __uniforms: std::vector<def::Uniform>
+
+        }
+
+        class Texture {
+            .. Constructors/Destructors ..
+            +Texture(const unsigned char *data, const glm::ivec2 &size, const int &nChannels)
+            + ~Texture()
+            + Texture(const Texture&) = delete;
+            + Texture& operator=(const Texture&) = delete
+            + Texture(Texture&&) = delete;
+            + Texture& operator=(Texture&&) = delete;
+            .. Members ..
+            - __handle: uint32_t !!! THIS SHOULD BE A HANDLE !!!
+        }
+    }
+
+    namespace def {
+        enum ShaderType {
+            VERTEX,
+            GEOMETRY,
+            FRAGMENT,
+            COMPUTE
+        }
+
+        struct Uniform {
+            .. Constructors/Destructors ..
+            + Uniform(const std::string &name, GLint location, GLenum type)
+            .. Members ..
+            + name: const std::string
+            + location: const GLint
+            + type: const GLenum
+        }
+    }
+
+    enum Status {
+        N_OK,
+        E_ALREADY_INIT,
+        E_NOT_INIT,
+        E_ALREADY_EXISTS
+    }
+}
+@enduml

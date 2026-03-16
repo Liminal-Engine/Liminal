@@ -1,6 +1,6 @@
 #include "__private/__asset/__Shader.hpp"
 
-#include <rhi/ShaderType.hpp>
+#include <rhi/def/ShaderType.hpp>
 #include <logger/logger.hpp>
 #include <fs/InFile.hpp>
 #include <parseop/parseop.hpp>
@@ -39,10 +39,10 @@ namespace gfx {
 
                     static std::string __getShaderSource(
                         const std::vector<std::string> &tokenizedSource,
-                        const rhi::ShaderType &shaderType,
+                        const rhi::def::ShaderType &shaderType,
                         const std::string &versionDefinition
                     ) {
-                        std::string shaderTypeDefinition = "#ifdef " + rhi::toStr(shaderType);
+                        std::string shaderTypeDefinition = "#ifdef " + rhi::def::toStr(shaderType);
                         std::vector<std::string> rawRes{};
 
                         for (size_t i = 0; i < tokenizedSource.size(); i++) {
@@ -103,10 +103,10 @@ namespace gfx {
                             logger::error << "No version definition in " << absolutePathStr << std::endl;
                             return Status::E_FILE_CONTENT;
                         }
-                        this->__vertexSource = __getShaderSource(tokenizedSource, rhi::ShaderType::VERTEX, versionDefinition);
-                        this->__geometrySource = __getShaderSource(tokenizedSource, rhi::ShaderType::GEOMETRY, versionDefinition);
-                        this->__fragmentSource = __getShaderSource(tokenizedSource, rhi::ShaderType::FRAGMENT, versionDefinition);
-                        this->__computeSource = __getShaderSource(tokenizedSource, rhi::ShaderType::COMPUTE, versionDefinition);
+                        this->__vertexSource = __getShaderSource(tokenizedSource, rhi::def::ShaderType::VERTEX, versionDefinition);
+                        this->__geometrySource = __getShaderSource(tokenizedSource, rhi::def::ShaderType::GEOMETRY, versionDefinition);
+                        this->__fragmentSource = __getShaderSource(tokenizedSource, rhi::def::ShaderType::FRAGMENT, versionDefinition);
+                        this->__computeSource = __getShaderSource(tokenizedSource, rhi::def::ShaderType::COMPUTE, versionDefinition);
                         return Status::OK;
                     }
 
