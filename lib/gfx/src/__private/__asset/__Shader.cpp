@@ -14,7 +14,7 @@ namespace gfx {
             class __Shader::__Impl {
                 private:
 
-                    static std::string __getGLSLSource(const fs::Path &path) {
+                    static std::string __readGLSLSource(const fs::Path &path) {
                         fs::InFile shaderFile(path);
                         if (shaderFile.open() != fs::Status::OK) {
                             logger::error << "Failed to open shader file: " << path.asStr() << std::endl;
@@ -30,16 +30,16 @@ namespace gfx {
                         return shaderFile.getContent();
                     }
 
-                    static std::string __getVersionDefinitionLine(const std::vector<std::string> &tokenizedSource) {
+                    static std::string __generateVersionDefinitionLine(const std::vector<std::string> &tokenizedSource) {
                         for (std::string line : tokenizedSource) {
                             if (parseop::startsWith(line, "#version")) return line;
                         }
                         return "";
                     }
 
-                    static std::string __getShaderSource(
+                    static std::string __readTypedShaderSource(
                         const std::vector<std::string> &tokenizedSource,
-                        const rhi::def::ShaderType &shaderType,
+                        rhi::def::ShaderType shaderType,
                         const std::string &versionDefinition
                     ) {
                         std::string shaderTypeDefinition = "#ifdef " + rhi::def::toStr(shaderType);
@@ -91,36 +91,41 @@ namespace gfx {
                         std::string absolutePathStr(absolutePath.asStr());
                         logger::debug << "Creating shader asset for: " << absolutePathStr << std::endl;
                         // 2. Read source
-                        std::string fullSource = __getGLSLSource(absolutePath);
+                        std::string fullSource = __readGLSLSource(absolutePath);
                         if (fullSource.empty()) {
                             logger::debug << "Shader source is empty: " << absolutePathStr << std::endl;
                             return Status::E_FILE_EMPTY;
                         }
                         std::vector<std::string> tokenizedSource = parseop::tokenize(fullSource, '\n');
                         // 2.1 Find location of version definition
-                        std::string versionDefinition = __getVersionDefinitionLine(tokenizedSource);
+                        std::string versionDefinition = __generateVersionDefinitionLine(tokenizedSource);
                         if (versionDefinition.empty()) {
                             logger::error << "No version definition in " << absolutePathStr << std::endl;
                             return Status::E_FILE_CONTENT;
                         }
-                        this->__vertexSource = __getShaderSource(tokenizedSource, rhi::def::ShaderType::VERTEX, versionDefinition);
-                        this->__geometrySource = __getShaderSource(tokenizedSource, rhi::def::ShaderType::GEOMETRY, versionDefinition);
-                        this->__fragmentSource = __getShaderSource(tokenizedSource, rhi::def::ShaderType::FRAGMENT, versionDefinition);
-                        this->__computeSource = __getShaderSource(tokenizedSource, rhi::def::ShaderType::COMPUTE, versionDefinition);
+                        this->__vertexSource = __readTypedShaderSource(tokenizedSource, rhi::def::ShaderType::VERTEX, versionDefinition);
+                        this->__geometrySource = __readTypedShaderSource(tokenizedSource, rhi::def::ShaderType::GEOMETRY, versionDefinition);
+                        this->__fragmentSource = __readTypedShaderSource(tokenizedSource, rhi::def::ShaderType::FRAGMENT, versionDefinition);
+                        this->__computeSource = __readTypedShaderSource(tokenizedSource, rhi::def::ShaderType::COMPUTE, versionDefinition);
                         return Status::OK;
                     }
 
-                    Status setRHIHandle(const rhi::def::Handle &RHIHandle) {
+                    Status setRHIHandle(rhi::def::Handle RHIHandle) {
                         this->__RHIHandle = RHIHandle;
                         return Status::OK;
                     }
 
-                    const rhi::def::Handle &getRHIHandle(void) const { return this->__RHIHandle; }
+                    rhi::def::Handle getRHIHandle(void) const { return this->__RHIHandle; }
 
-                    const std::string &getVertexSource(void) const { return this->__vertexSource; }
-                    const std::string &getGeometrySource(void) const { return this->__geometrySource; }
-                    const std::string &getFragmentSource(void) const { return this->__fragmentSource; }
-                    const std::string &getComputeSource(void) const { return this->__computeSource; }
+                    const std::string &getSource(rhi::def::ShaderType type) const {
+                        switch (type) {
+                            case rhi::def::ShaderType::VERTEX: return this->__vertexSource;
+                            case rhi::def::ShaderType::GEOMETRY: return this->__geometrySource;
+                            case rhi::def::ShaderType::FRAGMENT: return this->__fragmentSource;
+                            case rhi::def::ShaderType::COMPUTE: return this->__computeSource;
+                        }
+                        return "";
+                    }
             };
 
 
@@ -134,13 +139,10 @@ namespace gfx {
 
             Status __Shader::load(const fs::Path &path) { return this->__impl->load(path); }
 
-            Status __Shader::setRHIHandle(const rhi::def::Handle &RHIHandle) { return this->__impl->setRHIHandle(RHIHandle); }
-            const rhi::def::Handle &__Shader::getRHIHandle(void) const { return this->__impl->getRHIHandle(); }
+            Status __Shader::setRHIHandle(rhi::def::Handle RHIHandle) { return this->__impl->setRHIHandle(RHIHandle); }
+            rhi::def::Handle __Shader::getRHIHandle(void) const { return this->__impl->getRHIHandle(); }
 
-            const std::string &__Shader::getVertexSource(void) const { return this->__impl->getVertexSource(); }
-            const std::string &__Shader::getGeometrySource(void) const { return this->__impl->getGeometrySource(); }
-            const std::string &__Shader::getFragmentSource(void) const { return this->__impl->getFragmentSource(); }
-            const std::string &__Shader::getComputeSource(void) const { return this->__impl->getComputeSource(); }
+            const std::string &__Shader::getSource(rhi::def::ShaderType type) const { return this->__impl->getSource(type); }
         } // namespace __aset
     } // namespace __private
 } // namespace gfx

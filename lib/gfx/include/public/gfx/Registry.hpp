@@ -4,6 +4,7 @@
 #include "Status.hpp"
 #include "asset/Mesh.hpp"
 #include "asset/Material.hpp"
+#include "def/ManagedAsset.hpp"
 
 #include <rhi/Registry.hpp>
 #include <fs/Path.hpp>
@@ -16,19 +17,14 @@ namespace gfx {
             Registry(rhi::Registry &rhiRegistry);
             ~Registry();
 
-            [[nodiscard]] Status loadMesh(const std::string &name, const fs::Path &path);
-            [[nodiscard]] Status loadMaterial(const std::string &name, const fs::Path &texturePath);
+            template<def::ManagedAsset T>
+            [[nodiscard]] Status load(const std::string &name, const fs::Path &path);
 
-            bool meshExists(const std::string &name) const;
-            bool materialExists(const std::string &name) const;
+            template<def::ManagedAsset T>
+            [[nodiscard]] bool exists(const std::string &name) const;
 
-            const asset::Mesh *getMesh(const std::string &name) const;
-            const asset::Material *getMaterial(const std::string &name) const;
-
-            // Status setMaterialProperty(const std::string &name, const std::string &property, float value);
-
-            // [[nodiscard]] Status add(const std::string &name, asset::Mesh &&mesh);
-            // [[nodiscard]] Status add(const std::string &name, asset::Material &&material);
+            template<def::ManagedAsset T>
+            [[nodiscard]] const T *get(const std::string &name) const;
 
         private:
             class __Impl;

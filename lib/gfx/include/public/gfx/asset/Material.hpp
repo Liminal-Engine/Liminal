@@ -5,6 +5,7 @@
 
 #include <fs/Path.hpp>
 #include <rhi/def/Handle.hpp>
+#include <rhi/def/ShaderType.hpp> // FIXME : not expose rhi here, use forward declaration instead
 
 #include <memory>
 
@@ -30,18 +31,15 @@ namespace gfx {
 
                 const unsigned char *getTextureData(void) const;
                 const glm::ivec2 &getTextureSize(void) const;
-                const int &getTextureNChannels(void) const;
+                int getTextureNChannels(void) const;
 
-                Status setTextureRHIHandle(const rhi::def::Handle &RHIHandle);
-                Status setShaderRHIHandle(const rhi::def::Handle &RHIHandle);
+                Status setTextureRHIHandle(rhi::def::Handle RHIHandle);
+                Status setShaderRHIHandle(rhi::def::Handle RHIHandle);
 
                 rhi::def::Handle getTextureRHIHandle(void) const;
                 rhi::def::Handle getShaderRHIHandle(void) const;
 
-                const std::string &getShaderVertexSource(void) const;
-                const std::string &getShaderGeometrySource(void) const;
-                const std::string &getShaderFragmentSource(void) const;
-                const std::string &getShaderComputeSource(void) const;
+                const std::string &getShaderSource(rhi::def::ShaderType type) const;
 
             private:
                 class __Impl;

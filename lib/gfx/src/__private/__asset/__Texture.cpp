@@ -68,14 +68,14 @@ namespace gfx {
 
                     const unsigned char *getData(void) const { return this->__data; }
                     const glm::ivec2 &getSize(void) const { return this->__size; }
-                    const int &getNChannels(void) const { return this->__nChannels; }
+                    int getNChannels(void) const { return this->__nChannels; }
 
-                    Status setRHIHandle(const rhi::def::Handle &RHIHandle) {
+                    Status setRHIHandle(rhi::def::Handle RHIHandle) {
                         this->__RHIHandle = RHIHandle;
                         return Status::OK;
                     }
 
-                    const rhi::def::Handle &getRHIHandle(void) const { return this->__RHIHandle; }
+                    rhi::def::Handle getRHIHandle(void) const { return this->__RHIHandle; }
 
                     Status copy(const __Impl &other) {
                         this->__RHIHandle = other.__RHIHandle;
@@ -114,10 +114,10 @@ namespace gfx {
             Status __Texture::load(const fs::Path &path) { return this->__impl->load(path); }
             const unsigned char *__Texture::getData(void) const { return this->__impl->getData(); }
             const glm::ivec2 &__Texture::getSize(void) const { return this->__impl->getSize(); }
-            const int &__Texture::getNChannels(void) const { return this->__impl->getNChannels(); }
+            int __Texture::getNChannels(void) const { return this->__impl->getNChannels(); }
 
-            Status __Texture::setRHIHandle(const rhi::def::Handle &RHIHandle) { return this->__impl->setRHIHandle(RHIHandle); }
-            const rhi::def::Handle &__Texture::getRHIHandle(void) const { return this->__impl->getRHIHandle(); }
+            Status __Texture::setRHIHandle(rhi::def::Handle RHIHandle) { return this->__impl->setRHIHandle(RHIHandle); }
+            rhi::def::Handle __Texture::getRHIHandle(void) const { return this->__impl->getRHIHandle(); }
 
             Status __Texture::copy(const __Texture &other) { return this->__impl->copy(*other.__impl); }
         } // namespace __aset

@@ -25,8 +25,8 @@ namespace entity {
             AEntity &operator=(AEntity &&other) noexcept;
 
             
-            [[nodiscard]] Status setMesh(const gfx::asset::Mesh *mesh);
-            [[nodiscard]] Status setMaterial(const gfx::asset::Material *material);
+            [[nodiscard]] Status setMesh(const gfx::asset::Mesh *mesh); // FIXME : make me templated
+            [[nodiscard]] Status setMaterial(const gfx::asset::Material *material); // FIXME : make me templated
 
             RessourceHandle getShaderHandle(void) const;
             RessourceHandle getTexureHandle(void) const;

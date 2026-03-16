@@ -9,25 +9,16 @@ namespace gfx {
     namespace asset {
         class Mesh::__Impl {
             private:
-                rhi::def::Handle __RHIHandle;
+                rhi::def::Handle __rhiHandle;
                 std::vector<rhi::def::Vertex> __vertices;
                 std::vector<uint32_t> __indices;
                 int __BOUDING_BOX; // this is for later, type will change
                 fs::Path __path;
 
             public:
-                __Impl(const fs::Path &path) :
-                __RHIHandle(rhi::def::NULL_HANDLE),
-                __vertices{},
-                __indices{},
-                __BOUDING_BOX(-1),
-                __path(path)
-                {
-                    this->load(path);
-                }
 
                 __Impl(void) :
-                __RHIHandle(rhi::def::NULL_HANDLE),
+                __rhiHandle(rhi::def::NULL_HANDLE),
                 __vertices{},
                 __indices{},
                 __BOUDING_BOX(-1),
@@ -40,7 +31,7 @@ namespace gfx {
          
 
                 Status copy(const __Impl &other) {
-                    this->__RHIHandle = other.__RHIHandle;
+                    this->__rhiHandle = other.__rhiHandle;
                     this->__vertices = other.__vertices;
                     this->__indices = other.__indices;
                     this->__BOUDING_BOX = other.__BOUDING_BOX;
@@ -67,17 +58,14 @@ namespace gfx {
                     return Status::OK;
                 }
 
-                Status setRHIHandle(const rhi::def::Handle &RHIHandle) {
-                    this->__RHIHandle = RHIHandle;
+                Status setRHIHandle(rhi::def::Handle handle) {
+                    this->__rhiHandle = handle;
                     return Status::OK;
                 }
 
-                rhi::def::Handle getRHIHandle(void) const { return this->__RHIHandle; }
-        };
+                rhi::def::Handle getRHIHandle(void) const { return this->__rhiHandle; }
 
-        Mesh::Mesh(const fs::Path &path) :
-        __impl(std::make_unique<__Impl>(path))
-        {}
+        };
 
         Mesh::Mesh(void) :
         __impl(std::make_unique<__Impl>())
@@ -92,7 +80,7 @@ namespace gfx {
         const std::vector<rhi::def::Vertex> &Mesh::getVertices(void) const { return this->__impl->getVertices(); }
         const std::vector<uint32_t> &Mesh::getIndices(void) const { return this->__impl->getIndices(); }
         Status Mesh::load(const fs::Path &path) { return this->__impl->load(path); }
-        Status Mesh::setRHIHandle(const rhi::def::Handle &RHIHandle) { return this->__impl->setRHIHandle(RHIHandle); }
+        Status Mesh::setRHIHandle(rhi::def::Handle handle) { return this->__impl->setRHIHandle(handle); }
         rhi::def::Handle Mesh::getRHIHandle(void) const { return this->__impl->getRHIHandle(); }
         const fs::Path &Mesh::getPath(void) const { return this->__impl->getPath(); }
         Status Mesh::copy(const Mesh &other) { return this->__impl->copy(*other.__impl); }

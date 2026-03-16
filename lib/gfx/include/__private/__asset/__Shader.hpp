@@ -5,6 +5,7 @@
 
 #include <fs/Path.hpp>
 #include <rhi/def/Handle.hpp>
+#include <rhi/def/ShaderType.hpp>
 
 
 #include <memory>
@@ -20,13 +21,10 @@ namespace gfx {
                     Status copy(const __Shader &other);
                     Status load(const fs::Path &path);
 
-                    Status setRHIHandle(const rhi::def::Handle &RHIHandle);
-                    const rhi::def::Handle &getRHIHandle(void) const;
+                    Status setRHIHandle(rhi::def::Handle RHIHandle);
+                    rhi::def::Handle getRHIHandle(void) const;
 
-                    const std::string &getVertexSource(void) const;
-                    const std::string &getGeometrySource(void) const;
-                    const std::string &getFragmentSource(void) const;
-                    const std::string &getComputeSource(void) const;
+                    const std::string &getSource(rhi::def::ShaderType type) const;
 
                 private:
                     class __Impl;

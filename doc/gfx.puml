@@ -1,7 +1,9 @@
 @startuml gfx
 
 namespace gfx {
-    
+    namespace __private {
+        
+    }
 }
 
 @enduml

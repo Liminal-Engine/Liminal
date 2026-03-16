@@ -14,8 +14,12 @@ namespace gfx {
         class Mesh {
             public:
                 Mesh(void);
-                Mesh(const fs::Path &path);
                 ~Mesh();
+
+                Mesh(const Mesh &) = delete;
+                Mesh &operator=(const Mesh &) = delete;
+                Mesh(Mesh &&) noexcept;
+                Mesh &operator=(Mesh &&) noexcept;
 
                 const std::vector<rhi::def::Vertex> &getVertices(void) const;
                 const std::vector<uint32_t> &getIndices(void) const;
@@ -25,13 +29,10 @@ namespace gfx {
                 Status copy(const Mesh &other);
                 Status load(const fs::Path &path);
 
-                Status setRHIHandle(const rhi::def::Handle &RHIHandle);
+                Status setRHIHandle(rhi::def::Handle handle);
                 rhi::def::Handle getRHIHandle(void) const;
 
-                Mesh(const Mesh &) = delete;
-                Mesh &operator=(const Mesh &) = delete;
-                Mesh(Mesh &&) noexcept;
-                Mesh &operator=(Mesh &&) noexcept;
+                
             
             private:
                 class __Impl;

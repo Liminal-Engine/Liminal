@@ -21,10 +21,10 @@ namespace gfx {
                     Status load(const fs::Path &path);
                     const unsigned char *getData(void) const;
                     const glm::ivec2 &getSize(void) const;
-                    const int &getNChannels(void) const;
+                    int getNChannels(void) const;
 
-                    Status setRHIHandle(const rhi::def::Handle &RHIHandle);
-                    const rhi::def::Handle &getRHIHandle(void) const;
+                    Status setRHIHandle(rhi::def::Handle RHIHandle);
+                    rhi::def::Handle getRHIHandle(void) const;
 
                     Status copy(const __Texture &other);
 

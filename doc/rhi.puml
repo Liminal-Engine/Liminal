@@ -27,6 +27,7 @@ namespace rhi {
         + Registry(void)
         + ~Registry()
         .. Methods ..
+        !!! FIXME : use template here as well !!!!!!!!!!!!!!!!!!!!!!!!!!!
         + getShaderHandle(const std::string &name) const: def::Handle
         + getTextureHandle(const std::string &name) const: def::Handle
         + getMeshHandle(const std::string &name) const: def::Handle
@@ -197,12 +198,12 @@ rhi.__private.__registry.__Texture *.. rhi.resource.Texture : owns >
 rhi.Registry ..> rhi.Status : uses >
 rhi.Registry ..> rhi.def.Vertex : uses >
 rhi.Registry --> rhi.def.Handle : stores >
-rhi.Registry *.. rhi.resource.Shader : owns
-rhi.Registry *.. rhi.resource.Texture : owns
-rhi.Registry *.. rhi.resource.Mesh : owns
-rhi.Registry *.. rhi.__private.__registry.__Shader : owns
-rhi.Registry *.. rhi.__private.__registry.__Texture : owns
-rhi.Registry *.. rhi.__private.__registry.__Mesh : owns
+rhi.Registry *.. rhi.resource.Shader : owns >
+rhi.Registry *.. rhi.resource.Texture : owns >
+rhi.Registry *.. rhi.resource.Mesh : owns >
+rhi.Registry *.. rhi.__private.__registry.__Shader : owns >
+rhi.Registry *.. rhi.__private.__registry.__Texture : owns >
+rhi.Registry *.. rhi.__private.__registry.__Mesh : owns >
 
 rhi.Renderer ..> entity.Registry : uses >
 rhi.Renderer --> rhi.Registry : stores >
