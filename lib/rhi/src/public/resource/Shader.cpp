@@ -12,7 +12,7 @@ namespace rhi {
         
         class Shader::__Impl {
             private:
-                const uint32_t __handle;
+                const uint32_t __glHandle;
                 const std::vector<def::Uniform> __uniforms;
 
 
@@ -110,18 +110,18 @@ namespace rhi {
                     const std::string &fragmentSource,
                     const std::string &computeSource
                 ) :
-                __handle(__loadProgram(vertexSource, geometrySource, fragmentSource, computeSource)),
-                __uniforms(__loadUniforms(this->__handle))
+                __glHandle(__loadProgram(vertexSource, geometrySource, fragmentSource, computeSource)),
+                __uniforms(__loadUniforms(this->__glHandle))
                 {
                     
                 }
 
                 ~__Impl() {
-                    if (this->__handle) glDeleteProgram(this->__handle);
+                    if (this->__glHandle) glDeleteProgram(this->__glHandle);
                 }
 
                 void use(void) const {
-                    glUseProgram(this->__handle);
+                    glUseProgram(this->__glHandle);
                 }
 
                 const std::vector<def::Uniform> &getUniforms(void) const { return this->__uniforms; }

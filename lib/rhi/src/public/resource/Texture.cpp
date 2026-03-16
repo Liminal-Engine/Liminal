@@ -2,7 +2,6 @@
 
 #include <logger/logger.hpp>
 
-
 #include <glad/glad.h>
 
 namespace rhi {
@@ -48,7 +47,7 @@ namespace rhi {
                     return glTexture;
                 }
                 
-                uint32_t __handle; // FIXME: this should be a handle for all rhi resource, not a uint32_t
+                const uint32_t __glHandle;
 
             public:
                 __Impl(
@@ -56,13 +55,13 @@ namespace rhi {
                     const glm::ivec2 &size,
                     const int &nChannels
                 ) :
-                __handle(__loadTexture(data, size, nChannels))
+                __glHandle(__loadTexture(data, size, nChannels))
                 {
                     
                 }
 
                 ~__Impl() {
-                    glDeleteTextures(1, &this->__handle);
+                    glDeleteTextures(1, &this->__glHandle);
                 }
         };
     
