@@ -14,7 +14,7 @@ namespace rhi {
                 Texture(                    
                     const unsigned char *data,
                     const glm::ivec2 &size,
-                    const int &nChannels
+                    int nChannels
                 );
                 ~Texture();
 

@@ -24,7 +24,7 @@ namespace rhi {
                         this->__lookupTable.clear();
                     }
 
-                    const def::Handle getHandle(const std::string &name) const {
+                    def::Handle getHandle(const std::string &name) const {
                         if (this->exists(name) == false) {
                             logger::error << "Failed to find RHI mesh with name: " << name << std::endl;
                             return def::NULL_HANDLE;
@@ -62,7 +62,7 @@ namespace rhi {
 
             __Mesh::~__Mesh() = default;
 
-            const def::Handle __Mesh::getHandle(const std::string &name) const { return this->__impl->getHandle(name); }
+            def::Handle __Mesh::getHandle(const std::string &name) const { return this->__impl->getHandle(name); }
             const resource::Mesh *__Mesh::getResource(def::Handle handle) const { return this->__impl->getResource(handle); }
             bool __Mesh::exists(const std::string &name) const { return this->__impl->exists(name); }
             Status __Mesh::add(const std::string &name, const std::vector<def::Vertex> &vertices, const std::vector<uint32_t> &indices) { return this->__impl->add(name, vertices, indices); }

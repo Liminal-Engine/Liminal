@@ -17,11 +17,11 @@ namespace rhi {
                     __Texture(void);
                     ~__Texture();
 
-                    const def::Handle getHandle(const std::string &name) const;
+                    def::Handle getHandle(const std::string &name) const;
                     const resource::Texture *getResource(def::Handle handle) const;
                     bool exists(const std::string &name) const;
                     
-                    Status add(const std::string &name, const unsigned char* data, const glm::ivec2 &size, const int &nChannels);
+                    Status add(const std::string &name, const unsigned char* data, const glm::ivec2 &size, int nChannels);
 
                 private:
                     class __Impl;

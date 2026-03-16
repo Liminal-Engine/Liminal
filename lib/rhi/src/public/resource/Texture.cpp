@@ -13,7 +13,7 @@ namespace rhi {
                 static uint32_t __loadTexture(
                     const unsigned char *data,
                     const glm::ivec2 &size,
-                    const int &nChannels
+                    int nChannels
                 ) {
                     GLenum format = GL_RGB;
                     GLenum internalFormat = GL_RGB8;
@@ -68,7 +68,7 @@ namespace rhi {
         Texture::Texture(
             const unsigned char *data,
             const glm::ivec2 &size,
-            const int &nChannels
+            int nChannels
         ) :
         __impl(std::make_unique<__Impl>(data, size, nChannels))
         {

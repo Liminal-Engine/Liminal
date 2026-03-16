@@ -18,7 +18,7 @@ namespace rhi {
                     __Mesh(void);
                     ~__Mesh();
 
-                    const def::Handle getHandle(const std::string &name) const;
+                    def::Handle getHandle(const std::string &name) const;
                     const resource::Mesh *getResource(def::Handle handle) const;
 
                     bool exists(const std::string &name) const;

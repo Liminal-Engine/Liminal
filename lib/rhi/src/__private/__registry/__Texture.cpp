@@ -27,7 +27,7 @@ namespace rhi {
                         this->__lookupTable.clear();
                     }
 
-                    const def::Handle getHandle(const std::string &name) const {
+                    def::Handle getHandle(const std::string &name) const {
                         if (this->exists(name) == false) {
                             logger::error << "Failed to find RHI texture with name: " << name << std::endl;
                             return def::NULL_HANDLE;
@@ -47,7 +47,7 @@ namespace rhi {
                         return this->__lookupTable.find(name) != this->__lookupTable.end();
                     }
 
-                    Status add(const std::string &name, const unsigned char* data, const glm::ivec2 &size, const int &nChannels) {
+                    Status add(const std::string &name, const unsigned char* data, const glm::ivec2 &size, int nChannels) {
                         if (this->exists(name)) {
                             logger::error << "Failed to add texture ressource: \"" << name << "\" already exists" << std::endl;
                             return Status::E_ALREADY_EXISTS;
@@ -68,9 +68,9 @@ namespace rhi {
 
             __Texture::~__Texture() = default;
 
-            const def::Handle __Texture::getHandle(const std::string &name) const { return this->__impl->getHandle(name); }
+            def::Handle __Texture::getHandle(const std::string &name) const { return this->__impl->getHandle(name); }
             const resource::Texture *__Texture::getResource(def::Handle handle) const { return this->__impl->getResource(handle); }
-            Status __Texture::add(const std::string &name, const unsigned char* data, const glm::ivec2 &size, const int &nChannels) { return this->__impl->add(name, data, size, nChannels); }
+            Status __Texture::add(const std::string &name, const unsigned char* data, const glm::ivec2 &size, int nChannels) { return this->__impl->add(name, data, size, nChannels); }
         } // namespace __registry
     } // namespace __private
 } // namespace rhi

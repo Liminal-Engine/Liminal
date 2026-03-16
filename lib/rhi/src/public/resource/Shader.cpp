@@ -16,7 +16,7 @@ namespace rhi {
                 const std::vector<def::Uniform> __uniforms;
 
 
-                static uint32_t __compileShaderSource(const std::string &source, const def::ShaderType &type) {
+                static uint32_t __compileShaderSource(const std::string &source, def::ShaderType type) {
                     // 1. Check if source is empty
                     if (source.empty()) {
                         logger::debug << "Source is empty for this shader type, nothing to compile" << std::endl;
