@@ -4,7 +4,7 @@
 #include <logger/logger.hpp>
 
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
+#include <EGL/egl.h>
 namespace rhi {
 
     Renderer *Renderer::__instance = nullptr;
@@ -50,7 +50,7 @@ namespace rhi {
             logger::warn << "Renderer already intialized, nothing to do" << std::endl;
             return;
         }
-        if (gladLoadGLLoader((GLADloadproc)glfwGetProcAddress) != 1) {
+        if (gladLoadGLLoader((GLADloadproc)eglGetProcAddress) != 1) {
             logger::fatal << "Failed to initialize GLAD" << std::endl;
             return;
         }

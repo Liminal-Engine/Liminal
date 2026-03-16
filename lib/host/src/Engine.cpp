@@ -1,5 +1,6 @@
 #include "Engine.hpp"
 
+#include <wsi/Window.hpp>
 #include <rhi/Renderer.hpp>
 #include <rhi/Registry.hpp>
 #include <gfx/Registry.hpp>
@@ -11,7 +12,8 @@
 namespace host {
     class Engine::__Impl {
         private:
-            GLFWwindow *__window;
+            wsi::Window __window;
+            // GLFWwindow *__window;
             rhi::Registry __RHIRegistry;
             gfx::Registry __assetRegistry;
             entity::Registry __entityRegistry;
@@ -21,20 +23,21 @@ namespace host {
         public:
             
             __Impl(const Application &application) :
-            __window([&](void) -> GLFWwindow * {
-                glfwInit();
-                // FIXME : see if safe to put 4.5 instead
-                glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-                glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-                glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-                logger::info << "Creating window" << std::endl;
-                GLFWwindow *window = glfwCreateWindow(1280, 720, "PUT THE GAME NAME HERE", NULL, NULL);
-                if (window == nullptr) {
-                    logger::fatal << "Failed to create window" << std::endl;
-                }
-                glfwMakeContextCurrent(window);
-                return window;
-            }()),
+            __window(1280, 720, "PUT THE GAME NAME HERE"),
+            // __window([&](void) -> GLFWwindow * {
+            //     glfwInit();
+            //     // FIXME : see if safe to put 4.5 instead
+            //     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+            //     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+            //     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+            //     logger::info << "Creating window" << std::endl;
+            //     GLFWwindow *window = glfwCreateWindow(1280, 720, "PUT THE GAME NAME HERE", NULL, NULL);
+            //     if (window == nullptr) {
+            //         logger::fatal << "Failed to create window" << std::endl;
+            //     }
+            //     glfwMakeContextCurrent(window);
+            //     return window;
+            // }()),
             __RHIRegistry(),
             __assetRegistry(this->__RHIRegistry),
             __entityRegistry(),
@@ -52,7 +55,7 @@ namespace host {
                     logger::error << "Failed to destroy RHI registry" << std::endl;
                 }
                 rhi::Renderer::destroy();
-                glfwDestroyWindow(this->__window);
+                // glfwDestroyWindow(this->__window);
                 glfwTerminate();
             }
 
@@ -62,11 +65,16 @@ namespace host {
                     return EXIT_FAILURE;
                 }
 
-                while (glfwWindowShouldClose(this->__window) == false) {
-                    glfwPollEvents();
+                while (this->__window.shouldClose() == false) {
+                    this->__window.pollEvents();
                     this->__renderer->draw(this->__entityRegistry);
-                    glfwSwapBuffers(this->__window);
+                    this->__window.display();
                 }
+                // while (glfwWindowShouldClose(this->__window) == false) {
+                //     glfwPollEvents();
+                //     this->__renderer->draw(this->__entityRegistry);
+                //     glfwSwapBuffers(this->__window);
+                // }
                 return 0;
             }
     };

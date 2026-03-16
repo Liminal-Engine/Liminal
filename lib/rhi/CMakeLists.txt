@@ -2,6 +2,10 @@ discover_lib()
 
 # Local lib deps
 link_internal_libs(PUBLIC logger fs entity)
+
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(EGL REQUIRED egl)
+link_external_libs(PRIVATE ${EGL_LIBRARIES})
 # link_external_libs(PUBLIC glad)
 
 # FIXME : create macro for vendors

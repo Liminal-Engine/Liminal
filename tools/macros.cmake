@@ -14,9 +14,10 @@ macro(discover_lib)
     target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../)
 endmacro()
 
-macro(link_external_libs mode libs)
+macro(link_external_libs mode)
     _set_project_name()
 
+    set(libs ${ARGN})
     target_link_libraries(${PROJECT_NAME} ${mode} ${libs})
 endmacro(link_external_libs)
 
