@@ -5,8 +5,8 @@
 #include "resource/Shader.hpp"
 #include "resource/Texture.hpp"
 #include "resource/Mesh.hpp"
-#include "resource/Vertex.hpp"
-#include "resource/Handle.hpp"
+#include "def/Vertex.hpp"
+#include "def/Handle.hpp"
 
 #include <memory>
 
@@ -21,17 +21,17 @@ namespace rhi {
             Status init(void);
             Status destroy(void);
 
-            const resource::Handle getShaderHandle(const std::string &name) const;
-            const resource::Handle getTextureHandle(const std::string &name) const;
-            const resource::Handle getMeshHandle(const std::string &name) const;
+            const def::Handle getShaderHandle(const std::string &name) const;
+            const def::Handle getTextureHandle(const std::string &name) const;
+            const def::Handle getMeshHandle(const std::string &name) const;
 
-            const resource::Shader *getShaderResource(resource::Handle handle) const;
-            const resource::Texture *getTextureResource(resource::Handle handle) const;
-            const resource::Mesh *getMeshResource(resource::Handle handle) const;
+            const resource::Shader *getShaderResource(def::Handle handle) const;
+            const resource::Texture *getTextureResource(def::Handle handle) const;
+            const resource::Mesh *getMeshResource(def::Handle handle) const;
 
             Status addMesh(
                 const std::string &name,
-                const std::vector<resource::Vertex> &vertices,
+                const std::vector<def::Vertex> &vertices,
                 const std::vector<uint32_t> indices
             );
 

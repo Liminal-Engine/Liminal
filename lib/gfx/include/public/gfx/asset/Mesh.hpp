@@ -4,8 +4,8 @@
 #include "../Status.hpp" // FIXME
 
 #include <fs/Path.hpp>
-#include <rhi/resource/Handle.hpp>
-#include <rhi/resource/Vertex.hpp>
+#include <rhi/def/Handle.hpp>
+#include <rhi/def/Vertex.hpp>
 
 #include <memory>
 
@@ -17,7 +17,7 @@ namespace gfx {
                 Mesh(const fs::Path &path);
                 ~Mesh();
 
-                const std::vector<rhi::resource::Vertex> &getVertices(void) const;
+                const std::vector<rhi::def::Vertex> &getVertices(void) const;
                 const std::vector<uint32_t> &getIndices(void) const;
                 const fs::Path &getPath(void) const;
 
@@ -25,8 +25,8 @@ namespace gfx {
                 Status copy(const Mesh &other);
                 Status load(const fs::Path &path);
 
-                Status setRHIHandle(const rhi::resource::Handle &RHIHandle);
-                rhi::resource::Handle getRHIHandle(void) const;
+                Status setRHIHandle(const rhi::def::Handle &RHIHandle);
+                rhi::def::Handle getRHIHandle(void) const;
 
                 Mesh(const Mesh &) = delete;
                 Mesh &operator=(const Mesh &) = delete;

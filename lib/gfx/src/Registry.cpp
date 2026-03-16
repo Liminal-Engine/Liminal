@@ -45,8 +45,8 @@ namespace gfx {
                     newMaterialAsset.load(texturePath);
                     // --- TEXTURE ---
                     // 6.2 Create the corresponding rhi resource if it don't exists
-                    rhi::resource::Handle rhiTextureHandle = this->__rhiRegistry.getTextureHandle(texturePath.asStr());
-                    if (rhiTextureHandle == rhi::resource::NULL_HANDLE) { // if the texture rhi resource does not exist, create it
+                    rhi::def::Handle rhiTextureHandle = this->__rhiRegistry.getTextureHandle(texturePath.asStr());
+                    if (rhiTextureHandle == rhi::def::NULL_HANDLE) { // if the texture rhi resource does not exist, create it
                         this->__rhiRegistry.addTexture(texturePath.asStr(), newMaterialAsset.getTextureData(), newMaterialAsset.getTextureSize(), newMaterialAsset.getTextureNChannels());
                         // 6.3 update the local rhi texture resource by retrieving it again now that it is created
                         rhiTextureHandle = this->__rhiRegistry.getTextureHandle(texturePath.asStr());
@@ -54,8 +54,8 @@ namespace gfx {
                     // 6.4 Update the new material asset by setting it's rhi resource
                     newMaterialAsset.setTextureRHIHandle(rhiTextureHandle);
                     // --- SHADER ---
-                    rhi::resource::Handle rhiShaderHandle = this->__rhiRegistry.getShaderHandle(shaderPath.asStr());
-                    if (rhiShaderHandle == rhi::resource::NULL_HANDLE) { // if the shader rhi resource does not exist, create it
+                    rhi::def::Handle rhiShaderHandle = this->__rhiRegistry.getShaderHandle(shaderPath.asStr());
+                    if (rhiShaderHandle == rhi::def::NULL_HANDLE) { // if the shader rhi resource does not exist, create it
                         this->__rhiRegistry.addShader(shaderPath.asStr(), newMaterialAsset.getShaderVertexSource(), newMaterialAsset.getShaderGeometrySource(), newMaterialAsset.getShaderFragmentSource(), newMaterialAsset.getShaderComputeSource());
                         // update the local rhi shader by retreiving it
                         rhiShaderHandle = this->__rhiRegistry.getShaderHandle(shaderPath.asStr());
@@ -88,8 +88,8 @@ namespace gfx {
                     // 6.1 Load from file
                     newMeshAsset.load(path);
                     // 6.2 Create the corresponding rhi resource if it don't exists
-                    rhi::resource::Handle rhiMeshHandle = this->__rhiRegistry.getMeshHandle(resourceKey);
-                    if (rhiMeshHandle == rhi::resource::NULL_HANDLE) { // if the rhi mesh resource don't exists, create it
+                    rhi::def::Handle rhiMeshHandle = this->__rhiRegistry.getMeshHandle(resourceKey);
+                    if (rhiMeshHandle == rhi::def::NULL_HANDLE) { // if the rhi mesh resource don't exists, create it
                         this->__rhiRegistry.addMesh(resourceKey, newMeshAsset.getVertices(), newMeshAsset.getIndices());                        
                         // 6.3 Update the local rhi mesh resource by retrieving it again now that it is created
                         rhiMeshHandle = this->__rhiRegistry.getMeshHandle(resourceKey);

@@ -16,12 +16,9 @@ namespace rhi {
     }
 
     namespace resource {
-        namespace rhi::resource {
         class "uint32_t" as u32 <<primitive>>
         class Handle <<using>>
-
         u32 <.. Handle  : type alias
-}
 
         struct Vertex {
             - !!! THIS SHOULD BE MOVED TO DEF !!!

@@ -14,7 +14,7 @@ namespace rhi {
             class __Shader::__Impl {
                 private:
                     std::vector<std::unique_ptr<resource::Shader>> __data;
-                    std::unordered_map<std::string, resource::Handle> __lookupTable;
+                    std::unordered_map<std::string, def::Handle> __lookupTable;
 
                 public:
                     __Impl(void) :
@@ -44,15 +44,15 @@ namespace rhi {
                         return this->__lookupTable.find(name) != this->__lookupTable.end();
                     }
 
-                    const resource::Handle getHandle(const std::string &name) const {
+                    const def::Handle getHandle(const std::string &name) const {
                        if (this->exists(name) == false) {
                             logger::error << "Failed to find RHI shader with name: " << name << std::endl;
-                            return resource::NULL_HANDLE;
+                            return def::NULL_HANDLE;
                         }                        
                         return this->__lookupTable.at(name);
                     }
 
-                    const resource::Shader *getResource(resource::Handle handle) const {
+                    const resource::Shader *getResource(def::Handle handle) const {
                         if (handle >= this->__data.size()) [[unlikely]] {
                             logger::error << "Failed to find RHI shader with handle: " << handle << std::endl;
                             return nullptr;
@@ -72,7 +72,7 @@ namespace rhi {
                             return Status::E_ALREADY_EXISTS;
                         }
                         this->__data.push_back(std::make_unique<resource::Shader>(vertexSource, geometrySource, fragmentSource, computeSource));
-                        this->__lookupTable[name] = static_cast<resource::Handle>(this->__data.size()) - 1;
+                        this->__lookupTable[name] = static_cast<def::Handle>(this->__data.size()) - 1;
                         return Status::OK;
                     }
             };
@@ -87,8 +87,8 @@ namespace rhi {
 
             Status __Shader::init(void) { return this->__impl->init(); }
             Status __Shader::destroy(void) { return this->__impl->destroy(); }
-            const resource::Handle __Shader::getHandle(const std::string &name) const { return this->__impl->getHandle(name); }
-            const resource::Shader *__Shader::getResource(resource::Handle handle) const { return this->__impl->getResource(handle); }
+            const def::Handle __Shader::getHandle(const std::string &name) const { return this->__impl->getHandle(name); }
+            const resource::Shader *__Shader::getResource(def::Handle handle) const { return this->__impl->getResource(handle); }
             bool __Shader::exists(const std::string &name) const { return this->__impl->exists(name); }
             Status __Shader::add(const std::string &name, const std::string &vertexSource, const std::string &geometrySource, const std::string &fragmentSource, const std::string &computeSource) { return this->__impl->add(name, vertexSource, geometrySource, fragmentSource, computeSource); }
         } // namespace __registry

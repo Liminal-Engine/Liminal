@@ -51,16 +51,16 @@ namespace gfx {
                 const glm::ivec2 &getTextureSize(void) const { return this->__texture->getSize(); }
                 const int &getTextureNChannels(void) const { return this->__texture->getNChannels(); }
 
-                Status setTextureRHIHandle(const rhi::resource::Handle &RHIHandle) {
+                Status setTextureRHIHandle(const rhi::def::Handle &RHIHandle) {
                     return this->__texture->setRHIHandle(RHIHandle);
                 }
 
-                Status setShaderRHIHandle(const rhi::resource::Handle &RHIHandle) {
+                Status setShaderRHIHandle(const rhi::def::Handle &RHIHandle) {
                     return this->__shader->setRHIHandle(RHIHandle);
                 }
 
-                rhi::resource::Handle getTextureRHIHandle(void) const { return this->__texture->getRHIHandle(); }
-                rhi::resource::Handle getShaderRHIHandle(void) const { return this->__shader->getRHIHandle(); }
+                rhi::def::Handle getTextureRHIHandle(void) const { return this->__texture->getRHIHandle(); }
+                rhi::def::Handle getShaderRHIHandle(void) const { return this->__shader->getRHIHandle(); }
 
                 const std::string &getShaderVertexSource(void) const { return this->__shader->getVertexSource(); }
                 const std::string &getShaderGeometrySource(void) const { return this->__shader->getGeometrySource(); }
@@ -90,10 +90,10 @@ namespace gfx {
         const glm::ivec2 &Material::getTextureSize(void) const { return this->__impl->getTextureSize(); }
         const int &Material::getTextureNChannels(void) const { return this->__impl->getTextureNChannels(); }
 
-        Status Material::setTextureRHIHandle(const rhi::resource::Handle &RHIHandle) { return this->__impl->setTextureRHIHandle(RHIHandle); }
-        Status Material::setShaderRHIHandle(const rhi::resource::Handle &RHIHandle) { return this->__impl->setShaderRHIHandle(RHIHandle); }
-        rhi::resource::Handle Material::getTextureRHIHandle(void) const { return this->__impl->getTextureRHIHandle(); }
-        rhi::resource::Handle Material::getShaderRHIHandle(void) const { return this->__impl->getShaderRHIHandle(); }
+        Status Material::setTextureRHIHandle(const rhi::def::Handle &RHIHandle) { return this->__impl->setTextureRHIHandle(RHIHandle); }
+        Status Material::setShaderRHIHandle(const rhi::def::Handle &RHIHandle) { return this->__impl->setShaderRHIHandle(RHIHandle); }
+        rhi::def::Handle Material::getTextureRHIHandle(void) const { return this->__impl->getTextureRHIHandle(); }
+        rhi::def::Handle Material::getShaderRHIHandle(void) const { return this->__impl->getShaderRHIHandle(); }
 
         const std::string &Material::getShaderVertexSource(void) const { return this->__impl->getShaderVertexSource(); }
         const std::string &Material::getShaderGeometrySource(void) const { return this->__impl->getShaderGeometrySource(); }

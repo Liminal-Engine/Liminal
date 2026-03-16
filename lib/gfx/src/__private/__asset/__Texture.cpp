@@ -20,7 +20,7 @@ namespace gfx {
         namespace __asset {
             class __Texture::__Impl {
                 private:
-                    rhi::resource::Handle __RHIHandle;
+                    rhi::def::Handle __RHIHandle;
                     fs::Path __path;
                     unsigned char *__data;
                     glm::ivec2 __size;
@@ -31,7 +31,7 @@ namespace gfx {
 
                 public:
                     __Impl(void) :
-                    __RHIHandle(rhi::resource::NULL_HANDLE),
+                    __RHIHandle(rhi::def::NULL_HANDLE),
                     __path(),
                     __data(nullptr),
                     __size(0.0f),
@@ -70,12 +70,12 @@ namespace gfx {
                     const glm::ivec2 &getSize(void) const { return this->__size; }
                     const int &getNChannels(void) const { return this->__nChannels; }
 
-                    Status setRHIHandle(const rhi::resource::Handle &RHIHandle) {
+                    Status setRHIHandle(const rhi::def::Handle &RHIHandle) {
                         this->__RHIHandle = RHIHandle;
                         return Status::OK;
                     }
 
-                    const rhi::resource::Handle &getRHIHandle(void) const { return this->__RHIHandle; }
+                    const rhi::def::Handle &getRHIHandle(void) const { return this->__RHIHandle; }
 
                     Status copy(const __Impl &other) {
                         this->__RHIHandle = other.__RHIHandle;
@@ -116,8 +116,8 @@ namespace gfx {
             const glm::ivec2 &__Texture::getSize(void) const { return this->__impl->getSize(); }
             const int &__Texture::getNChannels(void) const { return this->__impl->getNChannels(); }
 
-            Status __Texture::setRHIHandle(const rhi::resource::Handle &RHIHandle) { return this->__impl->setRHIHandle(RHIHandle); }
-            const rhi::resource::Handle &__Texture::getRHIHandle(void) const { return this->__impl->getRHIHandle(); }
+            Status __Texture::setRHIHandle(const rhi::def::Handle &RHIHandle) { return this->__impl->setRHIHandle(RHIHandle); }
+            const rhi::def::Handle &__Texture::getRHIHandle(void) const { return this->__impl->getRHIHandle(); }
 
             Status __Texture::copy(const __Texture &other) { return this->__impl->copy(*other.__impl); }
         } // namespace __aset

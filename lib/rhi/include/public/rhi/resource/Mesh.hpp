@@ -1,7 +1,7 @@
 #ifndef __LIMINAL__LIB__RHI__INCLUDE__PUBLIC__RESOURCE__MESH_HPP__
 #define __LIMINAL__LIB__RHI__INCLUDE__PUBLIC__RESOURCE__MESH_HPP__
 
-#include "Vertex.hpp"
+#include "../def/Vertex.hpp" // FIXME
 
 #include <vector>
 #include <memory>
@@ -10,7 +10,7 @@ namespace rhi {
     namespace resource {
         class Mesh {
             public:
-                Mesh(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices);
+                Mesh(const std::vector<def::Vertex> &vertices, const std::vector<uint32_t> &indices);
                 ~Mesh();
 
                 void draw_DELETE_ME_I_AM_NOT_SUPPOSED_TO_DRAW_MYSELF(void) const;

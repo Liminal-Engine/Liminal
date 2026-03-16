@@ -15,7 +15,7 @@ namespace rhi {
                 uint32_t __count;
     
             public:
-                __Impl(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices) :
+                __Impl(const std::vector<def::Vertex> &vertices, const std::vector<uint32_t> &indices) :
                 __VAO(0),
                 __EBO(0),
                 __VBO(0),
@@ -33,16 +33,16 @@ namespace rhi {
                     glGenBuffers(1, &this->__VBO);
                     glBindBuffer(GL_ARRAY_BUFFER, this->__VBO);
                     // 2.2 Fill up VBO
-                    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
+                    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(def::Vertex), vertices.data(), GL_STATIC_DRAW);
                     // 3. Configure VAO attributes
                     // 3.1 position
-                    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
+                    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(def::Vertex), (void*)offsetof(def::Vertex, position));
                     glEnableVertexAttribArray(0);
                     // 3.2 UV
-                    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, uv));
+                    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(def::Vertex), (void*)offsetof(def::Vertex, uv));
                     glEnableVertexAttribArray(1);
                     // 3.3 normal
-                    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
+                    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(def::Vertex), (void*)offsetof(def::Vertex, normal));
                     glEnableVertexAttribArray(2);
                     // 4. Unbind
                     glBindVertexArray(0);
@@ -64,7 +64,7 @@ namespace rhi {
     
         
     
-        Mesh::Mesh(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices) :
+        Mesh::Mesh(const std::vector<def::Vertex> &vertices, const std::vector<uint32_t> &indices) :
         __impl(std::make_unique<__Impl>(vertices, indices))
         {
     

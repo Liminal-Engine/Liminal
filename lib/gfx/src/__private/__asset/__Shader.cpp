@@ -58,7 +58,7 @@ namespace gfx {
                         return parseop::join(rawRes, "\n");
                     }
 
-                    rhi::resource::Handle __RHIHandle;
+                    rhi::def::Handle __RHIHandle;
                     std::unordered_map<std::string, int> __uniformLocations;
                     std::string __vertexSource;
                     std::string __geometrySource;
@@ -67,7 +67,7 @@ namespace gfx {
 
                 public:
                     __Impl(void) :
-                    __RHIHandle(rhi::resource::NULL_HANDLE),
+                    __RHIHandle(rhi::def::NULL_HANDLE),
                     __uniformLocations(),
                     __vertexSource(""),
                     __geometrySource(""),
@@ -110,12 +110,12 @@ namespace gfx {
                         return Status::OK;
                     }
 
-                    Status setRHIHandle(const rhi::resource::Handle &RHIHandle) {
+                    Status setRHIHandle(const rhi::def::Handle &RHIHandle) {
                         this->__RHIHandle = RHIHandle;
                         return Status::OK;
                     }
 
-                    const rhi::resource::Handle &getRHIHandle(void) const { return this->__RHIHandle; }
+                    const rhi::def::Handle &getRHIHandle(void) const { return this->__RHIHandle; }
 
                     const std::string &getVertexSource(void) const { return this->__vertexSource; }
                     const std::string &getGeometrySource(void) const { return this->__geometrySource; }
@@ -134,8 +134,8 @@ namespace gfx {
 
             Status __Shader::load(const fs::Path &path) { return this->__impl->load(path); }
 
-            Status __Shader::setRHIHandle(const rhi::resource::Handle &RHIHandle) { return this->__impl->setRHIHandle(RHIHandle); }
-            const rhi::resource::Handle &__Shader::getRHIHandle(void) const { return this->__impl->getRHIHandle(); }
+            Status __Shader::setRHIHandle(const rhi::def::Handle &RHIHandle) { return this->__impl->setRHIHandle(RHIHandle); }
+            const rhi::def::Handle &__Shader::getRHIHandle(void) const { return this->__impl->getRHIHandle(); }
 
             const std::string &__Shader::getVertexSource(void) const { return this->__impl->getVertexSource(); }
             const std::string &__Shader::getGeometrySource(void) const { return this->__impl->getGeometrySource(); }

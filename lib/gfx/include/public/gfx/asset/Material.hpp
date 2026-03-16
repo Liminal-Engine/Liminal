@@ -4,7 +4,7 @@
 #include "../Status.hpp" // FIXME
 
 #include <fs/Path.hpp>
-#include <rhi/resource/Handle.hpp>
+#include <rhi/def/Handle.hpp>
 
 #include <memory>
 
@@ -32,11 +32,11 @@ namespace gfx {
                 const glm::ivec2 &getTextureSize(void) const;
                 const int &getTextureNChannels(void) const;
 
-                Status setTextureRHIHandle(const rhi::resource::Handle &RHIHandle);
-                Status setShaderRHIHandle(const rhi::resource::Handle &RHIHandle);
+                Status setTextureRHIHandle(const rhi::def::Handle &RHIHandle);
+                Status setShaderRHIHandle(const rhi::def::Handle &RHIHandle);
 
-                rhi::resource::Handle getTextureRHIHandle(void) const;
-                rhi::resource::Handle getShaderRHIHandle(void) const;
+                rhi::def::Handle getTextureRHIHandle(void) const;
+                rhi::def::Handle getShaderRHIHandle(void) const;
 
                 const std::string &getShaderVertexSource(void) const;
                 const std::string &getShaderGeometrySource(void) const;

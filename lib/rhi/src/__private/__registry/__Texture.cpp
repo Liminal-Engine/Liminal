@@ -12,7 +12,7 @@ namespace rhi {
             class __Texture::__Impl {
                 private:
                     std::vector<std::unique_ptr<resource::Texture>> __data;
-                    std::unordered_map<std::string, resource::Handle> __lookupTable;
+                    std::unordered_map<std::string, def::Handle> __lookupTable;
 
                 public:
                     __Impl(void) :
@@ -53,15 +53,15 @@ namespace rhi {
                         return Status::OK;
                     }
 
-                    const resource::Handle getHandle(const std::string &name) const {
+                    const def::Handle getHandle(const std::string &name) const {
                         if (this->exists(name) == false) {
                             logger::error << "Failed to find RHI texture with name: " << name << std::endl;
-                            return resource::NULL_HANDLE;
+                            return def::NULL_HANDLE;
                         }
                         return this->__lookupTable.at(name);
                     }
 
-                    const resource::Texture *getResource(resource::Handle handle) const {
+                    const resource::Texture *getResource(def::Handle handle) const {
                         if (handle >= this->__data.size()) [[unlikely]] {
                             logger::error << "Failed to find RHI texture with handle: " << handle << std::endl;
                             return nullptr;
@@ -83,7 +83,7 @@ namespace rhi {
                             return Status::N_OK;
                         }
                         this->__data.push_back(std::make_unique<resource::Texture>(data, size, nChannels));
-                        this->__lookupTable[name] = static_cast<resource::Handle>(this->__data.size()) - 1;
+                        this->__lookupTable[name] = static_cast<def::Handle>(this->__data.size()) - 1;
                         return Status::OK;
                     }
             };
@@ -96,8 +96,8 @@ namespace rhi {
 
             Status __Texture::init(void) { return this->__impl->init(); }
             Status __Texture::destroy(void) { return this->__impl->destroy(); }
-            const resource::Handle __Texture::getHandle(const std::string &name) const { return this->__impl->getHandle(name); }
-            const resource::Texture *__Texture::getResource(resource::Handle handle) const { return this->__impl->getResource(handle); }
+            const def::Handle __Texture::getHandle(const std::string &name) const { return this->__impl->getHandle(name); }
+            const resource::Texture *__Texture::getResource(def::Handle handle) const { return this->__impl->getResource(handle); }
             Status __Texture::add(const std::string &name, const unsigned char* data, const glm::ivec2 &size, const int &nChannels) { return this->__impl->add(name, data, size, nChannels); }
         } // namespace __registry
     } // namespace __private

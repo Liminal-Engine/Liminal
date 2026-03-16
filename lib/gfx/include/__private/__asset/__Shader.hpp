@@ -4,7 +4,7 @@
 #include "Status.hpp"
 
 #include <fs/Path.hpp>
-#include <rhi/resource/Handle.hpp>
+#include <rhi/def/Handle.hpp>
 
 
 #include <memory>
@@ -20,8 +20,8 @@ namespace gfx {
                     Status copy(const __Shader &other);
                     Status load(const fs::Path &path);
 
-                    Status setRHIHandle(const rhi::resource::Handle &RHIHandle);
-                    const rhi::resource::Handle &getRHIHandle(void) const;
+                    Status setRHIHandle(const rhi::def::Handle &RHIHandle);
+                    const rhi::def::Handle &getRHIHandle(void) const;
 
                     const std::string &getVertexSource(void) const;
                     const std::string &getGeometrySource(void) const;
