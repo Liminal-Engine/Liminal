@@ -4,16 +4,16 @@ namespace rhi {
 
     class Renderer {
         .. Constructors/Destructors ..
-        + {static} init(const Registry &RHIRegistry): void
+        + {static} init(RHIRegistry: const Registry &): void
         + {static} destroy(void): void
         + Renderer(const Renderer&) = delete
         + Renderer& operator=(const Renderer&) = delete
         + Renderer(Renderer&&) = delete
         + Renderer& operator=(Renderer&&) = delete
-        - Renderer(const Registry &RHIRegistry)
+        - Renderer(RHIRegistry: const Registry &)
         - ~Renderer()
         .. Methods ..
-        + draw(const entity::Registry::entityRegistry): void
+        + draw(entityRegistry: const entity::Registry &): void
         .. Members ..
         - {static} __instance: Renderer *
     }
@@ -28,15 +28,15 @@ namespace rhi {
         + ~Registry()
         .. Methods ..
         !!! FIXME : use template here as well !!!!!!!!!!!!!!!!!!!!!!!!!!!
-        + getShaderHandle(const std::string &name) const: def::Handle
-        + getTextureHandle(const std::string &name) const: def::Handle
-        + getMeshHandle(const std::string &name) const: def::Handle
-        + getShaderResource(def::Handle handle) const: const resource::Shader *
-        + getTextureResource(def::Handle handle) const: const resource::Texture *
-        + getMeshResource(def::Handle handle) const: const resource::Mesh *
-        + addMesh(const std::string &name, const std::vector<def::Vertex> &vertices, const std::vector<uint32_t> &indices): Status
-        + addTexture(const std::string &name, const unsigned char* data, const glm::ivec2 &size, const int nChannels): Status
-        + addShader(const std::string name, const std::string &vertexSource, const std::string &geometrySource, const std::string &fragmentSource, const std::string &computeSource): Status
+        + getShaderHandle(name: const std::string &) const: def::Handle
+        + getTextureHandle(name: const std::string &) const: def::Handle
+        + getMeshHandle(name: const std::string &) const: def::Handle
+        + getShaderResource(handle: def::Handle) const: const resource::Shader *
+        + getTextureResource(handle: def::Handle) const: const resource::Texture *
+        + getMeshResource(handle: def::Handle) const: const resource::Mesh *
+        + addMesh(name: const std::string &, vertices: const std::vector<def::Vertex> &, indices: const std::vector<uint32_t> &): Status
+        + addTexture(name: const std::string &, data: const unsigned char*, size: const glm::ivec2 &, nChannels: int): Status
+        + addShader(name: const std::string &, vertexSource: const std::string &, geometrySource: const std::string &, fragmentSource: const std::string &, computeSource: const std::string &): Status
         .. Members ..
         - __shaderRegistry: __private::__registry::__Shader
         - __textureRegistry: __private::__registry::__Texture
@@ -46,42 +46,45 @@ namespace rhi {
     namespace __private {
         namespace __registry {
             class __Mesh {
+                !!!!! FIXME : give me a parent class !!!!
                 .. Constructors/Destructors ..
                 + __Mesh(void)
                 + ~__Mesh()
                 .. Methods ..
-                + getHandle(const std::string &name) const: const def::Handle
-                + getResource(resource::Handle handle) const: const resource::Mesh *
-                + exists(const std::string &name) const: bool
-                + add(const std::string &name, const std::vector<def::Vertex> &vertices, const std::vector<uint32_t> &indices): Status
+                + getHandle(name: const std::string &) const: const def::Handle
+                + getResource(handle: resource::Handle) const: const resource::Mesh *
+                + exists(name: const std::string &) const: bool
+                + add(name: const std::string &, vertices: const std::vector<def::Vertex> &, indices: const std::vector<uint32_t> &): Status
                 .. Members ..
                 - __data: std::vector<std::unique_ptr<resource::Mesh>>
                 - __lookupTable: std::unordered_map<std::string, def::Handle>
             }
 
             class __Shader {
+                !!!!! FIXME : give me a parent class !!!!
                 .. Constructors/Destructors ..
                 + __Shader(void)
                 + ~__Shader()
                 .. Methods ..
-                + exists(const std::string &name) const: bool
-                + getHandle(const std::string &name) const: def::Handle
-                + getResource(def::Handle handle) const: const resource::Shader *
-                + add(const std::string &name, const std::string &vertexSource, const std::string &geometrySource, const std::string &fragmentSource, const std::string &computeSource): Status
+                + exists(name: const std::string &) const: bool
+                + getHandle(name: const std::string &) const: def::Handle
+                + getResource(handle: def::Handle) const: const resource::Shader *
+                + add(name: const std::string &, vertexSource: const std::string &, geometrySource: const std::string &, fragmentSource: const std::string &, computeSource: const std::string &): Status
                 .. Members ..
                 - __data: std::vector<std::unique_ptr<resource::Shader>>
                 - __lookupTable: std::unordered_map<std::string, def::Handle>
             }
 
             class __Texture {
+                !!!!! FIXME : give me a parent class !!!!
                 .. Constructors/Destructors ..
                 + __Texture(void)
                 + ~__Texture()
                 .. Methods ..
-                + getHandle(const std::string &name) const: def::Handle
-                + getResource(def::Handle handle) const: const resource::Texture *
-                + exists(const std::string &name) const: bool
-                + add(const std::string &name, const unsigned char* data, const glm::ivec2 &size, int nChannels): Status
+                + getHandle(name: const std::string &) const: def::Handle
+                + getResource(handle: def::Handle) const: const resource::Texture *
+                + exists(name: const std::string &) const: bool
+                + add(name: const std::string &, data: const unsigned char*, size: const glm::ivec2 &, nChannels: int): Status
                 .. Members ..
                 - __data: std::vector<std::unique_ptr<resource::Texture>>
                 - __lookupTable: std::unordered_map<std::string, def::Handle> 
@@ -92,7 +95,7 @@ namespace rhi {
     namespace resource {
         class Mesh {
             .. Constructors/Destructors ..
-            + Mesh(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices)
+            + Mesh(vertices: const std::vector<Vertex> &, indices: const std::vector<uint32_t> &)
             + ~Mesh()
             + Mesh(const Mesh &) = delete
             + Mesh& operator=(const Mesh &) = delete
@@ -109,7 +112,7 @@ namespace rhi {
 
         class Shader {
             .. Constructors/Destructors ..
-            + Shader(const std::string &vertexSource, const std::string &geometrySource, const std::string &fragmentSource, const std::string &computeSource)
+            + Shader(vertexSource: const std::string &, geometrySource: const std::string &, fragmentSource: const std::string &, computeSource: const std::string &)
             + ~Shader()
             + Shader(const Shader &) = delete
             + Shader& operator=(const Shader &) = delete
@@ -118,8 +121,8 @@ namespace rhi {
             .. Methods ..
             + use(void) const: void
             + getUniforms(void) const: const std::vector<def::Uniform> &
-            - {static} __compileShaderSource(const std::string &source, def::ShaderType type): uint32_t
-            - {static} __loadProgram(const std::string &vertexSource, const std::string &geometrySource, const std::string &fragmentSource, const std::string &computeSource): uint32_t
+            - {static} __compileShaderSource(source: const std::string &, type: def::ShaderType): uint32_t
+            - {static} __loadProgram(vertexSource: const std::string &, geometrySource: const std::string &, fragmentSource: const std::string &, computeSource: const std::string &): uint32_t
             .. Members ..
             - __glHandle: uint32_t
             - __uniforms: std::vector<def::Uniform>
@@ -128,13 +131,13 @@ namespace rhi {
 
         class Texture {
             .. Constructors/Destructors ..
-            +Texture(const unsigned char *data, const glm::ivec2 &size, int nChannels)
+            +Texture(data: const unsigned char *, size: const glm::ivec2 &, nChannels: int)
             + ~Texture()
             + Texture(const Texture&) = delete;
             + Texture& operator=(const Texture&) = delete
             + Texture(Texture&&) = delete;
             + Texture& operator=(Texture&&) = delete;
-            - {static} __loadTexture(const unsigned char *data, const glm::ivec2 &size, int nChannels): uint32_t
+            - {static} __loadTexture(data: const unsigned char *, size: const glm::ivec2 &, nChannels: int): uint32_t
             .. Members ..
             - __glHandle: uint32_t
         }
@@ -161,7 +164,7 @@ namespace rhi {
 
         struct Uniform {
             .. Constructors/Destructors ..
-            + Uniform(const std::string &name, GLint location, GLenum type)
+            + Uniform(name: const std::string &, location: GLint, type: GLenum)
             .. Members ..
             + name: const std::string
             + location: const GLint

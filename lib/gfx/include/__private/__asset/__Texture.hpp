@@ -18,6 +18,11 @@ namespace gfx {
                     __Texture(void);
                     ~__Texture();
 
+                    __Texture(const __Texture&) = delete;            // No copy
+                    __Texture& operator=(const __Texture&) = delete; // No affectation
+                    __Texture(__Texture&&) = delete;                 // No move
+                    __Texture& operator=(__Texture&&) = delete;      // No affectation by moving
+
                     Status load(const fs::Path &path);
                     const unsigned char *getData(void) const;
                     const glm::ivec2 &getSize(void) const;

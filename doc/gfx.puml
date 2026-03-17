@@ -1,9 +1,202 @@
 @startuml gfx
 
 namespace gfx {
+
+    class Registry {
+        .. Constructors/Destructors ..
+        + Registry(rhi::Registry &rhiRegistry)
+        + ~Registry()
+        .. Methods ..
+        + load<T : def::ManagedAsset>(name: const std::string &, path: const fs::Path &): Status
+        + exists<T : def::ManagedAsset>(name: const std::string &) const: bool
+        + get<T : def::ManagedAsset>(name: const std::string &) const: const T *
+        .. Members ..
+        - __rhiRgistry: rhi::Registry &
+        - __meshRegistry: __private::__registry::__Mesh
+        - __materialRegistry: __private::registry::__Material
+    }
+
+    enum Status {
+        OK,
+        N_OK,
+        E_ALREADY_EXISTS,
+        E_FILE_EMPTY,
+        E_FILE_CONTENT
+    }
+
+    namespace def {
+        class ManagedAsset
+        ManagedAsset ..> gfx.asset.Mesh: accepts >
+        ManagedAsset ..> gfx.asset.Material: accepts >
+    }
+
+    namespace asset {
+        class Mesh {
+            .. Constructors/Destructors ..
+            + Mesh(void)
+            + ~Mesh()
+            + Mesh(const Mesh &) = delete
+            + Mesh &operator=(const Mesh &) = delete
+            + Mesh(Mesh &&) noexcept
+            + Mesh &operator=(Mesh &&) noexcept
+            .. Methods ..
+            + getVertices(void) const: const std::vector<rhi::def::Vertex> &
+            + getIndices(void) const: const std::vector<uint32_t> &
+            + getPath(void) const: const fs::Path &
+            + copy(other: const Mesh &): Status
+            + load(path: const fs::Path &): Status
+            + setRHIHandle(handle: rhi::def::Handle): Status
+            + getRHIHandle(void) const: rhi::def::Handle
+            .. Members ..
+            - __rhiHandle: rhi::def::Handle
+            - __vertices: std::vector<rhi::def::Vertex>
+            - __indices: std::vector<uint32_t>
+            - __BOUDING_BOX: int
+            - __path: fs::Path
+        }
+
+        class Material {
+            .. Constructors/Destructors ..
+            + Material(void)
+            + ~Material()
+            + Material(const Material &) = delete
+            + Material &operator=(const Material &) = delete
+            + Material(Material &&) noexcept
+            + Material &operator=(Material &&) noexcept
+            .. Methods ..
+            + setColor(color: const glm::vec3 &): Satus
+            + getRessourceKey(void) const: const std::string &
+            + load(texturePath: const fs::Path &): Status
+            + getTextureData(void) const: const unsigned char *
+            + getTextureSize(void) const: const glm::ivec2 &
+            + getTextureNChannels(void) const: int
+            + setTextureRHIHandle(RHIHandle: rhi::def::Handle): Status
+            + setShaderRHIHandle(RHIHandle: rhi::def::Handle): Status
+            + getTextureRHIHandle(void) const: rhi::def::Handle
+            + getShaderRHIHandle(void) const: rhi::def::Handle
+            + getShaderSource(type: rhi::def::ShaderType) const: const std::string &
+            .. Members ..
+            - __shader: std::unique_ptr<__private::__asset::__Shader>
+            - __texture: std::unique_ptr<__private::__asset::__Texture>
+            - __color: glm::vec3
+            - __resourceKey: std::string
+
+        }
+    }
+
     namespace __private {
-        
+        namespace __registry {
+            class __Material {
+                .. Constructors/Destructors ..
+                + __Material(void)
+                + ~__Material()
+                .. Methods ..
+                + add(name: const std::string &, material: asset::Material &&): Status
+                + exists(name: const std::string &) const: bool
+                + getByResourceKey(resourceKey: const std::string &): const asset::Material *
+                + get(name: const std::string &) const: const asset::Material *
+                .. Members ..
+                - __data: std::unordered_map<std::string, std::unique_ptr<asset::Material>>
+            }
+
+            class __Mesh {
+                .. Constructors/Destructors ..
+                + __Mesh(void)
+                + ~__Mesh()
+                .. Methods ..
+                + add(name: const std::string &, mesh: asset::Mesh &&): Status
+                + exists(name: const std::string &) const: bool
+                + getByPath(path: const fs::Path &): const gfx::asset::Mesh * !!! FIXME :: this should be getByResourceKey
+                + get(name: const std::string &) const: const gfx::asset::Mesh *
+                .. Members ..
+                - __data: std::unordered_map<std::string, std::unique_ptr<asset::Mesh>>
+
+            }
+        }
+
+        namespace __asset {
+            class __Shader {
+                .. Constructors/Destructors ..
+                + __Shader(void)
+                + ~__Shader()
+                + __Shader(const __Shader&) = delete
+                + __Shader& operator=(const __Shader&) = delete
+                + __Shader(__Shader&&) = delete
+                + __Shader& operator=(__Shader&&) = delete
+                .. Methods ..
+                + copy(other: const __Shader &): Status
+                + load(path: const fs::Path &): Status
+                + setRHIHandle(RHIHandle: rhi::def::Handle): Status
+                + getRHIHandle(void) const: rhi::def::Handle
+                + getSource(type: rhi::def::ShaderType) cons: const std::string &
+                - {static} __readGLSLSource(path: const fs::Path &): string
+                - {static} __generateVersionDefinitionLine(tokenizedSource: const std::vector<std::string> &): std::string
+                - {static} __readTypedShaderSource(tokenizedSource: const std::vector<std::string> &, shaderType: rhi::def::ShaderType, versionDefinition: const std::string &): std::string
+                .. Members ..
+                - __RHIHandle: rhi::def::Handle
+                - __uniformLocations: std::unordered_map<std::string, int>
+                - __vertexSource: std::string
+                - __geometrySource: std::string
+                - __fragmentSource: std::string
+                - __computeSource: std::string
+            }
+
+            class __Texture {
+                .. Constructors/Destructors ..
+                + __Texture(void)
+                + ~__Texture()
+                + __Texture(const __Texture&) = delete
+                + __Texture& operator=(const __Texture&) = delete
+                + __Texture(__Texture&&) = delete
+                + __Texture& operator=(__Texture&&) = delete
+                .. Methods ..
+                + load(path: const fs::Path &): Status
+                + getData(void) const: const unsigned char *
+                + getSize(void) const: const glm::ivec2 &
+                + getNChannels(void) const: int
+                + setRHIHandle(RHIHandle: rhi::def::Handle): Status
+                + getRHIHandle(void) const: rhi::def::Handle
+                + copy(other: const __Texture &): Status
+                .. Members ..
+                - __RHIHandle: rhi::def::Handle
+                - __path: fs::Path
+                - __data: unsigned char *
+                - __size: glm::ivec2
+                - __nChannels: int
+                - __wrapping: rhi::sampler::TextureWrapping
+                - __filtering: rhi::sampler::TextureFiltering
+                - __hasMipMap: bool
+            }
+        }
     }
 }
+
+
+gfx.__private.__asset.__Shader --> rhi.def.Handle: stores >
+gfx.__private.__asset.__Shader ..> rhi.def.ShaderType: uses >
+gfx.__private.__asset.__Shader ..> gfx.Status
+
+gfx.__private.__asset.__Texture --> rhi.def.Handle: stores >
+gfx.__private.__asset.__Texture ..> gfx.Status
+
+gfx.asset.Material *.. gfx.__private.__asset.__Shader: owns >
+gfx.asset.Material *.. gfx.__private.__asset.__Texture: owns >
+gfx.asset.Material ..> rhi.def.Handle: uses >
+gfx.asset.Material ..> rhi.def.ShaderType: uses >
+gfx.asset.Material ..> gfx.Status
+
+gfx.asset.Mesh --> rhi.def.Handle: stores >
+gfx.asset.Mesh --> rhi.def.Vertex: stores >
+gfx.asset.Mesh ..> gfx.Status
+
+gfx.__private.__registry.__Material *.. gfx.asset.Material: owns >
+
+gfx.__private.__registry.__Mesh *.. gfx.asset.Mesh: owns >
+
+gfx.Registry *.. gfx.__private.__registry.__Material: owns >
+gfx.Registry *.. gfx.__private.__registry.__Mesh: owns >
+gfx.Registry --> rhi.Registry: stores >
+gfx.Registry ..> gfx.Status: uses >
+
 
 @enduml

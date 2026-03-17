@@ -18,6 +18,11 @@ namespace gfx {
                     __Shader(void);
                     ~__Shader();
 
+                    __Shader(const __Shader&) = delete;            // No copy
+                    __Shader& operator=(const __Shader&) = delete; // No affectation
+                    __Shader(__Shader&&) = delete;                 // No move
+                    __Shader& operator=(__Shader&&) = delete;      // No affectation by moving
+
                     Status copy(const __Shader &other);
                     Status load(const fs::Path &path);
 

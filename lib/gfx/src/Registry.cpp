@@ -134,7 +134,7 @@ namespace gfx {
     template<>
     const asset::Material *Registry::__Impl::get(const std::string &name) const {
         if (this->exists<asset::Material>(name) == false) {
-            logger::error << "Failed to find mesh asset \"" << name << "\"" << std::endl;
+            logger::error << "Failed to find material asset \"" << name << "\"" << std::endl;
             return nullptr;
         }
         return this->__materialRegistry.get(name);
@@ -162,6 +162,6 @@ namespace gfx {
     const asset::Mesh *Registry::get(const std::string &name) const { return this->__impl->get<asset::Mesh>(name); }
 
     template<>
-    const asset::Material *Registry::get(const std::string &name) const { return this->__impl->get<asset::Material>(name); }
-    
+    const asset::Material *Registry::get(const std::string &name) const { return this->__impl->get<asset::Material>(name); } 
+
 } // namespace gfx

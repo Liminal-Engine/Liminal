@@ -23,7 +23,7 @@ namespace gfx {
                 Material(Material &&) noexcept;
                 Material &operator=(Material &&) noexcept;
 
-                [[nodiscard]] Status setColor(const glm::vec3 &color);
+                Status setColor(const glm::vec3 &color);
                 const std::string &getRessourceKey(void) const;
                 Status copy(const Material &other);
 

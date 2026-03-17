@@ -53,7 +53,7 @@ namespace rhi {
                 return this->__meshRegistry.add(name, vertices, indices);
             }
 
-            Status addTexture(const std::string &name, const unsigned char* data, const glm::ivec2 &size, const int nChannels) {
+            Status addTexture(const std::string &name, const unsigned char* data, const glm::ivec2 &size, int nChannels) {
                 return this->__textureRegistry.add(name, data, size, nChannels);
             }
 

@@ -32,7 +32,7 @@ namespace rhi {
                 const std::vector<uint32_t> &indices
             );
 
-            Status addTexture(const std::string &name, const unsigned char* data, const glm::ivec2 &size, const int nChannels);
+            Status addTexture(const std::string &name, const unsigned char* data, const glm::ivec2 &size, int nChannels);
 
             Status addShader(
                 const std::string name,
