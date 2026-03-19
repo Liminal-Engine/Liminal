@@ -11,7 +11,6 @@ namespace host {
     class Engine::__Impl {
         private:
             wsi::Window __window;
-            // GLFWwindow *__window;
             entity::Registry __entityRegistry;
             const Application &__application;
             rhi::Renderer __renderer;
@@ -20,34 +19,14 @@ namespace host {
             
             __Impl(const Application &application) :
             __window(1280, 720, "PUT THE GAME NAME HERE"),
-            // __window([&](void) -> GLFWwindow * {
-            //     glfwInit();
-            //     // FIXME : see if safe to put 4.5 instead
-            //     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-            //     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-            //     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-            //     logger::info << "Creating window" << std::endl;
-            //     GLFWwindow *window = glfwCreateWindow(1280, 720, "PUT THE GAME NAME HERE", NULL, NULL);
-            //     if (window == nullptr) {
-            //         logger::fatal << "Failed to create window" << std::endl;
-            //     }
-            //     glfwMakeContextCurrent(window);
-            //     return window;
-            // }()),
-            // __RHIRegistry(),
-            // __assetRegistry(this->__RHIRegistry),
             __entityRegistry(),
             __application(application),
             __renderer()
             {
-                // this->__resourceRegistry.init();
             }
             
             ~__Impl() {
-                // if (rhi::Status rhiStatus; (rhiStatus = this->__RHIRegistry.destroy()) != rhi::Status::OK) { // maybe I'll have to redo this later so keep it until then
-                //     logger::error << "Failed to destroy RHI registry" << std::endl;
-                // }
-                // rhi::Renderer::destroy();
+            
             }
 
             int run(void) {
@@ -59,14 +38,8 @@ namespace host {
                 while (this->__window.shouldClose() == false) {
                     this->__window.pollEvents();
                     this->__renderer.draw();
-                    // this->__renderer->draw(this->__entityRegistry);
                     this->__window.display();
                 }
-                // while (glfwWindowShouldClose(this->__window) == false) {
-                //     glfwPollEvents();
-                //     this->__renderer->draw(this->__entityRegistry);
-                //     glfwSwapBuffers(this->__window);
-                // }
                 return 0;
             }
     };

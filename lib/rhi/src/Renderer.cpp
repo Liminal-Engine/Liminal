@@ -1,7 +1,9 @@
 #include "Renderer.hpp"
 
+#include <logger/logger.hpp>
 
 #include <glad/glad.h>
+#include <EGL/egl.h>
 
 namespace rhi {
     class Renderer::__Impl {
@@ -10,13 +12,16 @@ namespace rhi {
         public:
             __Impl(void)
             {
+                if (gladLoadGLLoader((GLADloadproc)eglGetProcAddress) == 0) {
+                    logger::fatal << "Failed to initialize GLAD" << std::endl;
+                    return;
+                }
                 glViewport(0, 0, 1280, 720);
                 glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
                 glEnable(GL_DEPTH_TEST);
                 glEnable(GL_BLEND);
                 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             }
-
             ~__Impl() {
 
             }
