@@ -32,6 +32,8 @@ namespace entity {
             RessourceHandle getTexureHandle(void) const;
             RessourceHandle getMeshHandle(void) const;
 
+            const gfx::asset::Material *getMaterial(void) const;
+
 
 
         private:

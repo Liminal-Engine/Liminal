@@ -36,13 +36,6 @@ namespace gfx {
                         return this->__data.find(name) != this->__data.end();
                     }
 
-                    const asset::Material *getByResourceKey(const std::string &resourceKey) {
-                        for (auto &materialAsset : this->__data) {
-                            if (materialAsset.second->getRessourceKey() == resourceKey) return materialAsset.second.get();
-                        }
-                        return nullptr;
-                    }
-
                     const asset::Material *get(const std::string &name) const {
                         if (this->exists(name) == false) {
                             logger::error << "Material asset registry cannot find asset with name: " << name << std::endl;
@@ -60,7 +53,6 @@ namespace gfx {
 
             Status __Material::add(const std::string &name, asset::Material &&material) { return this->__impl->add(name, std::move(material)); }
             bool __Material::exists(const std::string &name) const { return this->__impl->exists(name); }
-            const asset::Material *__Material::getByResourceKey(const std::string &resourceKey) { return this->__impl->getByResourceKey(resourceKey); }
             const asset::Material *__Material::get(const std::string &name) const { return this->__impl->get(name); }
         } // namespace __registry
     } // namespace __private

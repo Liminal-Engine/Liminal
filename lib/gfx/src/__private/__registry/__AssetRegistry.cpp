@@ -43,7 +43,7 @@ namespace gfx {
                         return this->get(path) != nullptr ? true : false;
                     }
                     
-                    const T *get(const std::string &name) const {
+                    T *get(const std::string &name) const {
                         if (this->exists(name) == false) {
                             logger::error << "Failed to get asset: name \"" << name << "\" does not exist" << std::endl;
                             return nullptr;
@@ -51,7 +51,7 @@ namespace gfx {
                         return this->__data.at(name).get();
                     }
 
-                    const T *get(const fs::Path &path) const {
+                    T *get(const fs::Path &path) const {
                         for (const auto &[name, asset] : this->__data) {
                             if (asset->getPath() == path) return asset.get();
                         }
@@ -75,10 +75,10 @@ namespace gfx {
             bool __AssetRegistry<T>::exists(const fs::Path &path) const { return this->__impl->exists(path); }
 
             template<typename T>
-            const T *__AssetRegistry<T>::get(const std::string &name) const { return this->__impl->get(name); }
+            T *__AssetRegistry<T>::get(const std::string &name) const { return this->__impl->get(name); }
 
             template<typename T>
-            const T *__AssetRegistry<T>::get(const fs::Path &path) const { return this->__impl->get(path); }
+            T *__AssetRegistry<T>::get(const fs::Path &path) const { return this->__impl->get(path); }
         } // namespace __registry
     } // namespace __private
 } // namespace gfx

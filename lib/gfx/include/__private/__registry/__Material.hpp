@@ -17,7 +17,6 @@ namespace gfx {
 
                     [[nodiscard]] Status add(const std::string &name, asset::Material &&material);
                     bool exists(const std::string &name) const;
-                    const asset::Material *getByResourceKey(const std::string &resourceKey);
                     const asset::Material *get(const std::string &name) const;
 
                 private:

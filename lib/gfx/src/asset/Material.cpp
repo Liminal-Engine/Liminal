@@ -48,8 +48,8 @@ namespace gfx
                 return glm::vec3(localColors[0], localColors[1], localColors[2]);
             }
 
-            const __private::__asset::__Shader *__shader;   // pointer because can be null before initialized
-            const __private::__asset::__Texture *__texture; // pointer because can be null if no texture is applied
+            __private::__asset::__Shader *__shader;   // pointer because can be null before initialized
+            __private::__asset::__Texture *__texture; // pointer because can be null if no texture is applied
             glm::vec3 __color;
             bool __mustHaveTexture;
             fs::Path __texturePath;
@@ -77,16 +77,6 @@ namespace gfx
                 return Status::OK;
             }
 
-            // FIXME NOW (remember we're working on the FIXME of Application.cpp) :
-            // this logic should be on the gfx::Registry to avoid recreating gfx ressources
-            // the logc should be: Material only has a pointer to a texture that can be null but does not "owns it"
-            // the json is parsed in the registry.load a a separate __textureRegistry and __shaderRegistry exists
-            // so that Material only has a pointer to the gfx asset, this will avoid loading 2 times the same texture asset
-            // for 2 different material. and also tihs will avoid loading 2 times the shader asset for 2 different material.
-            // In general, each "asset" should have it's own independant sub registry (contained in gfx::Registry)
-            // on devra probablment charger et compiler tous les shaders en avance (pour être sur qu'ils existent si
-            // une matière change en plein jeu, pour s'assurer que ça recompile pas en pleine boucle de jeu, ça créerrais un
-            // lag)
             Status load(const fs::Path &path)
             { // Here, we only setup the file info struct and the properties
                 // 0. Set path
@@ -135,14 +125,17 @@ namespace gfx
             rhi::def::Handle getTextureRHIHandle(void) const { return this->__texture->getRHIHandle(); }
             rhi::def::Handle getShaderRHIHandle(void) const { return this->__shader->getRHIHandle(); }
 
-            const std::string &getShaderSource(rhi::def::ShaderType type) const { return this->__shader->getSource(type); }
+            void bind(__private::__asset::__Texture *texture, __private::__asset::__Shader *shader) {
+                if (texture == nullptr) logger::debug << "Setting material texture to NULL" << std::endl;
+                if (shader ==nullptr) logger::error << "Setting material shader to NULL" << std::endl;
+                this->__texture = texture;
+                this->__shader = shader;
+            }
 
-            void setTexture(const __private::__asset::__Texture *texture) { this->__texture = texture; }
-            void setShader(const __private::__asset::__Shader *shader) { this->__shader = shader; }
+            const std::vector<rhi::def::Uniform> &apply(void) const {
+                this->__shader->set("uColor", this->__color);
 
-#include "glad/glad.h"
-
-            void apply(void) const {
+                return this->__shader->getUniforms();
             }
         };
 
@@ -156,8 +149,6 @@ namespace gfx
 
         Material &Material::operator=(Material &&) noexcept = default;
 
-        // const std::string &Material::getRessourceKey(void) const { return this->__impl->getRessourceKey(); }
-
         Status Material::copy(const Material &other) { return this->__impl->copy(*other.__impl); }
 
         Status Material::load(const fs::Path &path) { return this->__impl->load(path); }
@@ -170,15 +161,12 @@ namespace gfx
         rhi::def::Handle Material::getShaderRHIHandle(void) const { return this->__impl->getShaderRHIHandle(); }
         const fs::Path &Material::getPath(void) const { return this->__impl->getPath(); }
 
-        const std::string &Material::getShaderSource(rhi::def::ShaderType type) const { return this->__impl->getShaderSource(type); }
-
         bool Material::mustHaveTexture(void) const { return this->__impl->mustHaveTexture(); }
         const fs::Path &Material::getTexturePath(void) const { return this->__impl->getTexturePath(); }
 
-        void Material::setTexture(const __private::__asset::__Texture *texture) { this->__impl->setTexture(texture); }
-        void Material::setShader(const __private::__asset::__Shader *shader) { this->__impl->setShader(shader);  }
+        void Material::bind(__private::__asset::__Texture *texture, __private::__asset::__Shader *shader) { this->__impl->bind(texture, shader); }
 
-        void Material::apply(void) const { this->__impl->apply(); }
+        const std::vector<rhi::def::Uniform> &Material::apply(void) const  { return this->__impl->apply(); }
 
     } // namespace asset
 } // namespace gfx

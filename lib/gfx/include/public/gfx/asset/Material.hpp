@@ -6,6 +6,8 @@
 #include <fs/Path.hpp>
 #include <rhi/def/Handle.hpp>
 #include <rhi/def/ShaderType.hpp> // FIXME : not expose rhi here, use forward declaration instead
+#include <rhi/resource/Texture.hpp>
+#include <rhi/resource/Shader.hpp>
 
 #include <memory>
 
@@ -39,7 +41,6 @@ namespace gfx {
                 Material(Material &&) noexcept;
                 Material &operator=(Material &&) noexcept;
 
-                const std::string &getRessourceKey(void) const;
                 Status copy(const Material &other);
 
                 Status load(const fs::Path &path);
@@ -53,15 +54,17 @@ namespace gfx {
                 rhi::def::Handle getTextureRHIHandle(void) const;
                 rhi::def::Handle getShaderRHIHandle(void) const;
 
-                const std::string &getShaderSource(rhi::def::ShaderType type) const;
-
                 bool mustHaveTexture(void) const;
                 const fs::Path &getTexturePath(void) const;
 
-                void setTexture(const __private::__asset::__Texture *texture);
-                void setShader(const __private::__asset::__Shader *shader);
+                void bind(__private::__asset::__Texture *texture, __private::__asset::__Shader *shader);
 
-                void apply(void) const;
+                // void setTexture(const __private::__asset::__Texture *texture);
+                // void setShader(const __private::__asset::__Shader *shader);
+
+                const std::vector<rhi::def::Uniform> &apply(void) const;
+
+
 
             private:
                 class __Impl;

@@ -31,7 +31,7 @@ namespace rhi {
                     const resource::Shader *shader = this->__RHIRegistry.getShaderResource(entity->getShaderHandle());
                     const resource::Mesh *mesh = this->__RHIRegistry.getMeshResource(entity->getMeshHandle());
                     if (shader && mesh) {
-                        shader->use();
+                        shader->use(entity->getMaterial()->apply());
                         mesh->draw_DELETE_ME_I_AM_NOT_SUPPOSED_TO_DRAW_MYSELF();
                     }
                 }

@@ -45,6 +45,8 @@ namespace entity {
 
             RessourceHandle getMeshHandle(void) const { return this->__mesh->getRHIHandle(); }
 
+            const gfx::asset::Material *getMaterial(void) const { return this->__material; }
+
     };
 
     AEntity::AEntity(void) :
@@ -63,6 +65,7 @@ namespace entity {
     RessourceHandle AEntity::getShaderHandle(void) const { return this->__impl->getShaderHandle(); }
     RessourceHandle AEntity::getTexureHandle(void) const { return this->__impl->getTexureHandle(); }
     RessourceHandle AEntity::getMeshHandle(void) const { return this->__impl->getMeshHandle(); }
+    const gfx::asset::Material *AEntity::getMaterial(void) const { return this->__impl->getMaterial(); }
 
 
 } // namespace entity

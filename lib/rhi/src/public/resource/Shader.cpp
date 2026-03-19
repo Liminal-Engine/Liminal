@@ -123,8 +123,17 @@ namespace rhi {
                     if (this->__glHandle) glDeleteProgram(this->__glHandle);
                 }
 
-                void use(void) const {
+                void use(const std::vector<def::Uniform> &uniforms = {}) const {
                     glUseProgram(this->__glHandle);
+                    for (const def::Uniform &uniform : uniforms) {
+                        if (const int *value = std::get_if<int>(&uniform.value)) {
+                            glUniform1i(uniform.location, *value);
+                        } else if (const float *value = std::get_if<float>(&uniform.value)) {
+                            glUniform1f(uniform.location, *value);
+                        } else if (const glm::vec3* value = std::get_if<glm::vec3>(&uniform.value)) {
+                            glUniform3f(uniform.location, value->x, value->y, value->z);
+                        }
+                    }
                 }
 
                 const std::vector<def::Uniform> &getUniforms(void) const { return this->__uniforms; }
@@ -146,7 +155,7 @@ namespace rhi {
     
         Shader::~Shader() = default;
 
-        void Shader::use(void) const { this->__impl->use(); }
+        void Shader::use(const std::vector<def::Uniform> &uniforms) const { this->__impl->use(uniforms); }
         const std::vector<def::Uniform> &Shader::getUniforms(void) const { return this->__impl->getUniforms(); }
         def::Handle Shader::getRHIHandle(void) const { return this->__impl->getRHIHandle(); }
     } // namespace resource

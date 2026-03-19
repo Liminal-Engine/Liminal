@@ -29,9 +29,11 @@ namespace gfx {
                     const fs::Path &getPath(void) const;
 
                     void bind(const rhi::resource::Shader *rhiShader);
+                    void set(const std::string &name, const rhi::def::UniformValue &value);
                     rhi::def::Handle getRHIHandle(void) const;
 
                     const std::string &getSource(rhi::def::ShaderType type) const;
+                    const std::vector<rhi::def::Uniform> &getUniforms(void) const;
 
                 private:
                     class __Impl;

@@ -3,10 +3,11 @@
 
 namespace rhi {
     namespace def {
-        Uniform::Uniform(const std::string &name, GLint location, GLenum type) :
+        Uniform::Uniform(const std::string &name, GLint location, GLenum type, const UniformValue &value) :
         name(name),
         location(location),
-        type(type)
+        type(type),
+        value(value)
         {}
 
         Uniform &Uniform::operator=(const Uniform &other) {

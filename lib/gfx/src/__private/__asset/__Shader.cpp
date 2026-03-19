@@ -123,6 +123,16 @@ namespace gfx {
                         this->__uniforms = rhiShader->getUniforms();
                     }
 
+                    void set(const std::string &name, const rhi::def::UniformValue &value) {
+                        for (rhi::def::Uniform &uniform: this->__uniforms) {
+                            if (uniform.name == name) {
+                                uniform.value = value;
+                                return;
+                            }
+                        }
+                        logger::error << "Trying to set a unexistant uniform: \"" << name << "\"" << std::endl;
+                    }
+
                     rhi::def::Handle getRHIHandle(void) const { return this->__RHIHandle; }
 
                     const std::string &getSource(rhi::def::ShaderType type) const {
@@ -136,6 +146,8 @@ namespace gfx {
                     }
 
                     const fs::Path &getPath(void) const { return this->__path; }
+
+                    const std::vector<rhi::def::Uniform> &getUniforms(void) const { return this->__uniforms; }
             };
 
 
@@ -158,6 +170,10 @@ namespace gfx {
 
             const std::string &__Shader::getSource(rhi::def::ShaderType type) const { return this->__impl->getSource(type); }
             const fs::Path &__Shader::getPath(void) const { return this->__impl->getPath(); }
+
+            void __Shader::set(const std::string &name, const rhi::def::UniformValue &value) { this->__impl->set(name, value); }
+
+            const std::vector<rhi::def::Uniform> &__Shader::getUniforms(void) const { return this->__impl->getUniforms(); }
         } // namespace __aset
     } // namespace __private
 } // namespace gfx

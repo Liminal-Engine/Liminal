@@ -3,10 +3,12 @@
 
 #include "../def/Uniform.hpp" // FIXME
 #include "../def/Handle.hpp" // FIXME
+#include "../def/Uniform.hpp" // FIXME
 
 #include <fs/Path.hpp>
 
 #include <memory>
+#include <vector>
 
 namespace rhi {
     namespace resource {
@@ -21,7 +23,7 @@ namespace rhi {
                 );
                 ~Shader();
 
-                void use(void) const;
+                void use(const std::vector<def::Uniform> &uniforms = {}) const;
 
                 const std::vector<def::Uniform> &getUniforms(void) const;
                 def::Handle getRHIHandle(void) const;

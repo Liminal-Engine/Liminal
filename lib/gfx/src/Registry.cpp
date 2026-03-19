@@ -83,7 +83,7 @@ namespace gfx {
     template<>
     Status Registry::__Impl::load<asset::Material>(const std::string &name, const fs::Path &path) {
         // 1. If already exists, do nothing
-        if (this->__meshRegistry.exists(name)) {
+        if (this->__materialRegistry.exists(name)) {
             logger::error << "Failed to load new material: name\"" << name << "\" already exists" << std::endl;
             return Status::E_ALREADY_EXISTS;
         }
@@ -95,16 +95,17 @@ namespace gfx {
         // 3. We create the new asset
         logger::debug << "Loading material asset with name: " << name << ", path: " << absolutePath.asStr() << std::endl;
         gfx::asset::Material newMaterialAsset;
-        // 3.1 If the asset already exists for this path, just copy it, otherwise, load it
+        // 3.1 If the asset already exists for this path, just copy it, otherwise, load it // FIXME: decide if I shluld create another with the new name or just throw an error
         if (this->__materialRegistry.exists(absolutePath)) {
             newMaterialAsset.copy(*this->__materialRegistry.get(absolutePath));
             return Status::OK;
         } 
         else newMaterialAsset.load(absolutePath);
         // 4. Set the material asset texture if required
+        std::string textureName("");
         if (newMaterialAsset.mustHaveTexture()) {
             fs::Path texturePath(newMaterialAsset.getTexturePath());
-            std::string textureName(texturePath.asStr());
+            textureName = texturePath.asStr();
             // 4.1 If the texture does not exists, create it, it's name is the path as string
             if (this->__textureRegistry.exists(textureName) == false) {
                 gfx::__private::__asset::__Texture textureAsset;
@@ -118,9 +119,8 @@ namespace gfx {
                 textureAsset.bind(this->__rhiRegistry.getTextureResource(rhiTextureHandle));
                 this->__textureRegistry.add(textureName, std::move(textureAsset));
             }
-            const __private::__asset::__Texture *relatedTextureAsset = this->__textureRegistry.get(textureName);
-            newMaterialAsset.setTexture(relatedTextureAsset);
         }
+        __private::__asset::__Texture *relatedTextureAsset = this->__textureRegistry.get(textureName); // will be NULL if textureName is not defined
         // 5. Set the shader
         // const __private::__asset::__Shader *relatedShaderAsset = __findShader(newMaterialAsset);
         fs::Path shaderPath("/home/matteo/Projects/Liminal/assets/shaders/core/textured.glsl");
@@ -138,8 +138,9 @@ namespace gfx {
             shaderAsset.bind(this->__rhiRegistry.getShaderResource(rhiShaderHandle));
             this->__shaderRegistry.add(shaderName, std::move(shaderAsset));
         }
-        const __private::__asset::__Shader *relatedShaderAsset = this->__shaderRegistry.get(shaderName);
-        newMaterialAsset.setShader(relatedShaderAsset);
+        __private::__asset::__Shader *relatedShaderAsset = this->__shaderRegistry.get(shaderName);
+        // 6. Bind material and add to registry
+        newMaterialAsset.bind(relatedTextureAsset, relatedShaderAsset);
         this->__materialRegistry.add(name, std::move(newMaterialAsset));
         return Status::OK;
 
