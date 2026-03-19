@@ -1,11 +1,9 @@
 #include "Engine.hpp"
 
 #include <wsi/Window.hpp>
-#include <rhi/Renderer.hpp>
-#include <rhi/Registry.hpp>
-#include <gfx/Registry.hpp>
 #include <logger/logger.hpp>
 #include <entity/Registry.hpp>
+#include <rhi/Renderer.hpp>
 
 #include <GLFW/glfw3.h>
 
@@ -14,11 +12,9 @@ namespace host {
         private:
             wsi::Window __window;
             // GLFWwindow *__window;
-            rhi::Registry __RHIRegistry;
-            gfx::Registry __assetRegistry;
             entity::Registry __entityRegistry;
             const Application &__application;
-            rhi::Renderer *__renderer;
+            rhi::Renderer __renderer;
 
         public:
             
@@ -38,14 +34,11 @@ namespace host {
             //     glfwMakeContextCurrent(window);
             //     return window;
             // }()),
-            __RHIRegistry(),
-            __assetRegistry(this->__RHIRegistry),
+            // __RHIRegistry(),
+            // __assetRegistry(this->__RHIRegistry),
             __entityRegistry(),
             __application(application),
-            __renderer([&](void) -> rhi::Renderer * {
-                rhi::Renderer::init(this->__RHIRegistry);
-                return rhi::Renderer::get();
-            }())
+            __renderer()
             {
                 // this->__resourceRegistry.init();
             }
@@ -54,18 +47,19 @@ namespace host {
                 // if (rhi::Status rhiStatus; (rhiStatus = this->__RHIRegistry.destroy()) != rhi::Status::OK) { // maybe I'll have to redo this later so keep it until then
                 //     logger::error << "Failed to destroy RHI registry" << std::endl;
                 // }
-                rhi::Renderer::destroy();
+                // rhi::Renderer::destroy();
             }
 
             int run(void) {
-                if (this->__application.init(this->__assetRegistry, this->__entityRegistry) != host::Status::OK) {
+                if (this->__application.init() != host::Status::OK) {
                     logger::fatal << "Failed to initialize application" << std::endl;
                     return EXIT_FAILURE;
                 }
 
                 while (this->__window.shouldClose() == false) {
                     this->__window.pollEvents();
-                    this->__renderer->draw(this->__entityRegistry);
+                    this->__renderer.draw();
+                    // this->__renderer->draw(this->__entityRegistry);
                     this->__window.display();
                 }
                 // while (glfwWindowShouldClose(this->__window) == false) {

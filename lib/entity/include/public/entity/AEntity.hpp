@@ -3,9 +3,6 @@
 
 #include "Status.hpp"
 
-#include <gfx/asset/Mesh.hpp>
-#include <gfx/asset/Material.hpp>
-
 #include <string>
 #include <memory>
 #include <cstdint>
@@ -23,19 +20,7 @@ namespace entity {
             AEntity &operator=(const AEntity &) = delete;
             AEntity(AEntity &&other) noexcept;
             AEntity &operator=(AEntity &&other) noexcept;
-
             
-            [[nodiscard]] Status setMesh(const gfx::asset::Mesh *mesh); // FIXME : make me templated
-            [[nodiscard]] Status setMaterial(const gfx::asset::Material *material); // FIXME : make me templated
-
-            RessourceHandle getShaderHandle(void) const;
-            RessourceHandle getTexureHandle(void) const;
-            RessourceHandle getMeshHandle(void) const;
-
-            const gfx::asset::Material *getMaterial(void) const;
-
-
-
         private:
             class __Impl;
             std::unique_ptr<__Impl> __impl;

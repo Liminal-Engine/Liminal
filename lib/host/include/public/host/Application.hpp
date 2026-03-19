@@ -3,7 +3,6 @@
 
 #include "Status.hpp"
 
-#include <gfx/Registry.hpp>
 #include <entity/Registry.hpp>
 
 
@@ -15,7 +14,7 @@ namespace host {
             Application(void);
             ~Application();
 
-            Status init(gfx::Registry &assetRegistry, entity::Registry &entityRegistry) const;
+            Status init(void) const;
 
         private:
             class __Impl;
