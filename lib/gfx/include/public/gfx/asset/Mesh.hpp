@@ -17,13 +17,13 @@ namespace gfx {
                 ~Mesh();
 
                 Mesh(const Mesh &) = delete;
+                const fs::Path &getPath(void) const;
                 Mesh &operator=(const Mesh &) = delete;
                 Mesh(Mesh &&) noexcept;
                 Mesh &operator=(Mesh &&) noexcept;
 
                 const std::vector<rhi::def::Vertex> &getVertices(void) const;
                 const std::vector<uint32_t> &getIndices(void) const;
-                const fs::Path &getPath(void) const;
 
                 
                 Status copy(const Mesh &other);

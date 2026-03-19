@@ -12,6 +12,8 @@
 #ifndef _LIMINAL_LIB_JSONIO_STATUS_HPP_
 #define _LIMINAL_LIB_JSONIO_STATUS_HPP_
 
+#include <string>
+
 namespace jsonio {
     enum class Status {
         OK,
@@ -27,6 +29,8 @@ namespace jsonio {
         E_KEY_EXISTS,
         E_NO_ROOT_VALUE
     };
+
+    std::string toStr(const Status &status);
 } // namespace jsonio
 
 

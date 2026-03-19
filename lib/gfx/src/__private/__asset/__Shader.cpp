@@ -64,6 +64,7 @@ namespace gfx {
                     std::string __geometrySource;
                     std::string __fragmentSource;
                     std::string __computeSource;
+                    fs::Path __path;
 
                 public:
                     __Impl(void) :
@@ -72,7 +73,8 @@ namespace gfx {
                     __vertexSource(""),
                     __geometrySource(""),
                     __fragmentSource(""),
-                    __computeSource("")
+                    __computeSource(""),
+                    __path()
                     {
 
                     }
@@ -107,6 +109,7 @@ namespace gfx {
                         this->__geometrySource = __readTypedShaderSource(tokenizedSource, rhi::def::ShaderType::GEOMETRY, versionDefinition);
                         this->__fragmentSource = __readTypedShaderSource(tokenizedSource, rhi::def::ShaderType::FRAGMENT, versionDefinition);
                         this->__computeSource = __readTypedShaderSource(tokenizedSource, rhi::def::ShaderType::COMPUTE, versionDefinition);
+                        this->__path = path;
                         return Status::OK;
                     }
 
@@ -126,6 +129,8 @@ namespace gfx {
                         }
                         return "";
                     }
+
+                    const fs::Path &getPath(void) const { return this->__path; }
             };
 
 
@@ -135,6 +140,10 @@ namespace gfx {
 
             __Shader::~__Shader() = default;
 
+            __Shader::__Shader(__Shader &&) noexcept = default;
+
+            __Shader& __Shader::operator=(__Shader &&) noexcept = default;
+
             Status __Shader::copy(const __Shader &other) { return this->__impl->copy(*other.__impl); }
 
             Status __Shader::load(const fs::Path &path) { return this->__impl->load(path); }
@@ -143,6 +152,7 @@ namespace gfx {
             rhi::def::Handle __Shader::getRHIHandle(void) const { return this->__impl->getRHIHandle(); }
 
             const std::string &__Shader::getSource(rhi::def::ShaderType type) const { return this->__impl->getSource(type); }
+            const fs::Path &__Shader::getPath(void) const { return this->__impl->getPath(); }
         } // namespace __aset
     } // namespace __private
 } // namespace gfx

@@ -20,10 +20,12 @@ namespace gfx {
 
                     __Texture(const __Texture&) = delete;            // No copy
                     __Texture& operator=(const __Texture&) = delete; // No affectation
-                    __Texture(__Texture&&) = delete;                 // No move
-                    __Texture& operator=(__Texture&&) = delete;      // No affectation by moving
+                    __Texture(__Texture&&) noexcept;                 // No move
+                    __Texture& operator=(__Texture&&) noexcept;      // No affectation by moving
 
                     Status load(const fs::Path &path);
+                    const fs::Path &getPath(void) const;
+
                     const unsigned char *getData(void) const;
                     const glm::ivec2 &getSize(void) const;
                     int getNChannels(void) const;

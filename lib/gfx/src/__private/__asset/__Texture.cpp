@@ -102,6 +102,8 @@ namespace gfx {
                         }
                         return Status::OK;
                     }
+
+                    const fs::Path &getPath(void) const { return this->__path; }
             };
 
 
@@ -111,10 +113,15 @@ namespace gfx {
 
             __Texture::~__Texture() = default;
 
+            __Texture::__Texture(__Texture &&) noexcept = default;
+
+            __Texture & __Texture::operator=(__Texture &&) noexcept = default;
+
             Status __Texture::load(const fs::Path &path) { return this->__impl->load(path); }
             const unsigned char *__Texture::getData(void) const { return this->__impl->getData(); }
             const glm::ivec2 &__Texture::getSize(void) const { return this->__impl->getSize(); }
             int __Texture::getNChannels(void) const { return this->__impl->getNChannels(); }
+            const fs::Path &__Texture::getPath(void) const { return this->__impl->getPath(); }
 
             Status __Texture::setRHIHandle(rhi::def::Handle RHIHandle) { return this->__impl->setRHIHandle(RHIHandle); }
             rhi::def::Handle __Texture::getRHIHandle(void) const { return this->__impl->getRHIHandle(); }

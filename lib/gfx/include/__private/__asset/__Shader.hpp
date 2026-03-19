@@ -20,11 +20,12 @@ namespace gfx {
 
                     __Shader(const __Shader&) = delete;            // No copy
                     __Shader& operator=(const __Shader&) = delete; // No affectation
-                    __Shader(__Shader&&) = delete;                 // No move
-                    __Shader& operator=(__Shader&&) = delete;      // No affectation by moving
+                    __Shader(__Shader&&) noexcept;                 // No move
+                    __Shader& operator=(__Shader &&) noexcept;      // No affectation by moving
 
                     Status copy(const __Shader &other);
                     Status load(const fs::Path &path);
+                    const fs::Path &getPath(void) const;
 
                     Status setRHIHandle(rhi::def::Handle RHIHandle);
                     rhi::def::Handle getRHIHandle(void) const;

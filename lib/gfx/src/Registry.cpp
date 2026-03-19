@@ -1,6 +1,13 @@
 #include "Registry.hpp"
-#include "__private/__registry/__Mesh.hpp"
-#include "__private/__registry/__Material.hpp"
+#include "__private/__registry/__AssetRegistry.hpp"
+#include "__private/__asset/__Shader.hpp"
+#include "__private/__asset/__Texture.hpp"
+
+#include "jsonio/InJson.hpp"
+
+// #include "__private/__registry/__Mesh.hpp"
+// #include "__private/__registry/__Material.hpp"
+
 
 #include <logger/logger.hpp>
 #include <rhi/def/ShaderType.hpp>
@@ -12,14 +19,21 @@ namespace gfx {
     class Registry::__Impl {
         private:
             rhi::Registry &__rhiRegistry;
-            __private::__registry::__Mesh __meshRegistry;
-            __private::__registry::__Material __materialRegistry;
+            __private::__registry::__AssetRegistry<asset::Mesh> __meshRegistry;
+            __private::__registry::__AssetRegistry<__private::__asset::__Shader> __shaderRegistry;
+            __private::__registry::__AssetRegistry<__private::__asset::__Texture> __textureRegistry;
+            __private::__registry::__AssetRegistry<asset::Material> __materialRegistry;
+            // __private::__registry::__Mesh __meshRegistry;
+            // __private::__registry::__Material __materialRegistry;
 
         public:
             __Impl(rhi::Registry &rhiRegistry) :
             __rhiRegistry(rhiRegistry),
             __meshRegistry(),
+            __shaderRegistry(),
+            __textureRegistry(),
             __materialRegistry()
+            // __materialRegistry()
             {}
 
             ~__Impl() = default;
@@ -42,77 +56,138 @@ namespace gfx {
             logger::error << "Failed to load new mesh: name\"" << name << "\" already exists" << std::endl;
             return Status::E_ALREADY_EXISTS;
         }
-        logger::debug << "Loading mesh asset with name: " << name << ", path: " << path.asStr() << std::endl;
-        // 2. We always identify the resource by it's key, which is the path's string:
-        std::string resourceKey(path.asStr()); // FIXME : serialize resource keys for all kinds of resource
+        // 2. We always identify the resource by it's key, which is the path's absolute cleaned string:
+        fs::Path absolutePath(path);
+        absolutePath.toAbsolute();
+        absolutePath.clean();
+        std::string key(absolutePath.asStr());
         // 3. We create the new asset
+        logger::debug << "Loading mesh asset with name: " << name << ", path: " << absolutePath.asStr() << std::endl;
         gfx::asset::Mesh newMeshAsset;
-        // 4. We check if the asset already exists
-        const gfx::asset::Mesh *existingMeshAsset = this->__meshRegistry.getByPath(path);
-        // 5. If it exists, then we must create a new asset but copy it's data
-        if (existingMeshAsset != nullptr) {
-            newMeshAsset.copy(*existingMeshAsset);
-        } else { // If 6. it don't exists, then we must load it from a file and add it to the gfx mesh registry and also add resources to the rhi registry
-            // 6.1 Load from file
-            newMeshAsset.load(path);
-            // 6.2 Create the corresponding rhi resource if it don't exists
-            rhi::def::Handle rhiMeshHandle = this->__rhiRegistry.getMeshHandle(resourceKey);
-            if (rhiMeshHandle == rhi::def::NULL_HANDLE) { // if the rhi mesh resource don't exists, create it
-                this->__rhiRegistry.addMesh(resourceKey, newMeshAsset.getVertices(), newMeshAsset.getIndices());                        
-                // 6.3 Update the local rhi mesh resource by retrieving it again now that it is created
-                rhiMeshHandle = this->__rhiRegistry.getMeshHandle(resourceKey);
-            }
-            // 6.4 Update the new mesh asset by setting it's rhi resource
-            newMeshAsset.setRHIHandle(rhiMeshHandle);
+        // 3.1 If the asset already exists for this path, just copy it, otherwise, load it
+        if (this->__meshRegistry.exists(absolutePath)) newMeshAsset.copy(*this->__meshRegistry.get(absolutePath));
+        else newMeshAsset.load(absolutePath);
+        // 4. If the rhi resource exists for this path (key), just use it, otherwise, create it FIXME : create and use exits for this instead of get
+        rhi::def::Handle rhiMeshHandle = this->__rhiRegistry.getMeshHandle(key); // FIXME: create and use rhiRegistry.get<rhi::resource::Mesh>(key) instead
+        if (rhiMeshHandle == rhi::def::NULL_HANDLE) {
+            this->__rhiRegistry.addMesh(key, newMeshAsset.getVertices(), newMeshAsset.getIndices());
+            rhiMeshHandle = this->__rhiRegistry.getMeshHandle(key);
         }
-        // 7. Add the gfx mesh asset to the gfx mesh asset registry
+        // 5. Set rhi handle and add to asset registry
+        newMeshAsset.setRHIHandle(rhiMeshHandle);
         this->__meshRegistry.add(name, std::move(newMeshAsset));
         return Status::OK;
+
     }
 
     template<>
     Status Registry::__Impl::load<asset::Material>(const std::string &name, const fs::Path &path) {
         // 1. If already exists, do nothing
-        if (this->__materialRegistry.exists(name)) {
+        if (this->__meshRegistry.exists(name)) {
             logger::error << "Failed to load new material: name\"" << name << "\" already exists" << std::endl;
             return Status::E_ALREADY_EXISTS;
         }
-        logger::debug << "Loading material asset with name: \"" << name << "\", texture path: " << path.asStr() << std::endl;
-        // 2. We always identify resources by their keys, since material has a shader and a texture resrouce, the resource key is the 2 combined
-        fs::Path shaderPath("/home/matteo/Projects/Liminal/assets/shaders/core/textured.glsl");
-        std::string resourceKey = shaderPath.asStr() + "|" + path.asStr();
+        // 2. We always identify the resource by it's key, which is the path's absolute cleaned string
+        fs::Path absolutePath(path);
+        absolutePath.toAbsolute();
+        absolutePath.clean();
+        std::string key(absolutePath.asStr());
         // 3. We create the new asset
+        logger::debug << "Loading material asset with name: " << name << ", path: " << absolutePath.asStr() << std::endl;
         gfx::asset::Material newMaterialAsset;
-        // 4. We check if the asset already exists
-        const gfx::asset::Material *existingMaterialAsset = this->__materialRegistry.getByResourceKey(resourceKey);
-        // 5. If it exists, then we must create a new asset but copy it's data
-        if (existingMaterialAsset != nullptr) {
-            newMaterialAsset.copy(*existingMaterialAsset);
-        } else { // 6. If it don't exists, then we must load it from files and add data to gfx and resource registries
-            // 6.1 Load from file
-            newMaterialAsset.load(path);
-            // --- TEXTURE ---
-            // 6.2 Create the corresponding rhi resource if it don't exists
-            rhi::def::Handle rhiTextureHandle = this->__rhiRegistry.getTextureHandle(path.asStr());
-            if (rhiTextureHandle == rhi::def::NULL_HANDLE) { // if the texture rhi resource does not exist, create it
-                this->__rhiRegistry.addTexture(path.asStr(), newMaterialAsset.getTextureData(), newMaterialAsset.getTextureSize(), newMaterialAsset.getTextureNChannels());
-                // 6.3 update the local rhi texture resource by retrieving it again now that it is created
-                rhiTextureHandle = this->__rhiRegistry.getTextureHandle(path.asStr());
+        // 3.1 If the asset already exists for this path, just copy it, otherwise, load it
+        if (this->__materialRegistry.exists(absolutePath)) {
+            newMaterialAsset.copy(*this->__materialRegistry.get(absolutePath));
+            return Status::OK;
+        } 
+        else newMaterialAsset.load(absolutePath);
+        // 4. Set the material asset texture if required
+        if (newMaterialAsset.mustHaveTexture()) {
+            fs::Path texturePath(newMaterialAsset.getTexturePath());
+            std::string textureName(texturePath.asStr());
+            // 4.1 If the texture does not exists, create it, it's name is the path as string
+            if (this->__textureRegistry.exists(textureName) == false) {
+                gfx::__private::__asset::__Texture textureAsset;
+                textureAsset.load(texturePath);
+                // 4.2 Set the texture RHI resource handle, create it if does not exists
+                rhi::def::Handle rhiTextureHandle = this->__rhiRegistry.getTextureHandle(textureName);
+                if (rhiTextureHandle == rhi::def::NULL_HANDLE) {
+                    this->__rhiRegistry.addTexture(textureName, textureAsset.getData(), textureAsset.getSize(), textureAsset.getNChannels());
+                    rhiTextureHandle = this->__rhiRegistry.getTextureHandle(textureName);
+                }
+                textureAsset.setRHIHandle(rhiTextureHandle);
+                this->__textureRegistry.add(textureName, std::move(textureAsset));
             }
-            // 6.4 Update the new material asset by setting it's rhi resource
-            newMaterialAsset.setTextureRHIHandle(rhiTextureHandle);
-            // --- SHADER ---
-            rhi::def::Handle rhiShaderHandle = this->__rhiRegistry.getShaderHandle(shaderPath.asStr());
-            if (rhiShaderHandle == rhi::def::NULL_HANDLE) { // if the shader rhi resource does not exist, create it
-                this->__rhiRegistry.addShader(shaderPath.asStr(), newMaterialAsset.getShaderSource(rhi::def::ShaderType::VERTEX), newMaterialAsset.getShaderSource(rhi::def::ShaderType::GEOMETRY), newMaterialAsset.getShaderSource(rhi::def::ShaderType::FRAGMENT), newMaterialAsset.getShaderSource(rhi::def::ShaderType::COMPUTE));
-                // update the local rhi shader by retreiving it
-                rhiShaderHandle = this->__rhiRegistry.getShaderHandle(shaderPath.asStr());
-            }
-            // Update new material asset with shader
-            newMaterialAsset.setShaderRHIHandle(rhiShaderHandle);
+            const __private::__asset::__Texture *relatedTextureAsset = this->__textureRegistry.get(textureName);
+            newMaterialAsset.setTexture(relatedTextureAsset);
         }
-        //7. Add the new material to the gfx registry
+        // 5. Set the shader
+        // const __private::__asset::__Shader *relatedShaderAsset = __findShader(newMaterialAsset);
+        fs::Path shaderPath("/home/matteo/Projects/Liminal/assets/shaders/core/textured.glsl");
+        std::string shaderName(shaderPath.asStr());
+        // 5.1 If the shader asset does not exists, create it, it's name is the shader path as string
+        if (this->__shaderRegistry.exists(shaderName) == false) {
+            gfx::__private::__asset::__Shader shaderAsset;
+            shaderAsset.load(shaderPath);
+            // 5.2 Set the shader rhi Handle, create it if it does not exists
+            rhi::def::Handle rhiShaderHandle = this->__rhiRegistry.getShaderHandle(shaderName);
+            if (rhiShaderHandle == rhi::def::NULL_HANDLE) {
+                this->__rhiRegistry.addShader(shaderName, shaderAsset.getSource(rhi::def::ShaderType::VERTEX), shaderAsset.getSource(rhi::def::ShaderType::GEOMETRY), shaderAsset.getSource(rhi::def::ShaderType::FRAGMENT), shaderAsset.getSource(rhi::def::ShaderType::COMPUTE));
+                rhiShaderHandle = this->__rhiRegistry.getShaderHandle(shaderName);
+            }
+            shaderAsset.setRHIHandle(rhiShaderHandle);
+            this->__shaderRegistry.add(shaderName, std::move(shaderAsset));
+        }
+        const __private::__asset::__Shader *relatedShaderAsset = this->__shaderRegistry.get(shaderName);
+        newMaterialAsset.setShader(relatedShaderAsset);
         this->__materialRegistry.add(name, std::move(newMaterialAsset));
+        return Status::OK;
+
+
+        // // 1. If already exists, do nothing
+        // if (this->__materialRegistry.exists(name)) {
+        //     logger::error << "Failed to load new material: name\"" << name << "\" already exists" << std::endl;
+        //     return Status::E_ALREADY_EXISTS;
+        // }
+        // fs::Path absolutePath(path);
+        // absolutePath.toAbsolute();
+        // absolutePath.clean();
+        // logger::debug << "Loading material asset with name: \"" << name << "\", path: " << absolutePath.asStr() << std::endl;
+        // // 2. We always identify resources by their keys, since material has a shader and a texture resrouce, the resource key is the 2 combined
+        // fs::Path shaderPath("/home/matteo/Projects/Liminal/assets/shaders/core/textured.glsl");
+        // std::string resourceKey = shaderPath.asStr() + "|" + absolutePath.asStr();
+        // // 3. We create the new asset
+        // gfx::asset::Material newMaterialAsset;
+        // // 4. We check if the asset already exists
+        // const gfx::asset::Material *existingMaterialAsset = this->__materialRegistry.getByResourceKey(resourceKey);
+        // // 5. If it exists, then we must create a new asset but copy it's data
+        // if (existingMaterialAsset != nullptr) {
+        //     newMaterialAsset.copy(*existingMaterialAsset);
+        // } else { // 6. If it don't exists, then we must load it from files and add data to gfx and resource registries
+        //     // 6.1 Load from file
+        //     newMaterialAsset.load(absolutePath);
+        //     // --- TEXTURE ---
+        //     // 6.2 Create the corresponding rhi resource if it don't exists
+        //     rhi::def::Handle rhiTextureHandle = this->__rhiRegistry.getTextureHandle(absolutePath.asStr());
+        //     if (rhiTextureHandle == rhi::def::NULL_HANDLE) { // if the texture rhi resource does not exist, create it
+        //         this->__rhiRegistry.addTexture(absolutePath.asStr(), newMaterialAsset.getTextureData(), newMaterialAsset.getTextureSize(), newMaterialAsset.getTextureNChannels());
+        //         // 6.3 update the local rhi texture resource by retrieving it again now that it is created
+        //         rhiTextureHandle = this->__rhiRegistry.getTextureHandle(absolutePath.asStr());
+        //     }
+        //     // 6.4 Update the new material asset by setting it's rhi resource
+        //     newMaterialAsset.setTextureRHIHandle(rhiTextureHandle);
+        //     // --- SHADER ---
+        //     rhi::def::Handle rhiShaderHandle = this->__rhiRegistry.getShaderHandle(shaderPath.asStr());
+        //     if (rhiShaderHandle == rhi::def::NULL_HANDLE) { // if the shader rhi resource does not exist, create it
+        //         this->__rhiRegistry.addShader(shaderPath.asStr(), newMaterialAsset.getShaderSource(rhi::def::ShaderType::VERTEX), newMaterialAsset.getShaderSource(rhi::def::ShaderType::GEOMETRY), newMaterialAsset.getShaderSource(rhi::def::ShaderType::FRAGMENT), newMaterialAsset.getShaderSource(rhi::def::ShaderType::COMPUTE));
+        //         // update the local rhi shader by retreiving it
+        //         rhiShaderHandle = this->__rhiRegistry.getShaderHandle(shaderPath.asStr());
+        //     }
+        //     // Update new material asset with shader
+        //     newMaterialAsset.setShaderRHIHandle(rhiShaderHandle);
+        // }
+        // //7. Add the new material to the gfx registry
+        // this->__materialRegistry.add(name, std::move(newMaterialAsset));
         return Status::OK;
     }
 

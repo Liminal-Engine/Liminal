@@ -27,8 +27,6 @@ namespace gfx {
 
                 const std::vector<rhi::def::Vertex> &getVertices(void) const { return this->__vertices; }
                 const std::vector<uint32_t> &getIndices(void) const { return this->__indices; }
-                const fs::Path &getPath(void) const { return this->__path; }
-         
 
                 Status copy(const __Impl &other) {
                     this->__rhiHandle = other.__rhiHandle;
@@ -65,6 +63,8 @@ namespace gfx {
 
                 rhi::def::Handle getRHIHandle(void) const { return this->__rhiHandle; }
 
+                const fs::Path &getPath(void) const { return this->__path; }
+
         };
 
         Mesh::Mesh(void) :
@@ -80,9 +80,9 @@ namespace gfx {
         const std::vector<rhi::def::Vertex> &Mesh::getVertices(void) const { return this->__impl->getVertices(); }
         const std::vector<uint32_t> &Mesh::getIndices(void) const { return this->__impl->getIndices(); }
         Status Mesh::load(const fs::Path &path) { return this->__impl->load(path); }
+        const fs::Path &Mesh::getPath(void) const { return this->__impl->getPath(); }
         Status Mesh::setRHIHandle(rhi::def::Handle handle) { return this->__impl->setRHIHandle(handle); }
         rhi::def::Handle Mesh::getRHIHandle(void) const { return this->__impl->getRHIHandle(); }
-        const fs::Path &Mesh::getPath(void) const { return this->__impl->getPath(); }
         Status Mesh::copy(const Mesh &other) { return this->__impl->copy(*other.__impl); }
 
     } // namespace asset

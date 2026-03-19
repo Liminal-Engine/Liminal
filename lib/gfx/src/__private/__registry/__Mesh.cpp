@@ -10,7 +10,8 @@ namespace gfx {
         namespace __registry {         
             class __Mesh::__Impl {
                 private:
-                    std::unordered_map<std::string, std::unique_ptr<asset::Mesh>> __data;
+                    std::unordered_map<std::string, std::unique_ptr<asset::Mesh>> __data; //<name, asset>
+                    std::unordered_map<std::string, std::string> __lookupTable; // <key, name>
 
                 public:
                     __Impl(void) :

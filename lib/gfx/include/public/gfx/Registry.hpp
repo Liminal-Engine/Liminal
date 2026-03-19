@@ -5,6 +5,7 @@
 #include "asset/Mesh.hpp"
 #include "asset/Material.hpp"
 #include "def/ManagedAsset.hpp"
+#include "def/Property.hpp"
 
 #include <rhi/Registry.hpp>
 #include <fs/Path.hpp>
@@ -25,6 +26,9 @@ namespace gfx {
 
             template<def::ManagedAsset T>
             [[nodiscard]] const T *get(const std::string &name) const;
+
+            template<def::ManagedAsset T>
+            [[nodiscard]] Status set(const std::string &asset, const std::string &property, const def::Property &value);
 
         private:
             class __Impl;

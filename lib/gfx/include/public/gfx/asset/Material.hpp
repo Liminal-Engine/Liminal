@@ -11,10 +11,26 @@
 
 #include <glm/glm.hpp>
 
+// forward declarations
+
+namespace gfx {
+    namespace __private {
+        namespace __asset {
+            class __Texture;
+            class __Shader;
+        }
+    }
+}
+
+
+//
+
 namespace gfx {
     namespace asset {
         class Material {
             public:
+
+
                 Material(void);
                 ~Material();
 
@@ -23,23 +39,27 @@ namespace gfx {
                 Material(Material &&) noexcept;
                 Material &operator=(Material &&) noexcept;
 
-                Status setColor(const glm::vec3 &color);
                 const std::string &getRessourceKey(void) const;
                 Status copy(const Material &other);
 
-                Status load(const fs::Path &texturePath);
+                Status load(const fs::Path &path);
+                const fs::Path &getPath(void) const;
 
                 const unsigned char *getTextureData(void) const;
                 const glm::ivec2 &getTextureSize(void) const;
                 int getTextureNChannels(void) const;
 
-                Status setTextureRHIHandle(rhi::def::Handle RHIHandle);
-                Status setShaderRHIHandle(rhi::def::Handle RHIHandle);
-
+                // fixme: GET SHADER and getResouce instead
                 rhi::def::Handle getTextureRHIHandle(void) const;
                 rhi::def::Handle getShaderRHIHandle(void) const;
 
                 const std::string &getShaderSource(rhi::def::ShaderType type) const;
+
+                bool mustHaveTexture(void) const;
+                const fs::Path &getTexturePath(void) const;
+
+                void setTexture(const __private::__asset::__Texture *texture);
+                void setShader(const __private::__asset::__Shader *shader);
 
             private:
                 class __Impl;
