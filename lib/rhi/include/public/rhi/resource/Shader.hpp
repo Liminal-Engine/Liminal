@@ -2,6 +2,7 @@
 #define __LIMINAL__LIB__RHI__INCLUDE__PUBLIC__RESOURCE__SHADER_HPP__
 
 #include "../def/Uniform.hpp" // FIXME
+#include "../def/Handle.hpp" // FIXME
 
 #include <fs/Path.hpp>
 
@@ -15,13 +16,15 @@ namespace rhi {
                     const std::string &vertexSource,
                     const std::string &geometrySource,
                     const std::string &fragmentSource,
-                    const std::string &computeSource
+                    const std::string &computeSource,
+                    def::Handle handle
                 );
                 ~Shader();
 
                 void use(void) const;
 
                 const std::vector<def::Uniform> &getUniforms(void) const;
+                def::Handle getRHIHandle(void) const;
     
                 Shader(const Shader&) = delete;            // No copy
                 Shader& operator=(const Shader&) = delete; // No affectation

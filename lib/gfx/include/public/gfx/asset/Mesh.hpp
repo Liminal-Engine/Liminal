@@ -6,6 +6,7 @@
 #include <fs/Path.hpp>
 #include <rhi/def/Handle.hpp>
 #include <rhi/def/Vertex.hpp>
+#include <rhi/resource/Mesh.hpp> // FIXME : forward declare for each gfx header, do not expose RHI
 
 #include <memory>
 
@@ -29,7 +30,7 @@ namespace gfx {
                 Status copy(const Mesh &other);
                 Status load(const fs::Path &path);
 
-                Status setRHIHandle(rhi::def::Handle handle);
+                void bind(const rhi::resource::Mesh *rhiMesh);
                 rhi::def::Handle getRHIHandle(void) const;
 
                 

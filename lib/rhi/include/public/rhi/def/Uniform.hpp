@@ -13,6 +13,7 @@ namespace rhi {
             const GLenum type;
 
             Uniform(const std::string &name, GLint location, GLenum type);
+            Uniform &operator=(const Uniform &other);
         };
     } // namespace def
     

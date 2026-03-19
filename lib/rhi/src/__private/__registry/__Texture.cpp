@@ -56,8 +56,9 @@ namespace rhi {
                             logger::error << "Failed to add texture resource: invalid image data for \"" << name << "\"" << std::endl;
                             return Status::N_OK;
                         }
-                        this->__data.push_back(std::make_unique<resource::Texture>(data, size, nChannels));
-                        this->__lookupTable[name] = static_cast<def::Handle>(this->__data.size()) - 1;
+                        def::Handle handle(this->__data.size());
+                        this->__data.push_back(std::make_unique<resource::Texture>(data, size, nChannels, handle));
+                        this->__lookupTable[name] = handle;
                         return Status::OK;
                     }
             };

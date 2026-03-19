@@ -12,6 +12,7 @@ namespace rhi {
         
         class Shader::__Impl {
             private:
+                const def::Handle __rhiHandle;
                 const uint32_t __glHandle;
                 const std::vector<def::Uniform> __uniforms;
 
@@ -108,8 +109,10 @@ namespace rhi {
                     const std::string &vertexSource,
                     const std::string &geometrySource,
                     const std::string &fragmentSource,
-                    const std::string &computeSource
+                    const std::string &computeSource,
+                    def::Handle handle
                 ) :
+                __rhiHandle(handle),
                 __glHandle(__loadProgram(vertexSource, geometrySource, fragmentSource, computeSource)),
                 __uniforms(__loadUniforms(this->__glHandle))
                 {
@@ -125,15 +128,18 @@ namespace rhi {
                 }
 
                 const std::vector<def::Uniform> &getUniforms(void) const { return this->__uniforms; }
+
+                def::Handle getRHIHandle(void) const { return this->__rhiHandle; }
         };
     
         Shader::Shader(
             const std::string &vertexSource,
             const std::string &geometrySource,
             const std::string &fragmentSource,
-            const std::string &computeSource
+            const std::string &computeSource,
+            def::Handle handle
         ) :
-        __impl(std::make_unique<__Impl>(vertexSource, geometrySource, fragmentSource, computeSource))
+        __impl(std::make_unique<__Impl>(vertexSource, geometrySource, fragmentSource, computeSource, handle))
         {
     
         }
@@ -142,5 +148,6 @@ namespace rhi {
 
         void Shader::use(void) const { this->__impl->use(); }
         const std::vector<def::Uniform> &Shader::getUniforms(void) const { return this->__impl->getUniforms(); }
+        def::Handle Shader::getRHIHandle(void) const { return this->__impl->getRHIHandle(); }
     } // namespace resource
 } // namespace rhi

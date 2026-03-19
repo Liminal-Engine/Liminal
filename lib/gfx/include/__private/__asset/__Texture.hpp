@@ -5,6 +5,7 @@
 
 #include <fs/Path.hpp>
 #include <rhi/def/Handle.hpp>
+#include <rhi/resource/Texture.hpp>
 
 #include <glm/glm.hpp>
 
@@ -30,7 +31,7 @@ namespace gfx {
                     const glm::ivec2 &getSize(void) const;
                     int getNChannels(void) const;
 
-                    Status setRHIHandle(rhi::def::Handle RHIHandle);
+                    void bind(const rhi::resource::Texture *rhiTexture);
                     rhi::def::Handle getRHIHandle(void) const;
 
                     Status copy(const __Texture &other);

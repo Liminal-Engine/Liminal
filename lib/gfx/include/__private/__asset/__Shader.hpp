@@ -6,7 +6,8 @@
 #include <fs/Path.hpp>
 #include <rhi/def/Handle.hpp>
 #include <rhi/def/ShaderType.hpp>
-
+#include <rhi/def/Uniform.hpp>
+#include <rhi/resource/Shader.hpp>
 
 #include <memory>
 
@@ -27,7 +28,7 @@ namespace gfx {
                     Status load(const fs::Path &path);
                     const fs::Path &getPath(void) const;
 
-                    Status setRHIHandle(rhi::def::Handle RHIHandle);
+                    void bind(const rhi::resource::Shader *rhiShader);
                     rhi::def::Handle getRHIHandle(void) const;
 
                     const std::string &getSource(rhi::def::ShaderType type) const;

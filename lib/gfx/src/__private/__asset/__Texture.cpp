@@ -70,9 +70,8 @@ namespace gfx {
                     const glm::ivec2 &getSize(void) const { return this->__size; }
                     int getNChannels(void) const { return this->__nChannels; }
 
-                    Status setRHIHandle(rhi::def::Handle RHIHandle) {
-                        this->__RHIHandle = RHIHandle;
-                        return Status::OK;
+                    void bind(const rhi::resource::Texture *rhiTexture) {
+                        this->__RHIHandle = rhiTexture->getRHIHandle();
                     }
 
                     rhi::def::Handle getRHIHandle(void) const { return this->__RHIHandle; }
@@ -123,7 +122,7 @@ namespace gfx {
             int __Texture::getNChannels(void) const { return this->__impl->getNChannels(); }
             const fs::Path &__Texture::getPath(void) const { return this->__impl->getPath(); }
 
-            Status __Texture::setRHIHandle(rhi::def::Handle RHIHandle) { return this->__impl->setRHIHandle(RHIHandle); }
+            void __Texture::bind(const rhi::resource::Texture *rhiTexture) { return this->__impl->bind(rhiTexture); }
             rhi::def::Handle __Texture::getRHIHandle(void) const { return this->__impl->getRHIHandle(); }
 
             Status __Texture::copy(const __Texture &other) { return this->__impl->copy(*other.__impl); }

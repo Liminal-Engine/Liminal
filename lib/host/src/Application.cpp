@@ -17,23 +17,15 @@ namespace host {
             }
 
             Status init(gfx::Registry &assetRegistry, entity::Registry &entityRegistry) const {
-                // // 1. On load les assets qu'il faut pour faire tourner le jeu                
+                // 1. On load les assets qu'il faut pour faire tourner le jeu                
                 assetRegistry.load<gfx::asset::Mesh>("famous_triangle", fs::Path("./assets/this_is_the_famous_triangle_path.obj"));
                 assetRegistry.load<gfx::asset::Material>("brick", fs::Path("/home/matteo/Projects/Liminal/assets/materials/brick.mat.json"));
-                // // TODO NOW : 
-                // // 1. Load from a real material file
-                // // 2. use opengl struct blocks in glsl to transmit all at once : way better performances
-                // assetRegistry.load<gfx::asset::Material>("brick", fs::Path("/home/matteo/Projects/Liminal/assets/materials/brick.mat.json"));
-                
 
-                // // 2. On créer les entities (qui utilisent les assets)
+                // 2. On créer les entities (qui utilisent les assets)
                 entity::AEntity myTriangle;
                 myTriangle.setMesh(assetRegistry.get<gfx::asset::Mesh>("famous_triangle")); // FIXME: shoudl'nt this 2 be in the constructor of AEntity instead ?
                 myTriangle.setMaterial(assetRegistry.get<gfx::asset::Material>("brick")); // FIXME: shoudl'nt this 2 be in the constructor of AEntity instead ?
-                // // myTriangle.setMesh("famous_triangle");
-                // // myTriangle.setMaterial("brick");
                 entityRegistry.add("triangleEntity", std::move(myTriangle));
-                
                 return Status::OK;
             }
     };

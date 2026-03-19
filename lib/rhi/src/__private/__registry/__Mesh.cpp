@@ -48,8 +48,9 @@ namespace rhi {
                             logger::error << "\"" << name << "\" already exists in RHI mesh registry" << std::endl;
                             return Status::E_ALREADY_EXISTS;
                         }
-                        this->__data.push_back(std::make_unique<resource::Mesh>(vertices, indices));
-                        this->__lookupTable[name] = static_cast<def::Handle>(this->__data.size()) - 1;
+                        def::Handle handle(this->__data.size());
+                        this->__data.push_back(std::make_unique<resource::Mesh>(vertices, indices, handle));
+                        this->__lookupTable[name] = handle;
                         return Status::OK;
                     }
 

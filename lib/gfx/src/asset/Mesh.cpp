@@ -56,9 +56,8 @@ namespace gfx {
                     return Status::OK;
                 }
 
-                Status setRHIHandle(rhi::def::Handle handle) {
-                    this->__rhiHandle = handle;
-                    return Status::OK;
+                void bind(const rhi::resource::Mesh *rhiMesh) {
+                    this->__rhiHandle = rhiMesh->getRHIHandle();
                 }
 
                 rhi::def::Handle getRHIHandle(void) const { return this->__rhiHandle; }
@@ -81,7 +80,7 @@ namespace gfx {
         const std::vector<uint32_t> &Mesh::getIndices(void) const { return this->__impl->getIndices(); }
         Status Mesh::load(const fs::Path &path) { return this->__impl->load(path); }
         const fs::Path &Mesh::getPath(void) const { return this->__impl->getPath(); }
-        Status Mesh::setRHIHandle(rhi::def::Handle handle) { return this->__impl->setRHIHandle(handle); }
+        void Mesh::bind(const rhi::resource::Mesh *rhiMesh) { this->__impl->bind(rhiMesh); }
         rhi::def::Handle Mesh::getRHIHandle(void) const { return this->__impl->getRHIHandle(); }
         Status Mesh::copy(const Mesh &other) { return this->__impl->copy(*other.__impl); }
 

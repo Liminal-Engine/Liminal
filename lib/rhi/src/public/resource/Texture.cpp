@@ -47,14 +47,17 @@ namespace rhi {
                     return glTexture;
                 }
                 
+                const def::Handle __rhiHandle;
                 const uint32_t __glHandle;
 
             public:
                 __Impl(
                     const unsigned char *data,
                     const glm::ivec2 &size,
-                    const int &nChannels
+                    const int &nChannels,
+                    def::Handle handle
                 ) :
+                __rhiHandle(handle),
                 __glHandle(__loadTexture(data, size, nChannels))
                 {
                     
@@ -63,18 +66,23 @@ namespace rhi {
                 ~__Impl() {
                     glDeleteTextures(1, &this->__glHandle);
                 }
+
+                def::Handle getRHIHandle(void) const { return this->__rhiHandle; }
         };
     
         Texture::Texture(
             const unsigned char *data,
             const glm::ivec2 &size,
-            int nChannels
+            int nChannels,
+            def::Handle handle
         ) :
-        __impl(std::make_unique<__Impl>(data, size, nChannels))
+        __impl(std::make_unique<__Impl>(data, size, nChannels, handle))
         {
     
         }
     
         Texture::~Texture() = default;
+
+        def::Handle Texture::getRHIHandle(void) const { return this->__impl->getRHIHandle(); }
     } // namespace resource
 } // namespace rhi

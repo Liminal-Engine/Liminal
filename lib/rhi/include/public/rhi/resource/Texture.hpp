@@ -3,6 +3,8 @@
 
 #include <fs/Path.hpp>
 
+#include <rhi/def/Handle.hpp>
+
 #include <memory>
 
 #include <glm/glm.hpp>
@@ -14,7 +16,8 @@ namespace rhi {
                 Texture(                    
                     const unsigned char *data,
                     const glm::ivec2 &size,
-                    int nChannels
+                    int nChannels,
+                    def::Handle handle
                 );
                 ~Texture();
 
@@ -22,6 +25,8 @@ namespace rhi {
                 Texture& operator=(const Texture&) = delete; // No affectation
                 Texture(Texture&&) = delete;                 // No move
                 Texture& operator=(Texture&&) = delete;      // No affectation by moving
+
+                def::Handle getRHIHandle(void) const;
     
             private:
     

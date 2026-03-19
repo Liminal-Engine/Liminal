@@ -61,6 +61,8 @@ namespace gfx {
                 void setTexture(const __private::__asset::__Texture *texture);
                 void setShader(const __private::__asset::__Shader *shader);
 
+                void apply(void) const;
+
             private:
                 class __Impl;
                 std::unique_ptr<__Impl> __impl;

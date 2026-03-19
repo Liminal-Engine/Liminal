@@ -61,8 +61,9 @@ namespace rhi {
                             logger::error << "RHI shader \"" << name << "\" already exists" << std::endl;
                             return Status::E_ALREADY_EXISTS;
                         }
-                        this->__data.push_back(std::make_unique<resource::Shader>(vertexSource, geometrySource, fragmentSource, computeSource));
-                        this->__lookupTable[name] = static_cast<def::Handle>(this->__data.size()) - 1;
+                        def::Handle handle(this->__data.size());
+                        this->__data.push_back(std::make_unique<resource::Shader>(vertexSource, geometrySource, fragmentSource, computeSource, handle));
+                        this->__lookupTable[name] = handle;
                         return Status::OK;
                     }
             };

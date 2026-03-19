@@ -9,13 +9,19 @@ namespace rhi {
     
         class Mesh::__Impl {
             private:
+                const def::Handle __rhiHandle;
                 uint32_t __VAO;
                 uint32_t __EBO;
                 uint32_t __VBO;
                 uint32_t __count;
     
             public:
-                __Impl(const std::vector<def::Vertex> &vertices, const std::vector<uint32_t> &indices) :
+                __Impl(
+                    const std::vector<def::Vertex> &vertices,
+                    const std::vector<uint32_t> &indices,
+                    def::Handle handle
+                ) :
+                __rhiHandle(handle),
                 __VAO(0),
                 __EBO(0),
                 __VBO(0),
@@ -60,12 +66,18 @@ namespace rhi {
                     glBindVertexArray(this->__VAO);
                     glDrawElements(GL_TRIANGLES, this->__count, GL_UNSIGNED_INT, nullptr);
                 }
+
+                def::Handle getRHIHandle(void) const { return this->__rhiHandle; }
         };
     
         
     
-        Mesh::Mesh(const std::vector<def::Vertex> &vertices, const std::vector<uint32_t> &indices) :
-        __impl(std::make_unique<__Impl>(vertices, indices))
+        Mesh::Mesh(
+            const std::vector<def::Vertex> &vertices,
+            const std::vector<uint32_t> &indices,
+            def::Handle handle
+        ) :
+        __impl(std::make_unique<__Impl>(vertices, indices, handle))
         {
     
         }
@@ -73,5 +85,7 @@ namespace rhi {
         Mesh::~Mesh() = default;
 
         void Mesh::draw_DELETE_ME_I_AM_NOT_SUPPOSED_TO_DRAW_MYSELF(void) const { this->__impl->draw_DELETE_ME_I_AM_NOT_SUPPOSED_TO_DRAW_MYSELF();}
+
+        def::Handle Mesh::getRHIHandle(void) const { return this->__impl->getRHIHandle(); }
     } // namespace resource
 } // namespace rhi

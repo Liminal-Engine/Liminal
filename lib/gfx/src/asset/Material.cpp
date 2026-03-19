@@ -139,6 +139,11 @@ namespace gfx
 
             void setTexture(const __private::__asset::__Texture *texture) { this->__texture = texture; }
             void setShader(const __private::__asset::__Shader *shader) { this->__shader = shader; }
+
+#include "glad/glad.h"
+
+            void apply(void) const {
+            }
         };
 
         Material::Material(void) : __impl(std::make_unique<__Impl>())
@@ -172,6 +177,8 @@ namespace gfx
 
         void Material::setTexture(const __private::__asset::__Texture *texture) { this->__impl->setTexture(texture); }
         void Material::setShader(const __private::__asset::__Shader *shader) { this->__impl->setShader(shader);  }
+
+        void Material::apply(void) const { this->__impl->apply(); }
 
     } // namespace asset
 } // namespace gfx

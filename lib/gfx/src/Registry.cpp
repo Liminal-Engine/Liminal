@@ -74,7 +74,7 @@ namespace gfx {
             rhiMeshHandle = this->__rhiRegistry.getMeshHandle(key);
         }
         // 5. Set rhi handle and add to asset registry
-        newMeshAsset.setRHIHandle(rhiMeshHandle);
+        newMeshAsset.bind(this->__rhiRegistry.getMeshResource(rhiMeshHandle));
         this->__meshRegistry.add(name, std::move(newMeshAsset));
         return Status::OK;
 
@@ -115,7 +115,7 @@ namespace gfx {
                     this->__rhiRegistry.addTexture(textureName, textureAsset.getData(), textureAsset.getSize(), textureAsset.getNChannels());
                     rhiTextureHandle = this->__rhiRegistry.getTextureHandle(textureName);
                 }
-                textureAsset.setRHIHandle(rhiTextureHandle);
+                textureAsset.bind(this->__rhiRegistry.getTextureResource(rhiTextureHandle));
                 this->__textureRegistry.add(textureName, std::move(textureAsset));
             }
             const __private::__asset::__Texture *relatedTextureAsset = this->__textureRegistry.get(textureName);
@@ -135,7 +135,7 @@ namespace gfx {
                 this->__rhiRegistry.addShader(shaderName, shaderAsset.getSource(rhi::def::ShaderType::VERTEX), shaderAsset.getSource(rhi::def::ShaderType::GEOMETRY), shaderAsset.getSource(rhi::def::ShaderType::FRAGMENT), shaderAsset.getSource(rhi::def::ShaderType::COMPUTE));
                 rhiShaderHandle = this->__rhiRegistry.getShaderHandle(shaderName);
             }
-            shaderAsset.setRHIHandle(rhiShaderHandle);
+            shaderAsset.bind(this->__rhiRegistry.getShaderResource(rhiShaderHandle));
             this->__shaderRegistry.add(shaderName, std::move(shaderAsset));
         }
         const __private::__asset::__Shader *relatedShaderAsset = this->__shaderRegistry.get(shaderName);

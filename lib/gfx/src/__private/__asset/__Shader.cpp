@@ -59,7 +59,7 @@ namespace gfx {
                     }
 
                     rhi::def::Handle __RHIHandle;
-                    std::unordered_map<std::string, int> __uniformLocations;
+                    std::vector<rhi::def::Uniform> __uniforms;
                     std::string __vertexSource;
                     std::string __geometrySource;
                     std::string __fragmentSource;
@@ -69,7 +69,7 @@ namespace gfx {
                 public:
                     __Impl(void) :
                     __RHIHandle(rhi::def::NULL_HANDLE),
-                    __uniformLocations(),
+                    __uniforms(),
                     __vertexSource(""),
                     __geometrySource(""),
                     __fragmentSource(""),
@@ -81,7 +81,12 @@ namespace gfx {
 
                     Status copy(const __Impl &other) {
                         this->__RHIHandle = other.__RHIHandle;
-                        this->__uniformLocations = other.__uniformLocations;
+                        this->__uniforms = other.__uniforms;
+                        this->__vertexSource = other.__vertexSource;
+                        this->__geometrySource = other.__geometrySource;
+                        this->__fragmentSource = other.__fragmentSource;
+                        this->__computeSource = other.__computeSource;
+                        this->__path = other.__path;
                         return Status::OK;
                     }
 
@@ -113,9 +118,9 @@ namespace gfx {
                         return Status::OK;
                     }
 
-                    Status setRHIHandle(rhi::def::Handle RHIHandle) {
-                        this->__RHIHandle = RHIHandle;
-                        return Status::OK;
+                    void bind(const rhi::resource::Shader *rhiShader) {
+                        this->__RHIHandle = rhiShader->getRHIHandle();
+                        this->__uniforms = rhiShader->getUniforms();
                     }
 
                     rhi::def::Handle getRHIHandle(void) const { return this->__RHIHandle; }
@@ -148,7 +153,7 @@ namespace gfx {
 
             Status __Shader::load(const fs::Path &path) { return this->__impl->load(path); }
 
-            Status __Shader::setRHIHandle(rhi::def::Handle RHIHandle) { return this->__impl->setRHIHandle(RHIHandle); }
+            void __Shader::bind(const rhi::resource::Shader *rhiShader) { return this->__impl->bind(rhiShader); }
             rhi::def::Handle __Shader::getRHIHandle(void) const { return this->__impl->getRHIHandle(); }
 
             const std::string &__Shader::getSource(rhi::def::ShaderType type) const { return this->__impl->getSource(type); }
