@@ -1,6 +1,7 @@
 #include "Renderer.hpp"
 
 #include <logger/logger.hpp>
+#include <entity/Registry.hpp>
 
 #include <glad/glad.h>
 #include <EGL/egl.h>
@@ -28,6 +29,11 @@ namespace rhi {
 
             void draw(void) const {
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+                auto &allEntities = entity::Registry::getAll();
+                for (const auto &entity : allEntities) {
+                    entity.get<gfx::asset::Shader>()->use();
+                    entity.get<gfx::asset::Mesh>()->draw();
+                }
             }
     };
 

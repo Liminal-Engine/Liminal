@@ -11,7 +11,6 @@ namespace host {
     class Engine::__Impl {
         private:
             wsi::Window __window;
-            entity::Registry __entityRegistry;
             const Application &__application;
             rhi::Renderer __renderer;
 
@@ -19,7 +18,6 @@ namespace host {
             
             __Impl(const Application &application) :
             __window(1280, 720, "PUT THE GAME NAME HERE"),
-            __entityRegistry(),
             __application(application),
             __renderer()
             {

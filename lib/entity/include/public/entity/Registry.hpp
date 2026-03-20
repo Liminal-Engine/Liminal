@@ -2,22 +2,27 @@
 #define __LIMINAL__LIB__ENTITY__REGISTRY_HPP__
 
 #include "Status.hpp"
+
 #include "AEntity.hpp"
 
 #include <memory>
-#include <vector>
 
 namespace entity {
     class Registry {
         public:
+            Registry(const Registry&) = delete;
+            Registry(Registry&&) = delete;
+            Registry &operator=(const Registry&) = delete;
+            Registry &operator=(Registry&&) = delete;
+
+            static void add(AEntity &&entity);
+            static const std::vector<AEntity> &getAll(void);
+
+        private:
             Registry(void);
             ~Registry();
+            static Registry &__instance(void);
 
-            Status add(const std::string &name, AEntity &&entity);
-            bool exists(const std::string &name) const;
-            std::vector<const AEntity *> getAll(void) const; // FIXME: this must absolutly disapear later
-        
-        private:
             class __Impl;
             std::unique_ptr<__Impl> __impl;
     };

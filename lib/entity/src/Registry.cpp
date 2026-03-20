@@ -1,53 +1,29 @@
 #include "Registry.hpp"
 
-#include <logger/logger.hpp>
-
-#include <unordered_map>
+#include <vector>
 
 namespace entity {
     class Registry::__Impl {
         private:
-            std::unordered_map<std::string, std::unique_ptr<AEntity>> __data;
-
+            std::vector<AEntity> __data;
+        
         public:
-            __Impl(void) :
-            __data{}
-            {}
-
+            __Impl() {}
             ~__Impl() {
                 this->__data.clear();
             }
 
-            bool exists(const std::string &name) const {
-                return this->__data.find(name) != this->__data.end();
-            }
-
-            Status add(const std::string &name, AEntity &&entity) {
-                if (this->exists(name)) {
-                    logger::error << "Failed to add entity: \"" << name << "\" already exists" << std::endl;
-                    return Status::E_ALREADY_EXISTS;
-                }
-                this->__data[name] = std::make_unique<AEntity>(std::move(entity)); // this will need to change, signature must take pointer directly in order to accept derived class
-                return Status::OK;
-            }
-
-            std::vector<const AEntity *> getAll(void) const {
-                std::vector<const AEntity *> entities;
-                entities.reserve(this->__data.size());
-                for (auto const & [name, entity] : this->__data) {
-                    entities.push_back(entity.get());
-                }
-                return entities;
-            }
+            void add(AEntity &&entity) { this->__data.push_back(std::move(entity)); }
+            const std::vector<AEntity> &getAll(void) const { return this->__data; }
     };
 
-    Registry::Registry(void) :
-    __impl(std::make_unique<__Impl>())
-    {}
-
+    Registry::Registry(void) : __impl(std::make_unique<__Impl>()) {}
     Registry::~Registry() = default;
+    Registry &Registry::__instance(void) {
+        static Registry instance;
+        return instance;
+    }
 
-    bool Registry::exists(const std::string &name) const { return this->__impl->exists(name); }
-    Status Registry::add(const std::string &name, AEntity &&entity) { return this->__impl->add(name, std::move(entity)); }
-    std::vector<const AEntity *> Registry::getAll(void) const { return this->__impl->getAll(); }
+    void Registry::add(AEntity &&entity) { __instance().__impl->add(std::move(entity)); }
+    const std::vector<AEntity> &Registry::getAll(void) { return __instance().__impl->getAll(); }
 } // namespace entity
