@@ -1,7 +1,9 @@
 #include "Renderer.hpp"
+#include "resource/Shader.hpp"
 
 #include <logger/logger.hpp>
 #include <entity/Registry.hpp>
+
 
 #include <glad/glad.h>
 #include <EGL/egl.h>
@@ -9,6 +11,10 @@
 namespace rhi {
     class Renderer::__Impl {
         private:
+            def::Handle __deduceShaderHandle(const entity::AEntity &entity) const {
+                (void)entity;
+                return rhi::Registry::getHandle("assets/shaders/core/textured.glsl");
+            }
 
         public:
             __Impl(void)
@@ -27,12 +33,18 @@ namespace rhi {
 
             }
 
+
             void draw(void) const {
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
                 auto &allEntities = entity::Registry::getAll();
                 for (const auto &entity : allEntities) {
-                    entity.get<gfx::asset::Shader>()->use();
-                    entity.get<gfx::asset::Mesh>()->draw();
+                    const resource::Mesh *mesh = Registry::getMesh(entity.geometry.getMeshHandle());
+                    def::Handle shaderHandle = __deduceShaderHandle(entity);
+                    if (shaderHandle != def::NULL_HANDLE) {
+                        const resource::Shader *shader = rhi::Registry::getShader(shaderHandle);
+                        if (shader) shader->use();
+                    }
+                    if (mesh) mesh->draw();
                 }
             }
     };

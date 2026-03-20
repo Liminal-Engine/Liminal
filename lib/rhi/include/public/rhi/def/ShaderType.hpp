@@ -6,7 +6,7 @@
 #include <string>
 
 namespace rhi {
-    namespace def {
+    namespace def { // FIXME: find a better name for this namespace
         enum class ShaderType {
             VERTEX,
             GEOMETRY,

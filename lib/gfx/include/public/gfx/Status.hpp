@@ -11,7 +11,9 @@ namespace gfx {
         E_INIT,
         E_TYPE,
         E_ALREADY_EXISTS,
-        E_GL
+        E_UNKNOWN_RESOURCE_TYPE,
+        E_PATH,
+        E_LOAD
     };
 
     std::string toStr(const Status &status) noexcept;

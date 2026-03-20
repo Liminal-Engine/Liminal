@@ -6,6 +6,7 @@
 #include "AEntity.hpp"
 
 #include <memory>
+#include <vector>
 
 namespace entity {
     class Registry {

@@ -1,12 +1,14 @@
 #ifndef __LIMINAL__LIB__RHI__RENDERER_HPP__
 #define __LIMINAL__LIB__RHI__RENDERER_HPP__
 
+#include "Registry.hpp"
+
 #include <memory>
 
 namespace rhi {
     class Renderer {
         public:
-            Renderer(void);
+            Renderer();
             ~Renderer();
 
             void draw(void) const;
