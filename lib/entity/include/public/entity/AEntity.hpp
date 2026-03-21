@@ -3,6 +3,7 @@
 
 #include "Status.hpp"
 #include "component/Geometry.hpp"
+#include "component/Transform.hpp"
 #include "gfx/def/Handle.hpp"
 
 #include <string>
@@ -22,6 +23,7 @@ namespace entity {
             AEntity &operator=(AEntity &&other) noexcept;
 
             component::Geometry geometry;
+            component::Transform transform;
     };
 } // namespace entity
 

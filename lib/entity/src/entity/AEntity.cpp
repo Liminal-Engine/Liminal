@@ -10,7 +10,8 @@ namespace entity {
     AEntity &AEntity::operator=(AEntity &&other) noexcept = default;
 
     AEntity::AEntity(gfx::def::Handle geometryHandle) :
-    geometry(geometryHandle)
+    geometry(geometryHandle),
+    transform()
     {}
     
     AEntity::~AEntity() = default;
