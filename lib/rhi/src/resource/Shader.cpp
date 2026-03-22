@@ -1,8 +1,11 @@
 #include "resource/Shader.hpp"
 #include "def/ShaderType.hpp"
+#include "def/Uniform.hpp"
 
 #include <glad/glad.h>
 #include <logger/logger.hpp>
+
+#include <unordered_map>
 
 namespace rhi {
     namespace resource {
@@ -73,7 +76,41 @@ namespace rhi {
                     return program;
                 }
 
+                static std::vector<def::Uniform> __loadUniforms(uint32_t handle) {
+                    GLint count;
+                    glGetProgramiv(handle, GL_ACTIVE_UNIFORMS, &count);
+                    GLint maxLength;
+                    glGetProgramiv(handle, GL_ACTIVE_UNIFORM_MAX_LENGTH, &maxLength);
+                    std::vector<char> nameBuffer(maxLength);
+                    std::vector<def::Uniform> uniforms{};
+
+                    for (GLint i = 0; i < count; i++) {
+                        GLint size = 0;
+                        GLenum type = 0;
+                        GLint length = 0;
+                        glGetActiveUniform(handle, i, maxLength, &length, &size, &type, nameBuffer.data());
+                        std::string name(nameBuffer.data(), length);
+                        GLint location = glGetUniformLocation(handle, name.c_str());
+                        if (location != -1) {
+                            uniforms.push_back(def::Uniform(name, location, type));
+                        }
+                    }
+                    uniforms.shrink_to_fit();
+                    return uniforms;
+                }
+
+                static std::unordered_map<std::string, size_t> __loadUniformsLookuptTable(const std::vector<def::Uniform> &uniforms) {
+                    std::unordered_map<std::string, size_t> lookupTable{};
+                    for (size_t i = 0; i < uniforms.size(); i++) {
+                        if (lookupTable.contains(uniforms[i].name)) logger::error << "Several uniforms with the same name: " << uniforms[i].name << std::endl;
+                        lookupTable[uniforms[i].name] = i;
+                    }
+                    return lookupTable;
+                }
+
                 uint32_t __glProgramHandle;
+                mutable std::vector<def::Uniform> __uniforms;
+                std::unordered_map<std::string, size_t> __uniformsLookupTable;
             
             public:
                 __Impl(
@@ -82,7 +119,9 @@ namespace rhi {
                     const std::string &fragmentSource,
                     const std::string &computeSource
                 ) :
-                __glProgramHandle(__loadProgram(vertexSource, geometrySource, fragmentSource, computeSource))
+                __glProgramHandle(__loadProgram(vertexSource, geometrySource, fragmentSource, computeSource)),
+                __uniforms(__loadUniforms(this->__glProgramHandle)),
+                __uniformsLookupTable(__loadUniformsLookuptTable(this->__uniforms))
                 {}
 
                 ~__Impl() {
@@ -91,6 +130,24 @@ namespace rhi {
 
                 void use(void) const {
                     glUseProgram(this->__glProgramHandle);
+                }
+
+                void setUniform(const std::string &name, def::UniformValue value) const {
+                    if (this->__uniformsLookupTable.contains(name) == false) {
+                        logger::error << "Failed to set uniform: \"" << name << "\" does not exists" << std::endl;
+                        return;
+                    }
+                    size_t index(this->__uniformsLookupTable.at(name));
+                    this->__uniforms[index].value = value;
+                    const GLint location = this->__uniforms[index].location;
+
+                    std::visit([location](auto &&typedValue) {
+                        using T = std::decay_t<decltype(typedValue)>;
+                        if constexpr (std::is_same_v<T, int>) glUniform1i(location, typedValue);
+                        else if constexpr (std::is_same_v<T, float>) glUniform1f(location, typedValue);
+                        else if constexpr (std::is_same_v<T, glm::vec3>) glUniform3fv(location, 1, &typedValue[0]);
+                        else logger::error << "Unsupported uniform type";
+                    }, value);
                 }
         };
 

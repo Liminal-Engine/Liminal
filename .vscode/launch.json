@@ -32,7 +32,7 @@
           "stopAtEntry": false,
           "internalConsoleOptions": "neverOpen",
           "externalConsole": false,
-            "cwd": "${workspaceFolder}/build",
+            "cwd": "${workspaceFolder}",
             "program": "${workspaceFolder}/build/Liminal",
             "MIMode": "gdb",
             "miDebuggerPath": "gdb",

@@ -15,8 +15,6 @@ namespace rhi {
             const GLenum type;
             UniformValue value;
 
-            Uniform &operator=(const Uniform &other);
-            
             Uniform(const std::string &name, GLint location, GLenum type, const UniformValue &value = 0);
             Uniform(const Uniform &other);
             ~Uniform();

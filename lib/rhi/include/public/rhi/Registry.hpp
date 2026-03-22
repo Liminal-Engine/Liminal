@@ -22,7 +22,7 @@ namespace rhi {
 
             static bool exists(const std::string &name);
             static rhi::def::Handle getHandle(const std::string &name);
-            static const resource::Mesh *getMesh(def::Handle handle);
+            static const resource::Mesh *getMesh(def::Handle handle); // FIXME: use templates instead
             static const resource::Shader *getShader(def::Handle handle);
             
             
