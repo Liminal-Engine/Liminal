@@ -31,6 +31,7 @@ namespace entity {
                 void scale(const glm::vec3 &factor);
 
                 const glm::mat4 &getModelMatrix(void) const;
+                const glm::vec3 &getPosition(void) const;
 
             private:
                 class __Impl;

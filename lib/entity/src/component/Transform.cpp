@@ -94,6 +94,8 @@ namespace entity {
                     this->__scale *= factor;
                     this->__dirty = true;
                 }
+
+                const glm::vec3 &getPosition(void) const { return this->__position; }
         };
 
         Transform::Transform(void) : __impl(std::make_unique<__Impl>()) {}
@@ -110,5 +112,7 @@ namespace entity {
         void Transform::rotate(const glm::vec3 &angle) { this->__impl->rotate(angle); }
         void Transform::scale(math::Axis axis, float factor) { this->__impl->scale(axis, factor); }
         void Transform::scale(const glm::vec3 &factor) { this->__impl->scale(factor); }
+        const glm::mat4 &Transform::getModelMatrix(void) const { return this->__impl->getModelMatrix(); }
+        const glm::vec3 &Transform::getPosition(void) const { return this->__impl->getPosition(); }
     } // namespace component
 } // namespace entity
