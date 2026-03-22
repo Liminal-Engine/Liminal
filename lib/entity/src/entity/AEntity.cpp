@@ -11,7 +11,8 @@ namespace entity {
 
     AEntity::AEntity(gfx::def::Handle geometryHandle) :
     geometry(geometryHandle),
-    transform()
+    transform(),
+    material()
     {}
     
     AEntity::~AEntity() = default;

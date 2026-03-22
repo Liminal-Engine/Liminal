@@ -4,6 +4,7 @@
 #include "Status.hpp"
 #include "component/Geometry.hpp"
 #include "component/Transform.hpp"
+#include "component/Material.hpp"
 #include "gfx/def/Handle.hpp"
 
 #include <string>
@@ -24,6 +25,7 @@ namespace entity {
 
             component::Geometry geometry;
             component::Transform transform;
+            component::Material material;
     };
 } // namespace entity
 

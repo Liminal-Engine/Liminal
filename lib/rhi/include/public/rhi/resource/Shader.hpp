@@ -1,7 +1,7 @@
 #ifndef __LIMINAL__RHI__RESOURCE__SHADER_HPP__
 #define __LIMINAL__RHI__RESOURCE__SHADER_HPP__
 
-#include "def/UniformValue.hpp"
+#include "rhi/def/UniformValue.hpp"
 
 #include <string>
 #include <memory>

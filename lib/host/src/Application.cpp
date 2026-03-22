@@ -23,6 +23,7 @@ namespace host {
 
                 // 2. Create entities and add them to entity registry
                 entity::AEntity entity(gfx::getHandle("asset/meshes/toto.obj"));                
+                entity.material.setColor(glm::vec3(0.741f, 0.118f, 0.118f));
                 entity::Registry::add(std::move(entity));
                 
                 return Status::OK;
