@@ -14,6 +14,10 @@ namespace gfx {
                 return rhi::Registry::getHandle("assets/shaders/core/textured.glsl");
             }
 
+            void __applyMaterial(const rhi::resource::Shader *shader, const entity::component::Material &material) const {
+                shader->setUniform("uColor", material.getColor());
+            }
+
 
             const rhi::Context &__rhiContext;
 
@@ -53,6 +57,7 @@ namespace gfx {
                     if (shaderHandle != def::NULL_HANDLE) {
                         const rhi::resource::Shader *shader = rhi::Registry::getShader(shaderHandle);
                         if (shader) shader->use();
+                        __applyMaterial(shader, entity.material);
                     }
                     if (mesh) mesh->draw();
                 }

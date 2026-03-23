@@ -163,6 +163,8 @@ namespace rhi {
         
         void Shader::use(void) const { this->__impl->use(); }
 
+        void Shader::setUniform(const std::string &name, def::UniformValue value) const { this->__impl->setUniform(name, value); }
+
 
     } // namespace resource
 } // namespace rhi
