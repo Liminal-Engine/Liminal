@@ -53,6 +53,7 @@ namespace gfx {
                 this->__rhiContext.clear();
 
                 auto view = entity::Registry::getRaw().view<
+                    entity::component::tag::Object,
                     entity::component::Geometry,
                     entity::component::Transform,
                     entity::component::Material

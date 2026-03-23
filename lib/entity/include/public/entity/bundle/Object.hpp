@@ -4,6 +4,7 @@
 #include "entity/component/Geometry.hpp"
 #include "entity/component/Material.hpp"
 #include "entity/component/Transform.hpp"
+#include "entity/component/tag/Object.hpp"
 
 namespace entity {
     namespace bundle {
@@ -17,6 +18,7 @@ namespace entity {
             component::Geometry &geometry;
             component::Material &material;
             component::Transform &transform;
+            component::tag::Object objectTag;
         };     
     } // namespace bundle
 } // namespace entity

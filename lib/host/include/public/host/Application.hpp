@@ -15,6 +15,7 @@ namespace host {
             ~Application();
 
             Status init(void) const;
+            void update(float deltaTime);
 
         private:
             class __Impl;

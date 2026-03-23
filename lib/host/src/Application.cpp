@@ -28,9 +28,16 @@ namespace host {
 
                 entity::bundle::Object myFamousTriangle = entity::Registry::add<entity::bundle::Object>();
                 myFamousTriangle.geometry.meshHandle = gfx::getHandle("asset/meshes/toto.obj");
-                myFamousTriangle.material.color.x = 0.090f;                               
+                myFamousTriangle.material.color.x = 0.090f;
+
+                entity::bundle::Camera myCamera = entity::Registry::add<entity::bundle::Camera>();
+                myCamera.transfom.position.z = 3.0f;
                 
                 return Status::OK;
+            }
+
+            void update(float deltaTime) {
+
             }
     };
 
@@ -38,4 +45,5 @@ namespace host {
     Application::~Application() = default;
 
     Status Application::init(void) const { return this->__impl->init(); }
+    void Application::update(float deltaTime) { this->__impl->update(deltaTime); }
 } // namespace host

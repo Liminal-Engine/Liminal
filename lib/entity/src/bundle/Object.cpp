@@ -9,7 +9,8 @@ namespace entity {
         ) :
         geometry(geometry),
         material(material),
-        transform(transform)
+        transform(transform),
+        objectTag()
         {}
     } // namespace bundle
 } // namespace entity

@@ -23,10 +23,23 @@ namespace entity {
     template<>
     bundle::Object Registry::__Impl::add<bundle::Object>(void) {
         entt::entity entity = this->__data.create();
+        this->__data.emplace<entity::component::tag::Object>(entity);
+
         return bundle::Object(
             this->__data.emplace<entity::component::Geometry>(entity),
             this->__data.emplace<entity::component::Material>(entity),
             this->__data.emplace<entity::component::Transform>(entity)
+        );
+    }
+
+    template<>
+    bundle::Camera Registry::__Impl::add<bundle::Camera>(void) {
+        entt::entity entity = this->__data.create();
+        this->__data.emplace<entity::component::tag::Camera>(entity);
+
+        return bundle::Camera(
+            this->__data.emplace<entity::component::Transform>(entity),
+            this->__data.emplace<entity::component::CameraSettings>(entity)
         );
     }
 
@@ -43,5 +56,6 @@ namespace entity {
 
     
     template bundle::Object Registry::add(void);
+    template bundle::Camera Registry::add(void);
 
 } // namespace entity
