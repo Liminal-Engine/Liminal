@@ -5,7 +5,7 @@
 #include <limits>
 
 namespace gfx {
-    namespace def {
+    namespace def { // FIXME: find a better namespace
         using Handle = uint32_t;
         static constexpr Handle NULL_HANDLE = std::numeric_limits<Handle>::max();
     } // namespace def 

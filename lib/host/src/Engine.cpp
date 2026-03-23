@@ -3,7 +3,8 @@
 #include <wsi/Window.hpp>
 #include <logger/logger.hpp>
 #include <entity/Registry.hpp>
-#include <rhi/Renderer.hpp>
+#include <rhi/Context.hpp>
+#include <gfx/Renderer.hpp>
 
 #include <GLFW/glfw3.h>
 
@@ -12,15 +13,22 @@ namespace host {
         private:
             wsi::Window __window;
             const Application &__application;
-            rhi::Renderer __renderer;
+            rhi::Context __rhiContext;
+            std::unique_ptr<gfx::Renderer> __renderer;
 
         public:
             
             __Impl(const Application &application) :
             __window(1280, 720, "PUT THE GAME NAME HERE"),
             __application(application),
-            __renderer()
+            __rhiContext(),
+            __renderer(nullptr)
             {
+                if (rhi::Status status; (status = this->__rhiContext.init()) != rhi::Status::OK) {
+                    logger::fatal << "RHI context initialization failed, status=" << rhi::toStr(status) << std::endl;
+                    return; // FIXME: maybe should throw and exit properly here
+                }
+                this->__renderer = std::make_unique<gfx::Renderer>(this->__rhiContext);
             }
             
             ~__Impl() {
@@ -35,7 +43,7 @@ namespace host {
 
                 while (this->__window.shouldClose() == false) {
                     this->__window.pollEvents();
-                    this->__renderer.draw();
+                    this->__renderer->draw();
                     this->__window.display();
                 }
                 return 0;

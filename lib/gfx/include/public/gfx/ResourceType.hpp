@@ -7,7 +7,7 @@
 #include <string>
 
 namespace gfx {
-    enum class ResourceType {
+    enum class ResourceType { // fixme: move to def namespace
         MESH,
         SHADER
     };
