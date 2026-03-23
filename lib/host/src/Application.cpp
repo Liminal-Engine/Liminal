@@ -2,11 +2,16 @@
 
 #include <logger/logger.hpp>
 #include <fs/Path.hpp>
-#include <entity/AEntity.hpp>
+#include <entity/Object.hpp>
 #include <entity/Registry.hpp>
 #include <gfx/gfx.hpp>
+#include <entity/component/Transform.hpp>
+#include <entity/component/Geometry.hpp>
+#include <entity/component/Material.hpp>
 
 #include <vector>
+
+#include <entt/entt.hpp>
 
 namespace host {
     class Application::__Impl {
@@ -21,10 +26,9 @@ namespace host {
                 gfx::load(gfx::ResourceType::MESH, fs::Path("asset/meshes/toto.obj"));
                 gfx::load(gfx::ResourceType::SHADER, fs::Path("assets/shaders/core/textured.glsl"));
 
-                // 2. Create entities and add them to entity registry
-                entity::AEntity entity(gfx::getHandle("asset/meshes/toto.obj"));                
-                entity.material.setColor(glm::vec3(0.090, 0.137, 0.639));
-                entity::Registry::add(std::move(entity));
+                entity::bundle::Object myFamousTriangle = entity::Registry::add<entity::bundle::Object>();
+                myFamousTriangle.geometry.meshHandle = gfx::getHandle("asset/meshes/toto.obj");
+                myFamousTriangle.material.color.x = 0.090f;                               
                 
                 return Status::OK;
             }

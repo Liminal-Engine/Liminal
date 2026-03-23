@@ -1,33 +1,17 @@
-#ifndef __LIMINAL__LIB__ENTITY__A_ENTITY_HPP__
-#define __LIMINAL__LIB__ENTITY__A_ENTITY_HPP__
+// #ifndef __LIMINAL__LIB__ENTITY__A_ENTITY_HPP__
+// #define __LIMINAL__LIB__ENTITY__A_ENTITY_HPP__
 
-#include "Status.hpp"
-#include "component/Geometry.hpp"
-#include "component/Transform.hpp"
-#include "component/Material.hpp"
-#include "gfx/def/Handle.hpp"
-
-#include <string>
-#include <cstdint>
-
-namespace entity {
-
-    using RessourceHandle = uint32_t;
-
-    class AEntity {
-        public:
-            AEntity(gfx::def::Handle geometryHandle);
-            virtual ~AEntity();
-            AEntity(const AEntity &) = delete;
-            AEntity &operator=(const AEntity &) = delete;
-            AEntity(AEntity &&other) noexcept;
-            AEntity &operator=(AEntity &&other) noexcept;
-
-            component::Geometry geometry;
-            component::Transform transform;
-            component::Material material;
-    };
-} // namespace entity
+// namespace entity {
+//     class AEntity {
+//         public:
+//             AEntity(void);
+//             virtual ~AEntity();
+//             AEntity(const AEntity &) = delete;
+//             AEntity &operator=(const AEntity &) = delete;
+//             AEntity(AEntity &&other) noexcept;
+//             AEntity &operator=(AEntity &&other) noexcept;
+//     };
+// } // namespace entity
 
 
-#endif // __LIMINAL__LIB__ENTITY__A_ENTITY_HPP__
+// #endif // __LIMINAL__LIB__ENTITY__A_ENTITY_HPP__

@@ -31,3 +31,5 @@ add_subdirectory(glfw)
 
 # 5. stb image
 # nothing to do here since stb_image is a header only library
+#6. entt
+add_subdirectory(entt)

@@ -46,7 +46,11 @@ target_include_directories(Liminal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendors/gl
 target_link_libraries(Liminal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendors/build/glfw/src/libglfw3.a)
 # 5. stb_image
 target_include_directories(Liminal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendors/stb_image/include)
-# no lib or compilation process requireed for stb_image since it is a header only library
+# no lib or compilation process required for stb_image since it is a header only library
+#6. entt
+target_include_directories(Liminal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendors/entt/src)
+# no lib or compilation process required for entt since it is a header onyl library
+
 # add tests
 enable_testing()
 add_subdirectory(test)

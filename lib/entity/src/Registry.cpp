@@ -1,11 +1,10 @@
 #include "Registry.hpp"
 
-#include <vector>
 
 namespace entity {
     class Registry::__Impl {
         private:
-            std::vector<AEntity> __data;
+            entt::registry __data;
         
         public:
             __Impl() {}
@@ -13,17 +12,36 @@ namespace entity {
                 this->__data.clear();
             }
 
-            void add(AEntity &&entity) { this->__data.push_back(std::move(entity)); }
-            const std::vector<AEntity> &getAll(void) const { return this->__data; }
+            entt::registry &getRaw(void) { return this->__data; }
+            
+            template<def::BundleType T>
+            T add(void);
+            
     };
+    
 
-    Registry::Registry(void) : __impl(std::make_unique<__Impl>()) {}
+    template<>
+    bundle::Object Registry::__Impl::add<bundle::Object>(void) {
+        entt::entity entity = this->__data.create();
+        return bundle::Object(
+            this->__data.emplace<entity::component::Geometry>(entity),
+            this->__data.emplace<entity::component::Material>(entity),
+            this->__data.emplace<entity::component::Transform>(entity)
+        );
+    }
+
+    Registry::Registry(void) : __impl(std::make_unique<__Impl>()) {}    
     Registry::~Registry() = default;
     Registry &Registry::__instance(void) {
         static Registry instance;
         return instance;
     }
 
-    void Registry::add(AEntity &&entity) { __instance().__impl->add(std::move(entity)); }
-    const std::vector<AEntity> &Registry::getAll(void) { return __instance().__impl->getAll(); }
+    entt::registry &Registry::getRaw(void) { return __instance().__impl->getRaw(); }
+    template<def::BundleType T>
+    T Registry::add(void) { return __instance().__impl->add<T>(); }
+
+    
+    template bundle::Object Registry::add(void);
+
 } // namespace entity

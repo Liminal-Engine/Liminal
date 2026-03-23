@@ -1,21 +1,22 @@
 #include "Renderer.hpp"
 
 #include <logger/logger.hpp>
-#include <entity/Registry.hpp>
 #include <rhi/Context.hpp>
 #include <rhi/Registry.hpp>
 #include <rhi/def/Handle.hpp>
+#include <entity/Registry.hpp>
+#include <entity/components.hpp>
 
 namespace gfx {
     class Renderer::__Impl {
         private:
-            rhi::def::Handle __deduceShaderHandle(const entity::AEntity &entity) const {
+            rhi::def::Handle __deduceShaderHandle(const entt::entity &entity) const {
                 (void)entity;
                 return rhi::Registry::getHandle("assets/shaders/core/textured.glsl");
             }
 
             void __applyMaterial(const rhi::resource::Shader *shader, const entity::component::Material &material) const {
-                shader->setUniform("uColor", material.getColor());
+                shader->setUniform("uColor", material.color);
             }
 
 
@@ -50,16 +51,25 @@ namespace gfx {
 
             void draw(void) const {
                 this->__rhiContext.clear();
-                auto &allEntities = entity::Registry::getAll();
-                for (const auto &entity : allEntities) {
-                    const rhi::resource::Mesh *mesh = rhi::Registry::getMesh(entity.geometry.getMeshHandle());
-                    rhi::def::Handle shaderHandle = __deduceShaderHandle(entity);
+
+                auto view = entity::Registry::getRaw().view<
+                    entity::component::Geometry,
+                    entity::component::Transform,
+                    entity::component::Material
+                >();
+                for (entt::entity entity : view) {
+                    auto &geometry = view.get<entity::component::Geometry>(entity);
+                    auto &transform = view.get<entity::component::Transform>(entity);
+                    auto &material = view.get<entity::component::Material>(entity);
+
+                    const rhi::resource::Mesh *meshResource = rhi::Registry::getMesh(geometry.meshHandle);
+                    const rhi::def::Handle shaderHandle = __deduceShaderHandle(entity);
                     if (shaderHandle != def::NULL_HANDLE) {
-                        const rhi::resource::Shader *shader = rhi::Registry::getShader(shaderHandle);
-                        if (shader) shader->use();
-                        __applyMaterial(shader, entity.material);
+                        const rhi::resource::Shader *shaderResource = rhi::Registry::getShader(shaderHandle);
+                        if (shaderResource)  shaderResource->use();
+                        __applyMaterial(shaderResource, material);
+                        if (meshResource) meshResource->draw();
                     }
-                    if (mesh) mesh->draw();
                 }
             }
     };

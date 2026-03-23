@@ -1,12 +1,11 @@
 #ifndef __LIMINAL__LIB__ENTITY__REGISTRY_HPP__
 #define __LIMINAL__LIB__ENTITY__REGISTRY_HPP__
 
-#include "Status.hpp"
+#include "entity/def/BundleType.hpp"
 
-#include "AEntity.hpp"
+#include <entt/entt.hpp>
 
 #include <memory>
-#include <vector>
 
 namespace entity {
     class Registry {
@@ -16,17 +15,27 @@ namespace entity {
             Registry &operator=(const Registry&) = delete;
             Registry &operator=(Registry&&) = delete;
 
-            static void add(AEntity &&entity);
-            static const std::vector<AEntity> &getAll(void);
+            static entt::registry &getRaw(void);
 
+            template<def::BundleType T>
+            static T add(void);
+        
         private:
             Registry(void);
             ~Registry();
-            static Registry &__instance(void);
-
             class __Impl;
             std::unique_ptr<__Impl> __impl;
+            static Registry &__instance(void);
+
     };
+//     class Registry {
+//         public:
+
+//         private:
+
+//             class __Impl;
+//             std::unique_ptr<__Impl> __impl;
+//     };
 } // namespace entity
 
 
