@@ -19,6 +19,18 @@ namespace gfx {
                 shader->setUniform("uColor", material.color);
             }
 
+            glm::mat4 getViewProjectionMatrix(void) const {
+                glm::mat4 res(1.0f);
+                auto view = entity::Registry::getRaw().view<
+                    entity::component::tag::Camera,
+                    entity::component::CameraSettings
+                >();
+                for (auto entity : view) {
+                    const entity::component::CameraSettings &settings = view.get<entity::component::CameraSettings>(entity);
+                    res = settings.projectionMatrix * settings.viewMatrix;
+                }
+                return res;
+            }
 
             const rhi::Context &__rhiContext;
 
@@ -51,6 +63,7 @@ namespace gfx {
 
             void draw(void) const {
                 this->__rhiContext.clear();
+                glm::mat4 VP = this->getViewProjectionMatrix();
 
                 auto view = entity::Registry::getRaw().view<
                     entity::component::tag::Object,
@@ -67,8 +80,10 @@ namespace gfx {
                     const rhi::def::Handle shaderHandle = __deduceShaderHandle(entity);
                     if (shaderHandle != def::NULL_HANDLE) {
                         const rhi::resource::Shader *shaderResource = rhi::Registry::getShader(shaderHandle);
-                        if (shaderResource)  shaderResource->use();
+                        if (shaderResource)  shaderResource->use();                        
                         __applyMaterial(shaderResource, material);
+                        glm::mat4 MVP = VP * transform.getModelMatrix();
+                        shaderResource->setUniform("uMVP", MVP);
                         if (meshResource) meshResource->draw();
                     }
                 }

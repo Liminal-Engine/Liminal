@@ -2,8 +2,10 @@
 #include "def/ShaderType.hpp"
 #include "def/Uniform.hpp"
 
-#include <glad/glad.h>
 #include <logger/logger.hpp>
+
+#include <glad/glad.h>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <unordered_map>
 
@@ -146,6 +148,7 @@ namespace rhi {
                         if constexpr (std::is_same_v<T, int>) glUniform1i(location, typedValue);
                         else if constexpr (std::is_same_v<T, float>) glUniform1f(location, typedValue);
                         else if constexpr (std::is_same_v<T, glm::vec3>) glUniform3fv(location, 1, &typedValue[0]);
+                        else if constexpr (std::is_same_v<T, glm::mat4>) glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(typedValue));
                         else logger::error << "Unsupported uniform type";
                     }, value);
                 }

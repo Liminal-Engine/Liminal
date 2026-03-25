@@ -10,7 +10,7 @@ namespace entity {
         target(0.0f),
         direction(0.0f),
         right(0.0f),
-        up(0.0f),
+        up(0.0f, 1.0f, 0.0f),
         translationSpeed(1.0f),
         rotationSpeed(0.5f),
         yaw(math::Angle::Degrees(-90.0f)),

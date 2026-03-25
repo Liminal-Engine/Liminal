@@ -12,13 +12,13 @@ namespace host {
     class Engine::__Impl {
         private:
             wsi::Window __window;
-            const Application &__application;
+            Application &__application;
             rhi::Context __rhiContext;
             std::unique_ptr<gfx::Renderer> __renderer;
 
         public:
             
-            __Impl(const Application &application) :
+            __Impl(Application &application) :
             __window(1280, 720, "PUT THE GAME NAME HERE"),
             __application(application),
             __rhiContext(),
@@ -43,6 +43,7 @@ namespace host {
 
                 while (this->__window.shouldClose() == false) {
                     this->__window.pollEvents();
+                    this->__application.update(0.0f);
                     this->__renderer->draw();
                     this->__window.display();
                 }
@@ -50,7 +51,7 @@ namespace host {
             }
     };
 
-    Engine::Engine(const Application &application) :
+    Engine::Engine(Application &application) :
     __impl(std::make_unique<__Impl>(application))
     {
 

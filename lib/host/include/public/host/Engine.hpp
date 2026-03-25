@@ -8,7 +8,7 @@
 namespace host {
     class Engine {
         public:
-            Engine(const Application &application);
+            Engine(Application &application);
             ~Engine();
 
             int run(void);

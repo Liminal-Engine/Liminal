@@ -1,3 +1,5 @@
+# FIXME : this should be a .so lib because Pimpl is not recomened and avoided with ecs
+
 discover_lib()
 
 # Local lib deps

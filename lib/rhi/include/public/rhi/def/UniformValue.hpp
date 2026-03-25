@@ -10,7 +10,8 @@ namespace rhi {
         using UniformValue = std::variant<
             int,
             float,
-            glm::vec3
+            glm::vec3,
+            glm::mat4
         >;
     } // namespace def
 } // namespace rhi

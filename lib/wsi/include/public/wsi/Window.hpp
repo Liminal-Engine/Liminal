@@ -8,7 +8,7 @@
 namespace wsi {
     class Window {
         public:
-            Window(int width, int height, const std::string &name);
+            Window(int width, int height, const std::string &title);
             ~Window();
 
             Window(const Window&) = delete;            // No copy
