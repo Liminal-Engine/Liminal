@@ -31,10 +31,10 @@ endforeach()
 
 # add vendors
 # 1. shaderc_combined
-target_include_directories(Liminal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendors/shaderc/libshaderc/include)
-target_include_directories(Liminal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendors/shaderc/libshaderc_util/include)
-target_include_directories(Liminal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendors/shaderc/spirv-tools/include)
-target_link_libraries(Liminal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendors/build/shaderc/libshaderc/libshaderc_combined.a)
+# target_include_directories(Liminal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendors/shaderc/libshaderc/include)
+# target_include_directories(Liminal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendors/shaderc/libshaderc_util/include)
+# target_include_directories(Liminal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendors/shaderc/spirv-tools/include)
+# target_link_libraries(Liminal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendors/build/shaderc/libshaderc/libshaderc_combined.a)
 # 2. glm
 target_include_directories(Liminal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendors/glm)
 target_link_libraries(Liminal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendors/build/glm/glm/libglm.a)
@@ -42,8 +42,8 @@ target_link_libraries(Liminal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendors/build/g
 target_include_directories(Liminal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendors/glad/include)
 target_link_libraries(Liminal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendors/build/glad/libglad.a)
 # 4. glfw
-target_include_directories(Liminal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendors/glfw/include)
-target_link_libraries(Liminal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendors/build/glfw/src/libglfw3.a)
+# target_include_directories(Liminal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendors/glfw/include)
+# target_link_libraries(Liminal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendors/build/glfw/src/libglfw3.a)
 # 5. stb_image
 target_include_directories(Liminal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendors/stb_image/include)
 # no lib or compilation process required for stb_image since it is a header only library

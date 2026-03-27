@@ -8,7 +8,7 @@ target_sources(wsi PRIVATE
 link_internal_libs(PUBLIC logger)
 # 2. On trouve les paquets système nécessaires
 find_package(PkgConfig REQUIRED)
-pkg_check_modules(WAYLAND_CLIENT REQUIRED wayland-client wayland-egl)
+pkg_check_modules(WAYLAND_CLIENT REQUIRED wayland-client wayland-egl xkbcommon)
 pkg_check_modules(EGL REQUIRED egl)
 pkg_check_modules(GL REQUIRED gl)
 

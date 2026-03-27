@@ -14,5 +14,5 @@ target_link_libraries(rhi PRIVATE ${CMAKE_SOURCE_DIR}/vendors/build/glad/libglad
 
 target_include_directories(rhi PRIVATE ${CMAKE_SOURCE_DIR}/vendors/stb_image/include)
 
-target_include_directories(rhi PRIVATE ${CMAKE_SOURCE_DIR}/vendors/glm)
+target_include_directories(rhi PUBLIC ${CMAKE_SOURCE_DIR}/vendors/glm)
 target_link_libraries(rhi PRIVATE ${CMAKE_SOURCE_DIR}/vendors/build/glm/glm/libglm.a)

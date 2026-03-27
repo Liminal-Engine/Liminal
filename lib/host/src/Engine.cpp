@@ -6,8 +6,6 @@
 #include <rhi/Context.hpp>
 #include <gfx/Renderer.hpp>
 
-#include <GLFW/glfw3.h>
-
 namespace host {
     class Engine::__Impl {
         private:
