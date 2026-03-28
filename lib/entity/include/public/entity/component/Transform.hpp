@@ -26,6 +26,7 @@ namespace entity {
 
                 const glm::mat4 &getModelMatrix(void) const;
                 const glm::vec3 &getPosition(void) const;
+                const glm::vec3 &getOrientation(void) const;
             
             private:
                 glm::vec3 __position;

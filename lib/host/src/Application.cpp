@@ -8,15 +8,26 @@
 #include <entity/component/Transform.hpp>
 #include <entity/component/Geometry.hpp>
 #include <entity/component/Material.hpp>
+#include <entity/system/Camera.hpp>
+#include <leh/Connector.hpp>
+#include <leh/EventHandler.hpp>
 
-#include <vector>
 
 #include <entt/entt.hpp>
+
+#include <vector>
+#include <functional>
 #include <random>
 
 namespace host {
     class Application::__Impl {
         private:
+            // mutable std::vector<std::function<void()>> FUNCS; // vector of funcs with no args
+
+            // template<typename Func, typename... Args>
+            // void add(Func f, Args... args) const {
+            //     this->FUNCS.push_back([=]() { f(args...); } );
+            // }
 
         public:
             __Impl() {}
@@ -26,14 +37,44 @@ namespace host {
                 // 1. Load resources
                 gfx::load(gfx::ResourceType::MESH, fs::Path("assets/meshes/toto.obj"));
                 gfx::load(gfx::ResourceType::SHADER, fs::Path("assets/shaders/core/textured.glsl"));
+                gfx::load(gfx::ResourceType::SHADER, fs::Path("assets/shaders/debug/wireframe.glsl"));
 
                 entity::bundle::Object myFamousTriangle = entity::Registry::add<entity::bundle::Object>();
                 myFamousTriangle.geometry.meshHandle = gfx::getHandle("assets/meshes/toto.obj");
                 myFamousTriangle.material.color.x = 0.090f;
 
                 entity::bundle::Camera myCamera = entity::Registry::add<entity::bundle::Camera>();
-                myCamera.transfom.translate(math::Axis::FRONT, 2.0f);
-                
+                myCamera.transfom.translate(math::Axis::FRONT, 5.0f);
+                myCamera.transfom.setOrientation(glm::vec3(0.0f, -glm::half_pi<float>(), 0.0f));
+                entity::system::Camera::activate(myCamera.id);
+
+                wsi::KeyboardEvent keyboardEvent;
+                keyboardEvent.key = wsi::Key::D;
+                keyboardEvent.status = wsi::KeyStatus::PRESSED;      
+                keyboardEvent.mod.num = true;          
+                leh::EventHandler::add(keyboardEvent, []() { entity::system::Camera::translate(math::Axis::SIDE, 0.2f); }); // fixme, remove delta ans use translation and rotation speed instead, and use deltaTime also
+                keyboardEvent.key = wsi::Key::Q;
+                leh::EventHandler::add(keyboardEvent, []() { entity::system::Camera::translate(math::Axis::SIDE, -0.2f); });
+                keyboardEvent.key = wsi::Key::Z;
+                leh::EventHandler::add(keyboardEvent, []() { entity::system::Camera::translate(math::Axis::FRONT, -0.2f); });
+                keyboardEvent.key = wsi::Key::S;
+                leh::EventHandler::add(keyboardEvent, []() { entity::system::Camera::translate(math::Axis::FRONT, 0.2f); });
+                keyboardEvent.key = wsi::Key::R;
+                leh::EventHandler::add(keyboardEvent, []() { entity::system::Camera::translate(math::Axis::UP, 0.2f); });
+                keyboardEvent.key = wsi::Key::F;
+                leh::EventHandler::add(keyboardEvent, []() { entity::system::Camera::translate(math::Axis::UP, -0.2f); });
+                keyboardEvent.key = wsi::Key::ARROW_RIGHT;
+                leh::EventHandler::add(keyboardEvent, []() { entity::system::Camera::rotate(math::Axis::UP, math::Angle::Degrees(5.0f)); });
+                keyboardEvent.key = wsi::Key::ARROW_LEFT;
+                leh::EventHandler::add(keyboardEvent, []() { entity::system::Camera::rotate(math::Axis::UP, math::Angle::Degrees(-5.0f)); });
+                keyboardEvent.key = wsi::Key::ARROW_UP;
+                leh::EventHandler::add(keyboardEvent, []() { entity::system::Camera::rotate(math::Axis::SIDE, math::Angle::Degrees(5.0f)); });
+                keyboardEvent.key = wsi::Key::ARROW_DOWN;
+                leh::EventHandler::add(keyboardEvent, []() { entity::system::Camera::rotate(math::Axis::SIDE, math::Angle::Degrees(-5.0f)); });
+                keyboardEvent.key = wsi::Key::M;
+                leh::EventHandler::add(keyboardEvent, []() { entity::system::Camera::rotate(math::Axis::FRONT, math::Angle::Degrees(5.0f)); });
+                keyboardEvent.key = wsi::Key::L;
+                leh::EventHandler::add(keyboardEvent, []() { entity::system::Camera::rotate(math::Axis::FRONT, math::Angle::Degrees(-5.0f)); });
                 return Status::OK;
             }
 

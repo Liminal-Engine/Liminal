@@ -50,6 +50,7 @@ namespace wsi {
             bool shouldClose(void) const { return false; }
 
             std::vector<Event> pollEvents(void) {
+                this->__eventQueue.clear();
                 this->__waylandResource.pollEvents();
                 return this->__eventQueue;
             }

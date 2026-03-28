@@ -79,6 +79,7 @@ namespace entity {
         }
 
         const glm::vec3 &Transform::getPosition(void) const { return this->__position; }
+        const glm::vec3 &Transform::getOrientation(void) const { return this->__orientation; }
 
     } // namespace component
 } // namespace entity

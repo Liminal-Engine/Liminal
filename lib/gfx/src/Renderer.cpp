@@ -12,7 +12,8 @@ namespace gfx {
         private:
             rhi::def::Handle __deduceShaderHandle(const entt::entity &entity) const {
                 (void)entity;
-                return rhi::Registry::getHandle("assets/shaders/core/textured.glsl");
+                // return rhi::Registry::getHandle("assets/shaders/core/textured.glsl");
+                return rhi::Registry::getHandle("assets/shaders/debug/wireframe.glsl");
             }
 
             void __applyMaterial(const rhi::resource::Shader *shader, const entity::component::Material &material) const {
@@ -26,6 +27,7 @@ namespace gfx {
                     entity::component::CameraSettings
                 >();
                 for (auto entity : view) {
+                    
                     const entity::component::CameraSettings &settings = view.get<entity::component::CameraSettings>(entity);
                     res = settings.projectionMatrix * settings.viewMatrix;
                 }

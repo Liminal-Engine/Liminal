@@ -1,11 +1,10 @@
 #include "Event.hpp"
 
 namespace wsi {
-    KeyMod::KeyMod(void) :
-    shift(false), ctrl(false), alt(false), caps(false), logo(false), num(false)
-    {}
-
-    KeyEvent::KeyEvent(void) :
-    code(0), text(""), status(KeyStatus::RELEASED), mod()
-    {}
-} // namespace wsi
+    bool operator==(const Event &lhs, const Event &rhs) {
+        if (lhs.index() != rhs.index()) return false;
+        return std::visit([](const auto &a, const auto &b) {
+            return a == b;
+        }, lhs, rhs);
+    }
+}

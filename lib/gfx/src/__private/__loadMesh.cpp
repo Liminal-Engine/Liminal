@@ -17,11 +17,19 @@ namespace gfx {
                 return Status::E_ALREADY_EXISTS;
             }
             // 3. Load data
-            rhi::def::Vertex v1(glm::vec3(0.0f, 0.5f, 0.0f));
-            rhi::def::Vertex v2(glm::vec3(0.5f, -0.5f, 0.0f));
-            rhi::def::Vertex v3(glm::vec3(-0.5f, -0.5f, 0.0f));
-            std::vector<rhi::def::Vertex> vertices{v1, v2, v3};
-            std::vector<uint32_t> indices{0, 1, 2};
+            // Pyramide (tétraèdre)
+            rhi::def::Vertex apex(glm::vec3(0.0f, 0.5f, 0.0f));
+            rhi::def::Vertex base1(glm::vec3(0.5f, -0.5f, 0.5f));
+            rhi::def::Vertex base2(glm::vec3(-0.5f, -0.5f, 0.5f));
+            rhi::def::Vertex base3(glm::vec3(0.0f, -0.5f, -0.5f));
+            std::vector<rhi::def::Vertex> vertices{apex, base1, base2, base3};
+            // 4 faces triangulaires
+            std::vector<uint32_t> indices{
+                0, 1, 2, // Face 1
+                0, 2, 3, // Face 2
+                0, 3, 1, // Face 3
+                1, 3, 2  // Base
+            };
             // 4. Request to add resource
             if (
                 rhi::Status loadStatus = rhi::Status::N_OK;

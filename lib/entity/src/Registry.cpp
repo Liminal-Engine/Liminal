@@ -36,11 +36,12 @@ namespace entity {
     bundle::Camera Registry::__Impl::add<bundle::Camera>(void) {
         entt::entity entity = this->__data.create();
         this->__data.emplace<entity::component::tag::Camera>(entity);
-
-        return bundle::Camera(
+        bundle::Camera camera(
             this->__data.emplace<entity::component::Transform>(entity),
             this->__data.emplace<entity::component::CameraSettings>(entity)
         );
+        camera.id = entity;
+        return camera;
     }
 
     Registry::Registry(void) : __impl(std::make_unique<__Impl>()) {}    

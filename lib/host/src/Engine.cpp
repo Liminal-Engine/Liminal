@@ -5,6 +5,8 @@
 #include <entity/Registry.hpp>
 #include <rhi/Context.hpp>
 #include <gfx/Renderer.hpp>
+#include <leh/EventHandler.hpp>
+#include <entity/system/Camera.hpp>
 
 namespace host {
     class Engine::__Impl {
@@ -39,8 +41,12 @@ namespace host {
                     return EXIT_FAILURE;
                 }
 
+                std::vector<wsi::Event> eventQueue{}; // FIXME: create a type using using= for this
                 while (this->__window.shouldClose() == false) {
-                    this->__window.pollEvents();
+                    eventQueue = this->__window.pollEvents();                    
+                    leh::EventHandler::process(eventQueue);
+                    entity::system::Camera::update();
+
                     this->__application.update(0.0f);
                     this->__renderer->draw();
                     this->__window.display();

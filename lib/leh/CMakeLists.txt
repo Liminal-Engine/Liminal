@@ -2,4 +2,4 @@
 discover_lib()
 
 
-link_internal_libs(PUBLIC logger)
+link_internal_libs(PUBLIC logger wsi)

@@ -1,6 +1,8 @@
 #ifndef __LIMINAL__LIB__ENTITY__COMPONENT__CAMERA_HPP__
 #define __LIMINAL__LIB__ENTITY__COMPONENT__CAMERA_HPP__
 
+#include "entity/component/Transform.hpp"
+
 #include <math/Angle.hpp>
 
 #include <glm/glm.hpp>
@@ -12,7 +14,7 @@ namespace entity {
 
             struct AspectRatio {
                 AspectRatio(void);
-
+                float getCoefficient(void) const;
                 float width;
                 float height;
             };
@@ -38,6 +40,8 @@ namespace entity {
             ProjectionMode projectionMode;
             glm::mat4 viewMatrix;
             glm::mat4 projectionMatrix;
+
+            void update(const component::Transform &relatedTransform);
         };
     } // namespace component
 } // namespace entity
