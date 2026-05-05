@@ -6,6 +6,8 @@
 
 #include <entt/entt.hpp>
 
+#include <memory>
+
 namespace entity {
     namespace system {
         class Camera {
@@ -14,6 +16,10 @@ namespace entity {
                 static void activate(entt::entity id);
                 static void translate(math::Axis axis, float delta);
                 static void rotate(math::Axis axis, const math::Angle &angle);
+
+            private:
+                class __Impl;
+                std::unique_ptr<__Impl> __impl;
         };      
     } // namespace system
 } // namespace entity

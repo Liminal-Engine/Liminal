@@ -2,6 +2,7 @@
 #define __LIMINAL__LIB__WSI__WINDOW_HPP__
 
 #include "Event.hpp"
+#include "EventQueue.hpp"
 
 #include <cstdint>
 #include <string>
@@ -20,7 +21,7 @@ namespace wsi {
             Window& operator=(Window&&) = delete;      // No affectation by moving
 
             bool shouldClose() const;
-            std::vector<Event> pollEvents(); // fixme: find a better name
+            EventQueue pollEvents(); // fixme: find a better name
             void display();
 
         private:

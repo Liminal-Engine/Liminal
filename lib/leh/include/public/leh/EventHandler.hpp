@@ -2,12 +2,13 @@
 #define __LIMINAL__LIB__LEH__EVENT_HANDLER_HPP__
 
 #include <wsi/Event.hpp>
+#include <wsi/EventQueue.hpp>
 
 #include <memory>
 #include <functional>
 
 namespace leh {
-    class EventHandler { // FIXME maybe name it even handler instead
+    class EventHandler {
         public:
             EventHandler(const EventHandler&) = delete;
             EventHandler(EventHandler&&) = delete;
@@ -17,9 +18,9 @@ namespace leh {
             template<typename Action, typename... Args>
             static void add(const wsi::Event &event, Action A, Args... a) { add(event, std::function<void()>([=]() { A(a...); })); };
 
-            static void add(const wsi::Event &event, const std::function<void()> &action); // FIXME : const &
+            static void add(const wsi::Event &event, const std::function<void()> &action);
 
-            static void process(const std::vector<wsi::Event> &eventQueue); // FIXME :  create a type using = EventQueue
+            static void process(const wsi::EventQueue &eventQueue);
 
         private:
             EventHandler(void);

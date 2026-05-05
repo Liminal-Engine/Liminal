@@ -11,12 +11,16 @@ namespace entity {
     namespace bundle {
         struct Camera {
             Camera(
-                component::Transform &transfom,
+                entt::entity id,
+                component::Transform &transform,
                 component::CameraSettings &settings
             );
 
+            static Camera Null(void);
+            bool isNull(void);
+
             entt::entity id;
-            component::Transform &transfom;
+            component::Transform &transform;
             component::CameraSettings &settings;
             component::tag::Camera cameraTag;
         };

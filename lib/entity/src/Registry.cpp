@@ -37,10 +37,10 @@ namespace entity {
         entt::entity entity = this->__data.create();
         this->__data.emplace<entity::component::tag::Camera>(entity);
         bundle::Camera camera(
+            entity,
             this->__data.emplace<entity::component::Transform>(entity),
             this->__data.emplace<entity::component::CameraSettings>(entity)
         );
-        camera.id = entity;
         return camera;
     }
 

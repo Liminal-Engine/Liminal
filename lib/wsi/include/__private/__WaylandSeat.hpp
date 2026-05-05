@@ -2,6 +2,7 @@
 #define __LIMINAL__LIB__WSI__PRIVATE__WAYLAND__SEAT__HPP__
 
 #include "Event.hpp"
+#include "EventQueue.hpp"
 
 extern "C" {
     #include <wayland-client.h>
@@ -14,7 +15,7 @@ namespace wsi {
     namespace __private {
         class __WaylandSeat {
             public:
-                __WaylandSeat(wl_seat *seat, std::vector<Event> &eventQueue);
+                __WaylandSeat(wl_seat *seat, EventQueue &eventQueue);
                 ~__WaylandSeat();
 
             private:

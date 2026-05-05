@@ -41,7 +41,7 @@ namespace host {
                     return EXIT_FAILURE;
                 }
 
-                std::vector<wsi::Event> eventQueue{}; // FIXME: create a type using using= for this
+                wsi::EventQueue eventQueue{}; // FIXME: create a type using using= for this
                 while (this->__window.shouldClose() == false) {
                     eventQueue = this->__window.pollEvents();                    
                     leh::EventHandler::process(eventQueue);

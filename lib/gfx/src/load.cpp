@@ -10,10 +10,10 @@
 #include <cstdint>
 
 namespace gfx {
-    Status load(ResourceType resourceType, const fs::Path &path) {
+    Status load(def::ResourceType resourceType, const fs::Path &path) {
         switch (resourceType) {
-            case ResourceType::MESH: return __private::__loadMesh(path);
-            case ResourceType::SHADER: return __private::__loadShader(path);
+            case def::ResourceType::MESH: return __private::__loadMesh(path);
+            case def::ResourceType::SHADER: return __private::__loadShader(path);
         }
         return Status::E_UNKNOWN_RESOURCE_TYPE;
     }

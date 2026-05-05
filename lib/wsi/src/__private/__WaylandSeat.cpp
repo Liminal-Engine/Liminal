@@ -148,10 +148,10 @@ namespace wsi {
                 xkb_context         *__xkbContext;
                 xkb_keymap          *__xkbMap;
                 xkb_state           *__xkbState;
-                std::vector<Event>  &__eventQueueRef;
+                EventQueue  &__eventQueueRef;
                 
             public:
-                __Impl(wl_seat *seat, std::vector<Event> &eventQueue) :
+                __Impl(wl_seat *seat, EventQueue &eventQueue) :
                 __seat(seat), // takes ownership of seat
                 __keyboard(nullptr),
                 __xkbContext(nullptr),
@@ -190,7 +190,7 @@ namespace wsi {
                 }
         };
 
-        __WaylandSeat::__WaylandSeat(wl_seat *seat, std::vector<Event> &eventQueue) : __impl(std::make_unique<__Impl>(seat, eventQueue)) {}
+        __WaylandSeat::__WaylandSeat(wl_seat *seat, EventQueue &eventQueue) : __impl(std::make_unique<__Impl>(seat, eventQueue)) {}
         __WaylandSeat::~__WaylandSeat() = default;
     } // namespace __private
 } // namespace wsi

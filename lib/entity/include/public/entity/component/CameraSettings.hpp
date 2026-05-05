@@ -30,9 +30,6 @@ namespace entity {
             glm::vec3 up;
             float translationSpeed;
             float rotationSpeed;
-            math::Angle yaw; // FIXME: must be in transform
-            math::Angle pitch; // FIXME: must be in transform
-            math::Angle roll; // FIXME: must be in transform
             math::Angle FOV;
             AspectRatio aspectRatio;
             float nearPlane;

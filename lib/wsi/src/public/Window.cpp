@@ -29,7 +29,7 @@ namespace wsi {
             __private::__XDGShell               __xdgShell;
             __private::__EGLResource            __eglResource;
             __private::__WaylandSeat            __waylandSeat;
-            std::vector<Event>                  __eventQueue;
+            EventQueue                          __eventQueue;
 
         public:
             __Impl(int width, int height, const std::string &title) :
@@ -49,7 +49,7 @@ namespace wsi {
             // FIXME: get rid of this method, use event == close, window.close instead
             bool shouldClose(void) const { return false; }
 
-            std::vector<Event> pollEvents(void) {
+            EventQueue pollEvents(void) { // fixme: this should return by const ref instead of copy
                 this->__eventQueue.clear();
                 this->__waylandResource.pollEvents();
                 return this->__eventQueue;
@@ -67,7 +67,7 @@ namespace wsi {
     Window::~Window() = default;
 
     bool Window::shouldClose(void) const { return this->__impl->shouldClose(); }
-    std::vector<Event> Window::pollEvents(void) { return this->__impl->pollEvents(); }
+    EventQueue Window::pollEvents(void) { return this->__impl->pollEvents(); }
     void Window::display(void) {  this->__impl->display(); }
 
 } // namespace wsi

@@ -6,6 +6,36 @@
 
 namespace entity {
     namespace system {
+
+        class Camera::__Impl {
+            private:
+
+            public:
+                static entity::bundle::Camera getActiveCamera(void) {
+                    // 1. Find active camera
+                    auto &rawRegistry = entity::Registry::getRaw();
+                    auto view = rawRegistry.view<
+                        entity::component::tag::Camera,
+                        entity::component::tag::Active,
+                        entity::component::Transform,
+                        entity::component::CameraSettings
+                    >();
+                    // 2. Check whether exactly one camera is activated
+                    size_t size(view.size_hint());
+                    if (size != 1) {
+                        logger::error << "Invalid number of active camera: " << size << std::endl;
+                        return entity::bundle::Camera::Null();
+                    }
+                    entt::entity id = *view.begin();
+                    return entity::bundle::Camera(
+                        id,
+                        view.get<component::Transform>(id),
+                        view.get<component::CameraSettings>(id)
+                    );
+                }
+        };
+
+
         void Camera::update(void) {
             auto view = entity::Registry::getRaw().view<
                 entity::component::tag::Camera,
@@ -42,43 +72,21 @@ namespace entity {
         }
 
         void Camera::translate(math::Axis axis, float delta) {
-            // 1. Find active camera
-            auto &rawRegistry = entity::Registry::getRaw();
-            auto view = rawRegistry.view<
-                entity::component::tag::Camera,
-                entity::component::tag::Active,
-                entity::component::Transform,
-                entity::component::CameraSettings
-            >();
-            // 2. Check whether exactly one camera is activated
-            size_t size(view.size_hint());
-            if (size != 1) {
-                logger::error << "Invalid number of active camera: " << size << std::endl;
+            entity::bundle::Camera camera(__Impl::getActiveCamera());
+            if (camera.isNull()) {
+                logger::error << "Active camera not found, cannot apply translation" << std::endl;
                 return;
             }
-            auto id = *view.begin();
-            auto &transform = view.get<entity::component::Transform>(id);
-            transform.translate(axis, delta);
+            camera.transform.translate(axis, delta);
         }
 
         void Camera::rotate(math::Axis axis, const math::Angle &angle) {
-            // 1. Find active camera // FIXME: use impl hidden reusable code here
-            auto &rawRegistry = entity::Registry::getRaw();
-            auto view = rawRegistry.view<
-                entity::component::tag::Camera,
-                entity::component::tag::Active,
-                entity::component::Transform,
-                entity::component::CameraSettings
-            >();
-            // 2. Check whether exactly one camera is activated
-            size_t size(view.size_hint());
-            if (size != 1) {
-                logger::error << "Invalid number of active camera: " << size << std::endl;
+            entity::bundle::Camera camera(__Impl::getActiveCamera());
+            if (camera.isNull()) {
+                logger::error << "Active camera not found, cannot apply translation" << std::endl;
                 return;
             }
-            auto id = *view.begin();
-            auto &transform = view.get<entity::component::Transform>(id);
-            transform.rotate(axis, angle);
+            camera.transform.rotate(axis, angle);
         }
     } // namespace system
 } // namespace entity

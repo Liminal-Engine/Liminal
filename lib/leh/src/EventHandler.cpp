@@ -1,5 +1,6 @@
 #include "EventHandler.hpp"
 
+#include <wsi/EventQueue.hpp>
 
 #include <vector>
 
@@ -24,7 +25,7 @@ namespace leh {
                 this->__bindings.push_back(__Binding(event, std::move(action)));
             }
 
-            void process(const std::vector<wsi::Event> &eventQueue) const {
+            void process(const wsi::EventQueue &eventQueue) const {
                 for (const wsi::Event &queuedEvent : eventQueue) {
                     for (const __Binding &binding: this->__bindings) {
                         if (binding.event == queuedEvent) {
@@ -43,5 +44,5 @@ namespace leh {
     }
 
     void EventHandler::add(const wsi::Event &event, const std::function<void()> &action) { __instance().__impl->add(event, std::move(action)); }
-    void EventHandler::process(const std::vector<wsi::Event> &eventQueue) { __instance().__impl->process(eventQueue); }
+    void EventHandler::process(const wsi::EventQueue &eventQueue) { __instance().__impl->process(eventQueue); }
 } // namespace leh

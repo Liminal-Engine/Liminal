@@ -9,7 +9,6 @@
 #include <entity/component/Geometry.hpp>
 #include <entity/component/Material.hpp>
 #include <entity/system/Camera.hpp>
-#include <leh/Connector.hpp>
 #include <leh/EventHandler.hpp>
 
 
@@ -22,12 +21,6 @@
 namespace host {
     class Application::__Impl {
         private:
-            // mutable std::vector<std::function<void()>> FUNCS; // vector of funcs with no args
-
-            // template<typename Func, typename... Args>
-            // void add(Func f, Args... args) const {
-            //     this->FUNCS.push_back([=]() { f(args...); } );
-            // }
 
         public:
             __Impl() {}
@@ -35,17 +28,17 @@ namespace host {
 
             Status init(void) const {
                 // 1. Load resources
-                gfx::load(gfx::ResourceType::MESH, fs::Path("assets/meshes/toto.obj"));
-                gfx::load(gfx::ResourceType::SHADER, fs::Path("assets/shaders/core/textured.glsl"));
-                gfx::load(gfx::ResourceType::SHADER, fs::Path("assets/shaders/debug/wireframe.glsl"));
+                gfx::load(gfx::def::ResourceType::MESH, fs::Path("assets/meshes/toto.obj"));
+                gfx::load(gfx::def::ResourceType::SHADER, fs::Path("assets/shaders/core/textured.glsl"));
+                gfx::load(gfx::def::ResourceType::SHADER, fs::Path("assets/shaders/debug/wireframe.glsl"));
 
                 entity::bundle::Object myFamousTriangle = entity::Registry::add<entity::bundle::Object>();
                 myFamousTriangle.geometry.meshHandle = gfx::getHandle("assets/meshes/toto.obj");
                 myFamousTriangle.material.color.x = 0.090f;
 
                 entity::bundle::Camera myCamera = entity::Registry::add<entity::bundle::Camera>();
-                myCamera.transfom.translate(math::Axis::FRONT, 5.0f);
-                myCamera.transfom.setOrientation(glm::vec3(0.0f, -glm::half_pi<float>(), 0.0f));
+                myCamera.transform.translate(math::Axis::FRONT, 5.0f);
+                myCamera.transform.setOrientation(glm::vec3(0.0f, -glm::half_pi<float>(), 0.0f));
                 entity::system::Camera::activate(myCamera.id);
 
                 wsi::KeyboardEvent keyboardEvent;
@@ -101,26 +94,7 @@ namespace host {
                 transform.rotate(math::Axis::SIDE, math::Angle::Degrees(1.0f));
                 transform.rotate(math::Axis::FRONT, math::Angle::Degrees(1.0f));
             }
-                // // FIXME : this should be a system
-                // auto view = entity::Registry::getRaw().view<
-                //     entity::component::tag::Camera,
-                //     entity::component::Transform,
-                //     entity::component::CameraSettings
-                // >();
-                // for (auto &camera : view) {
-                //     auto &transform = view.get<entity::component::Transform>(camera);
-                //     auto &settings = view.get<entity::component::CameraSettings>(camera);
-                    
-                //     // Gram-Schmidt compute
-                //     settings.direction = glm::normalize(settings.target - transform.position);
-                //     settings.right = glm::normalize(glm::cross(settings.up, settings.direction));
-                //     settings.up = glm::cross(settings.direction, settings.right);
-                //     settings.viewMatrix = glm::lookAt(transform.position, transform.position + settings.direction, settings.up);
-                //     // FIXME : compute only if settings changed and maybe init in constructor
-                //     float aspectRatio = settings.aspectRatio.width / settings.aspectRatio.height;
-                //     settings.projectionMatrix = glm::perspective(settings.FOV.getValue(), aspectRatio, settings.nearPlane, settings.farPlane);
-                // }
-            }
+        }
     };
 
     Application::Application(void) : __impl(std::make_unique<__Impl>()) {}
